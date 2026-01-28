@@ -165,3 +165,4 @@ docker compose exec db psql -U strapi strapi
 
 
 
+# amedicase
