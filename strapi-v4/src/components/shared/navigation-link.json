@@ -1,0 +1,21 @@
+{
+  "collectionName": "components_shared_navigation_links",
+  "info": {
+    "displayName": "Navigation link",
+    "icon": "link"
+  },
+  "attributes": {
+    "label": {
+      "type": "string",
+      "required": true
+    },
+    "url": {
+      "type": "string",
+      "required": true
+    },
+    "isExternal": {
+      "type": "boolean",
+      "default": false
+    }
+  }
+}

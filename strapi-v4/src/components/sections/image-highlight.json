@@ -1,0 +1,55 @@
+{
+  "collectionName": "components_sections_image_highlights",
+  "info": {
+    "displayName": "Image highlight",
+    "icon": "image"
+  },
+  "attributes": {
+    "enabled": {
+      "type": "boolean",
+      "default": true
+    },
+    "label": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "subtitle": {
+      "type": "text"
+    },
+    "backgroundImage": {
+      "type": "media",
+      "allowedTypes": [
+        "images"
+      ],
+      "multiple": false,
+      "required": true
+    },
+    "logoImage": {
+      "type": "media",
+      "allowedTypes": [
+        "images",
+        "files"
+      ],
+      "multiple": false
+    },
+    "topIcon": {
+      "type": "media",
+      "allowedTypes": [
+        "images",
+        "files"
+      ],
+      "multiple": false
+    },
+    "bottomIcon": {
+      "type": "media",
+      "allowedTypes": [
+        "images",
+        "files"
+      ],
+      "multiple": false
+    }
+  }
+}

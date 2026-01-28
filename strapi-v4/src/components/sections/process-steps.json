@@ -1,0 +1,37 @@
+{
+  "collectionName": "components_sections_process_steps",
+  "info": {
+    "displayName": "Process steps",
+    "icon": "sort-amount-down"
+  },
+  "attributes": {
+    "enabled": {
+      "type": "boolean",
+      "default": true
+    },
+    "label": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string"
+    },
+    "steps": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.process-step",
+      "min": 1
+    },
+    "cta": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.cta"
+    },
+    "illustration": {
+      "type": "media",
+      "allowedTypes": [
+        "images"
+      ],
+      "multiple": false
+    }
+  }
+}

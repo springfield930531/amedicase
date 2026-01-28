@@ -1,0 +1,58 @@
+{
+  "collectionName": "components_sections_hero_sections",
+  "info": {
+    "displayName": "Hero section",
+    "icon": "bullhorn"
+  },
+  "attributes": {
+    "enabled": {
+      "type": "boolean",
+      "default": true
+    },
+    "eyebrow": {
+      "type": "string"
+    },
+    "title": {
+      "type": "text",
+      "required": true
+    },
+    "subtitle": {
+      "type": "text"
+    },
+    "primaryCta": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.cta"
+    },
+    "desktopBackground": {
+      "type": "media",
+      "allowedTypes": [
+        "images"
+      ],
+      "multiple": false
+    },
+    "mobileBackground": {
+      "type": "media",
+      "allowedTypes": [
+        "images"
+      ],
+      "multiple": false
+    },
+    "logoImage": {
+      "type": "media",
+      "allowedTypes": [
+        "images",
+        "files"
+      ],
+      "multiple": false
+    },
+    "overlayIcon": {
+      "type": "media",
+      "allowedTypes": [
+        "images",
+        "files"
+      ],
+      "multiple": false
+    }
+  }
+}

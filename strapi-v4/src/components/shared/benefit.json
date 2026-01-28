@@ -1,0 +1,16 @@
+{
+  "collectionName": "components_shared_benefits",
+  "info": {
+    "displayName": "Benefit",
+    "icon": "check"
+  },
+  "attributes": {
+    "label": {
+      "type": "string",
+      "required": true
+    },
+    "description": {
+      "type": "text"
+    }
+  }
+}

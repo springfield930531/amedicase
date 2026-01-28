@@ -1,0 +1,29 @@
+{
+  "collectionName": "components_sections_testimonials",
+  "info": {
+    "displayName": "Testimonials",
+    "icon": "comments"
+  },
+  "attributes": {
+    "enabled": {
+      "type": "boolean",
+      "default": true
+    },
+    "label": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string"
+    },
+    "items": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.testimonial",
+      "min": 1
+    },
+    "autoRotate": {
+      "type": "boolean",
+      "default": true
+    }
+  }
+}

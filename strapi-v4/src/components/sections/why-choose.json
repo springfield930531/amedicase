@@ -1,0 +1,38 @@
+{
+  "collectionName": "components_sections_why_chooses",
+  "info": {
+    "displayName": "Why choose",
+    "icon": "flag-checkered"
+  },
+  "attributes": {
+    "enabled": {
+      "type": "boolean",
+      "default": true
+    },
+    "label": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "benefits": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.benefit",
+      "min": 1
+    },
+    "supportImage": {
+      "type": "media",
+      "allowedTypes": [
+        "images"
+      ],
+      "multiple": false
+    },
+    "cta": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.cta"
+    }
+  }
+}

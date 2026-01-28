@@ -1,0 +1,185 @@
+services:
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: strapi
+      POSTGRES_PASSWORD: strapi
+      POSTGRES_DB: strapi
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    networks:
+      - webnet
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U strapi"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  strapi:
+    build:
+      context: ./strapi-v4
+      dockerfile: Dockerfile
+    command: ["npm","run","develop"]
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      NODE_ENV: development
+      DATABASE_CLIENT: postgres
+      DATABASE_HOST: db
+      DATABASE_PORT: 5432
+      DATABASE_NAME: strapi
+      DATABASE_USERNAME: strapi
+      DATABASE_PASSWORD: strapi
+      APP_KEYS: "$(openssl rand -hex 16),$(openssl rand -hex 16),$(openssl rand -hex 16),$(openssl rand -hex 16)"
+      API_TOKEN_SALT: "$(openssl rand -hex 16)"
+      ADMIN_JWT_SECRET: "$(openssl rand -hex 16)"
+      JWT_SECRET: "$(openssl rand -hex 16)"
+      HOST: "0.0.0.0"
+      PORT: 1337
+      FRONTEND_IMAGES_DIR: /srv/frontend-images
+    volumes:
+      - ./strapi-v4:/srv/app
+      - ./strapi-v4/node_modules:/srv/app/node_modules
+      - ./strapi-v4/.cache:/srv/app/.cache
+      - ./strapi-v4/.tmp:/srv/app/.tmp
+      - ./frontend/public/images:/srv/frontend-images:ro
+    ports:
+      - "1337:1337"
+    networks:
+      - webnet
+      - traefik
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.middlewares.amedicase-retry.retry.attempts=3"
+      - "traefik.http.middlewares.amedicase-retry.retry.initialinterval=500ms"
+      - "traefik.http.routers.amedicase-strapi-admin.rule=Host(`dev.amedicase.com`) && (PathPrefix(`/admin`) || PathPrefix(`/login`) || PathPrefix(`/content-manager`) || PathPrefix(`/content-type-builder`) || PathPrefix(`/i18n`) || PathPrefix(`/upload`) || PathPrefix(`/users-permissions`))"
+      - "traefik.http.routers.amedicase-strapi-admin.entrypoints=web"
+      - "traefik.http.routers.amedicase-strapi-admin.service=amedicase-strapi"
+      - "traefik.http.routers.amedicase-strapi-admin.middlewares=amedicase-retry@docker"
+      - "traefik.http.routers.amedicase-strapi-admin.priority=10"
+      - "traefik.http.routers.amedicase-strapi-admin-secure.rule=Host(`dev.amedicase.com`) && (PathPrefix(`/admin`) || PathPrefix(`/login`) || PathPrefix(`/content-manager`) || PathPrefix(`/content-type-builder`) || PathPrefix(`/i18n`) || PathPrefix(`/upload`) || PathPrefix(`/users-permissions`))"
+      - "traefik.http.routers.amedicase-strapi-admin-secure.entrypoints=websecure"
+      - "traefik.http.routers.amedicase-strapi-admin-secure.service=amedicase-strapi"
+      - "traefik.http.routers.amedicase-strapi-admin-secure.middlewares=amedicase-retry@docker"
+      - "traefik.http.routers.amedicase-strapi-admin-secure.priority=10"
+      - "traefik.http.routers.amedicase-strapi-admin-secure.tls=true"
+      - "traefik.http.routers.amedicase-strapi-admin-secure.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.amedicase-strapi-api.rule=Host(`dev.amedicase.com`) && PathPrefix(`/api`)"
+      - "traefik.http.routers.amedicase-strapi-api.entrypoints=web"
+      - "traefik.http.routers.amedicase-strapi-api.service=amedicase-strapi"
+      - "traefik.http.routers.amedicase-strapi-api.middlewares=amedicase-retry@docker"
+      - "traefik.http.routers.amedicase-strapi-api.priority=10"
+      - "traefik.http.routers.amedicase-strapi-api-secure.rule=Host(`dev.amedicase.com`) && PathPrefix(`/api`)"
+      - "traefik.http.routers.amedicase-strapi-api-secure.entrypoints=websecure"
+      - "traefik.http.routers.amedicase-strapi-api-secure.service=amedicase-strapi"
+      - "traefik.http.routers.amedicase-strapi-api-secure.middlewares=amedicase-retry@docker"
+      - "traefik.http.routers.amedicase-strapi-api-secure.priority=10"
+      - "traefik.http.routers.amedicase-strapi-api-secure.tls=true"
+      - "traefik.http.routers.amedicase-strapi-api-secure.tls.certresolver=letsencrypt"
+      - "traefik.http.services.amedicase-strapi.loadbalancer.server.port=1337"
+      - "traefik.http.services.amedicase-strapi.loadbalancer.server.scheme=http"
+      - "traefik.docker.network=donor-auto-evacuator_donor-network"
+
+  frontend-dev:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.dev
+    environment:
+      NODE_ENV: development
+      NEXT_PUBLIC_SITE_URL: https://dev.amedicase.com
+      NEXT_PUBLIC_STRAPI_URL: https://dev.amedicase.com
+      STRAPI_URL: http://strapi:1337
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+      - /app/.next
+    depends_on:
+      - strapi
+    networks:
+      - webnet
+      - traefik
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.middlewares.amedicase-retry.retry.attempts=3"
+      - "traefik.http.middlewares.amedicase-retry.retry.initialinterval=500ms"
+      # HTTP router (for direct access)
+      - "traefik.http.routers.amedicase-dev.rule=Host(`dev.amedicase.com`) && !PathPrefix(`/admin`) && !PathPrefix(`/api`) && !PathPrefix(`/login`) && !PathPrefix(`/content-manager`) && !PathPrefix(`/content-type-builder`) && !PathPrefix(`/i18n`) && !PathPrefix(`/upload`) && !PathPrefix(`/users-permissions`)"
+      - "traefik.http.routers.amedicase-dev.entrypoints=web"
+      - "traefik.http.routers.amedicase-dev.middlewares=amedicase-retry@docker"
+      - "traefik.http.routers.amedicase-dev.priority=2"
+      # HTTPS router (for Cloudflare proxied requests)
+      - "traefik.http.routers.amedicase-dev-secure.rule=Host(`dev.amedicase.com`) && !PathPrefix(`/admin`) && !PathPrefix(`/api`) && !PathPrefix(`/login`) && !PathPrefix(`/content-manager`) && !PathPrefix(`/content-type-builder`) && !PathPrefix(`/i18n`) && !PathPrefix(`/upload`) && !PathPrefix(`/users-permissions`)"
+      - "traefik.http.routers.amedicase-dev-secure.entrypoints=websecure"
+      - "traefik.http.routers.amedicase-dev-secure.middlewares=amedicase-retry@docker"
+      - "traefik.http.routers.amedicase-dev-secure.priority=2"
+      - "traefik.http.routers.amedicase-dev-secure.tls=true"
+      - "traefik.http.routers.amedicase-dev-secure.tls.certresolver=letsencrypt"
+      - "traefik.http.services.amedicase-dev.loadbalancer.server.port=3000"
+      - "traefik.http.services.amedicase-dev.loadbalancer.server.scheme=http"
+      - "traefik.docker.network=donor-auto-evacuator_donor-network"
+
+  frontend-prod:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    environment:
+      NODE_ENV: production
+      NEXT_PUBLIC_SITE_URL: https://amedicase.com
+      STRAPI_URL: http://strapi:1337
+    depends_on:
+      - strapi
+    networks:
+      - webnet
+      - traefik
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.amedicase-prod.rule=Host(`amedicase.com`) || Host(`www.amedicase.com`)"
+      - "traefik.http.routers.amedicase-prod.entrypoints=websecure"
+      - "traefik.http.routers.amedicase-prod.tls=true"
+      - "traefik.http.routers.amedicase-prod.tls.certresolver=letsencrypt"
+      - "traefik.http.services.amedicase-prod.loadbalancer.server.port=3000"
+      - "traefik.docker.network=donor-auto-evacuator_donor-network"
+
+  service-8x8:
+    build:
+      context: ./8x8-service
+      dockerfile: Dockerfile
+    environment:
+      NODE_ENV: production
+      PORT: 8080
+    restart: unless-stopped
+    networks:
+      - traefik
+    labels:
+      - "traefik.enable=true"
+      # Middleware pentru redirect HTTP -> HTTPS
+      - "traefik.http.middlewares.8x8-redirect.redirectscheme.scheme=https"
+      - "traefik.http.middlewares.8x8-redirect.redirectscheme.permanent=true"
+      # HTTP Router (redirect la HTTPS)
+      - "traefik.http.routers.8x8-hero-log.rule=Host(`8x8.hero-log.com`)"
+      - "traefik.http.routers.8x8-hero-log.entrypoints=web"
+      - "traefik.http.routers.8x8-hero-log.middlewares=8x8-redirect"
+      # HTTPS Router (principal)
+      - "traefik.http.routers.8x8-hero-log-secure.rule=Host(`8x8.hero-log.com`)"
+      - "traefik.http.routers.8x8-hero-log-secure.entrypoints=websecure"
+      - "traefik.http.routers.8x8-hero-log-secure.service=8x8-hero-log-service"
+      - "traefik.http.routers.8x8-hero-log-secure.tls=true"
+      - "traefik.http.routers.8x8-hero-log-secure.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.8x8-hero-log-secure.tls.options=default"
+      # Service definition
+      - "traefik.http.services.8x8-hero-log-service.loadbalancer.server.port=8080"
+      - "traefik.http.services.8x8-hero-log-service.loadbalancer.server.scheme=http"
+      # Network
+      - "traefik.docker.network=donor-auto-evacuator_donor-network"
+
+
+volumes:
+  db-data:
+  strapi-data:
+
+networks:
+  webnet:
+  traefik:
+    external: true
+    name: donor-auto-evacuator_donor-network

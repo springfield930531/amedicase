@@ -1,0 +1,10 @@
+COMANDĂ PENTRU TRANSFER ZIP DE PE MAC PE SERVER:
+
+scp /Users/dorin/Documents/Amdicase/Figma\ export\ 2/amedicase-backup-20251105-203340.zip root@149.102.141.203:/root/amedicase/
+
+LOCAȚIE PE SERVER: /root/amedicase/amedicase-backup-20251105-203340.zip
+
+
+
+
+

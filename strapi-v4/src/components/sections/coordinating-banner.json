@@ -1,0 +1,41 @@
+{
+  "collectionName": "components_sections_coordinating_banners",
+  "info": {
+    "displayName": "Coordinating banner",
+    "icon": "image"
+  },
+  "attributes": {
+    "enabled": {
+      "type": "boolean",
+      "default": true
+    },
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "backgroundImage": {
+      "type": "media",
+      "allowedTypes": [
+        "images"
+      ],
+      "multiple": false,
+      "required": true
+    },
+    "topIcon": {
+      "type": "media",
+      "allowedTypes": [
+        "images",
+        "files"
+      ],
+      "multiple": false
+    },
+    "bottomIcon": {
+      "type": "media",
+      "allowedTypes": [
+        "images",
+        "files"
+      ],
+      "multiple": false
+    }
+  }
+}

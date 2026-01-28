@@ -1,0 +1,25 @@
+{
+  "name": "8x8-hero-log-service",
+  "version": "2.0.0",
+  "description": "Auto-dialer microservice integrating Zoho CRM and 8x8",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js",
+    "migrate": "node scripts/migrate.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "axios": "^1.6.0",
+    "node-cron": "^3.0.3",
+    "sqlite3": "^5.1.6",
+    "dotenv": "^16.3.1",
+    "winston": "^3.11.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

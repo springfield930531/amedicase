@@ -1,0 +1,30 @@
+{
+  "collectionName": "components_sections_service_grids",
+  "info": {
+    "displayName": "Service grid",
+    "icon": "th-large"
+  },
+  "attributes": {
+    "enabled": {
+      "type": "boolean",
+      "default": true
+    },
+    "label": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string"
+    },
+    "services": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.service-card",
+      "min": 1
+    },
+    "cta": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.cta"
+    }
+  }
+}

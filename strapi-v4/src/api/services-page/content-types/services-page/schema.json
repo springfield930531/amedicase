@@ -1,0 +1,41 @@
+{
+  "kind": "singleType",
+  "collectionName": "services_pages",
+  "info": {
+    "singularName": "services-page",
+    "pluralName": "services-pages",
+    "displayName": "Services page",
+    "description": "Services page sections and messaging"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {
+    "content-manager": {
+      "visible": true
+    },
+    "content-type-builder": {
+      "visible": true
+    }
+  },
+  "attributes": {
+    "title": {
+      "type": "string",
+      "default": "Services page"
+    },
+    "contentSections": {
+      "type": "dynamiczone",
+      "components": [
+        "sections.hero-section",
+        "sections.service-grid",
+        "sections.image-highlight",
+        "sections.coordinating-banner",
+        "sections.why-choose",
+        "sections.process-steps",
+        "sections.team-showcase",
+        "sections.testimonials",
+        "sections.contact-block"
+      ]
+    }
+  }
+}

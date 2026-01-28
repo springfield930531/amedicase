@@ -1,0 +1,29 @@
+{
+  "collectionName": "components_shared_testimonials",
+  "info": {
+    "displayName": "Testimonial",
+    "icon": "quote-right"
+  },
+  "attributes": {
+    "name": {
+      "type": "string",
+      "required": true
+    },
+    "position": {
+      "type": "string"
+    },
+    "quote": {
+      "type": "text"
+    },
+    "youtubeId": {
+      "type": "string"
+    },
+    "thumbnail": {
+      "type": "media",
+      "allowedTypes": [
+        "images"
+      ],
+      "multiple": false
+    }
+  }
+}

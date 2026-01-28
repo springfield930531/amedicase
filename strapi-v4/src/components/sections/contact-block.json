@@ -1,0 +1,42 @@
+{
+  "collectionName": "components_sections_contact_blocks",
+  "info": {
+    "displayName": "Contact block",
+    "icon": "envelope"
+  },
+  "attributes": {
+    "enabled": {
+      "type": "boolean",
+      "default": true
+    },
+    "label": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "videoTestimonials": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.testimonial"
+    },
+    "contactEmail": {
+      "type": "string"
+    },
+    "contactPhone": {
+      "type": "string"
+    },
+    "contactAddress": {
+      "type": "text"
+    },
+    "socialLinks": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.social-link"
+    },
+    "formDisclaimer": {
+      "type": "text"
+    }
+  }
+}
