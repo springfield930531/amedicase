@@ -1,0 +1,18 @@
+{
+  "collectionName": "components_sections_process_why",
+  "info": {
+    "displayName": "Process why",
+    "icon": "align-left"
+  },
+  "attributes": {
+    "label": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string"
+    },
+    "body": {
+      "type": "text"
+    }
+  }
+}

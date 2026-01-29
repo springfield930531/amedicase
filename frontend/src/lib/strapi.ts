@@ -142,6 +142,7 @@ export async function getPageBySlug(slug: string) {
     const params = new URLSearchParams();
     params.set("filters[slug][$eq]", slug);
     params.set("populate[sections][populate]", "*");
+    params.set("populate[template][populate]", "*");
     const response = await fetch(`${baseUrl}/api/pages?${params.toString()}`, {
       cache: "no-store",
     });

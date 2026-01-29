@@ -34,6 +34,28 @@ export type BenefitItem = {
   description?: string;
 };
 
+export type ValueCard = {
+  title?: string;
+  description?: string;
+};
+
+export type FaqItem = {
+  question?: string;
+  answer?: string;
+};
+
+export type InfoCard = {
+  title?: string;
+  body?: string;
+};
+
+export type FormField = {
+  name?: string;
+  type?: "text" | "email" | "tel" | "textarea";
+  placeholder?: string;
+  rows?: number;
+};
+
 export type CardGridItem = {
   title?: string;
   description?: string;
@@ -81,6 +103,18 @@ export type PageHeroSection = {
   ctaDesktop?: CtaData | null;
 };
 
+export type AboutHeroSection = {
+  __component: "sections.about-hero";
+  badgeLabel?: string;
+  title?: string;
+  titleDesktop?: string;
+  subtitle?: string;
+  subtitleDesktop?: string;
+  backgroundImage?: StrapiMedia | null;
+  primaryCta?: CtaData | null;
+  secondaryText?: string;
+};
+
 export type StoryBlockSection = {
   __component: "sections.story-block";
   label?: string;
@@ -88,11 +122,67 @@ export type StoryBlockSection = {
   body?: string;
 };
 
+export type MissionValuesSection = {
+  __component: "sections.mission-values";
+  label?: string;
+  cards?: ValueCard[];
+  cta?: CtaData | null;
+};
+
+export type AboutTeamSection = {
+  __component: "sections.about-team";
+  label?: string;
+  title?: string;
+  subtitle?: string;
+  teamMembers?: Array<{
+    firstName?: string;
+    lastName?: string;
+    role?: string;
+    bio?: string;
+    photo?: StrapiMedia | null;
+  }>;
+  mobileProfilePhoto?: StrapiMedia | null;
+  dotImagePrimary?: StrapiMedia | null;
+  dotImageSecondary?: StrapiMedia | null;
+};
+
+export type VideoEmbedSection = {
+  __component: "sections.video-embed";
+  label?: string;
+  youtubeId?: string;
+  title?: string;
+};
+
+export type AboutWhyChooseSection = {
+  __component: "sections.about-why-choose";
+  label?: string;
+  title?: string;
+  benefits?: BenefitItem[];
+  cta?: CtaData | null;
+  image?: StrapiMedia | null;
+  overlayColor?: string;
+};
+
 export type ImageOverlaySection = {
   __component: "sections.image-overlay";
   backgroundImage?: StrapiMedia | null;
   overlayColor?: string;
   overlayImage?: StrapiMedia | null;
+};
+
+export type ContactInfoFormSection = {
+  __component: "sections.contact-info-form";
+  label?: string;
+  infoCards?: InfoCard[];
+  formTitle?: string;
+  fields?: FormField[];
+  submitLabel?: string;
+};
+
+export type FaqListSection = {
+  __component: "sections.faq-list";
+  label?: string;
+  items?: FaqItem[];
 };
 
 export type BenefitCardsSection = {
@@ -125,6 +215,13 @@ export type ProcessStagesSection = {
   arrowImage?: StrapiMedia | null;
   arrowFinalImage?: StrapiMedia | null;
   cta?: CtaData | null;
+};
+
+export type ProcessWhySection = {
+  __component: "sections.process-why";
+  label?: string;
+  title?: string;
+  body?: string;
 };
 
 export type BackgroundPatternSection = {
@@ -223,12 +320,20 @@ export type ServicesWhyChooseSection = {
 
 export type PageSection =
   | PageHeroSection
+  | AboutHeroSection
   | StoryBlockSection
+  | MissionValuesSection
+  | AboutTeamSection
+  | VideoEmbedSection
+  | AboutWhyChooseSection
   | ImageOverlaySection
   | BenefitCardsSection
   | CardGridSection
   | IconStepsSection
   | ProcessStagesSection
+  | ProcessWhySection
+  | ContactInfoFormSection
+  | FaqListSection
   | ContactBlockSection
   | BackgroundPatternSection
   | ServicesHeroSection
@@ -243,4 +348,15 @@ export type PageEntry = {
   slug?: string;
   seo?: SeoData;
   sections?: PageSection[];
+  template?: {
+    key?: string;
+    data?: {
+      attributes?: {
+        key?: string;
+      };
+    };
+    attributes?: {
+      key?: string;
+    };
+  } | null;
 };

@@ -1,0 +1,16 @@
+{
+  "collectionName": "components_shared_value_cards",
+  "info": {
+    "displayName": "Value card",
+    "icon": "check"
+  },
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "description": {
+      "type": "text"
+    }
+  }
+}

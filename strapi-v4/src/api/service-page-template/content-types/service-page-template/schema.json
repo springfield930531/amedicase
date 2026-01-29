@@ -1,11 +1,11 @@
 {
   "kind": "collectionType",
-  "collectionName": "pages",
+  "collectionName": "service_page_templates",
   "info": {
-    "singularName": "page",
-    "pluralName": "pages",
-    "displayName": "Page",
-    "description": "Static service pages"
+    "singularName": "service-page-template",
+    "pluralName": "service-page-templates",
+    "displayName": "Service Page Template",
+    "description": "Reusable template for service-like pages"
   },
   "options": {
     "draftAndPublish": true
@@ -19,19 +19,25 @@
     }
   },
   "attributes": {
-    "title": {
+    "name": {
       "type": "string",
       "required": true
     },
-    "slug": {
+    "key": {
       "type": "uid",
-      "targetField": "title",
+      "targetField": "name",
       "required": true
     },
-    "seo": {
+    "description": {
+      "type": "text"
+    },
+    "defaultSeo": {
       "type": "component",
       "repeatable": false,
       "component": "shared.seo"
+    },
+    "flags": {
+      "type": "json"
     },
     "sections": {
       "type": "dynamiczone",
@@ -61,11 +67,11 @@
         "sections.contact-block"
       ]
     },
-    "template": {
+    "pages": {
       "type": "relation",
-      "relation": "manyToOne",
-      "target": "api::service-page-template.service-page-template",
-      "inversedBy": "pages"
+      "relation": "oneToMany",
+      "target": "api::page.page",
+      "mappedBy": "template"
     }
   }
 }

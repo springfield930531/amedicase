@@ -1,0 +1,22 @@
+{
+  "collectionName": "components_sections_mission_values",
+  "info": {
+    "displayName": "Mission values",
+    "icon": "grid"
+  },
+  "attributes": {
+    "label": {
+      "type": "string"
+    },
+    "cards": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.value-card"
+    },
+    "cta": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.cta"
+    }
+  }
+}

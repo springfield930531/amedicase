@@ -1,0 +1,46 @@
+{
+  "collectionName": "components_sections_about_teams",
+  "info": {
+    "displayName": "About team",
+    "icon": "users"
+  },
+  "attributes": {
+    "label": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string"
+    },
+    "subtitle": {
+      "type": "text"
+    },
+    "teamMembers": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.team-member"
+    },
+    "mobileProfilePhoto": {
+      "type": "media",
+      "allowedTypes": [
+        "images"
+      ],
+      "multiple": false
+    },
+    "dotImagePrimary": {
+      "type": "media",
+      "allowedTypes": [
+        "images",
+        "files"
+      ],
+      "multiple": false
+    },
+    "dotImageSecondary": {
+      "type": "media",
+      "allowedTypes": [
+        "images",
+        "files"
+      ],
+      "multiple": false
+    }
+  }
+}

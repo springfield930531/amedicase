@@ -1,0 +1,16 @@
+{
+  "collectionName": "components_shared_info_cards",
+  "info": {
+    "displayName": "Info card",
+    "icon": "address-book"
+  },
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "body": {
+      "type": "text"
+    }
+  }
+}

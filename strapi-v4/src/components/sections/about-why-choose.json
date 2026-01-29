@@ -1,0 +1,36 @@
+{
+  "collectionName": "components_sections_about_why_choose",
+  "info": {
+    "displayName": "About why choose",
+    "icon": "check"
+  },
+  "attributes": {
+    "label": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string"
+    },
+    "benefits": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.benefit"
+    },
+    "cta": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.cta"
+    },
+    "image": {
+      "type": "media",
+      "allowedTypes": [
+        "images",
+        "files"
+      ],
+      "multiple": false
+    },
+    "overlayColor": {
+      "type": "string"
+    }
+  }
+}

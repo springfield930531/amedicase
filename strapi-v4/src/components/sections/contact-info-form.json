@@ -1,0 +1,28 @@
+{
+  "collectionName": "components_sections_contact_info_forms",
+  "info": {
+    "displayName": "Contact info form",
+    "icon": "envelope"
+  },
+  "attributes": {
+    "label": {
+      "type": "string"
+    },
+    "infoCards": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.info-card"
+    },
+    "formTitle": {
+      "type": "string"
+    },
+    "fields": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.form-field"
+    },
+    "submitLabel": {
+      "type": "string"
+    }
+  }
+}

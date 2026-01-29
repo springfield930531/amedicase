@@ -3,7 +3,22 @@
 import { useState } from "react";
 import Image from "next/image";
 
-const teamMembers = [
+type TeamMember = {
+  name: string;
+  surname: string;
+  position: string;
+  description: string;
+  photo: string;
+};
+
+type TeamCarouselProps = {
+  members?: TeamMember[];
+  mobileProfilePhoto?: string;
+  dotImagePrimary?: string;
+  dotImageSecondary?: string;
+};
+
+const fallbackMembers: TeamMember[] = [
   {
     name: "Dorin",
     surname: "Acru",
@@ -56,9 +71,14 @@ const ArrowButton = ({
   </button>
 );
 
-export function TeamCarousel() {
+export function TeamCarousel({
+  members,
+  mobileProfilePhoto,
+  dotImagePrimary = "/images/team-member-1.png",
+  dotImageSecondary = "/images/team-member-2.png",
+}: TeamCarouselProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
-
+  const teamMembers = members && members.length ? members : fallbackMembers;
   const totalCards = teamMembers.length;
   const prevIndex = (currentIndex - 1 + totalCards) % totalCards;
   const nextIndex = (currentIndex + 1) % totalCards;
@@ -75,6 +95,11 @@ export function TeamCarousel() {
     <div className="w-full">
       {/* Mobile/Tablet Carousel - Card only (no title) */}
       <div className="lg:hidden">
+        {(() => {
+          const member = teamMembers[0];
+          const mobilePhoto = mobileProfilePhoto || member.photo;
+          const descriptionLines = member.description.split("\n");
+          return (
         <div className="mb-[20px] md:mb-12 overflow-hidden">
           <div className="min-h-[clamp(280px,81vw,323px)] relative shrink-0 w-full">
             <div className="absolute contents left-0 top-0">
@@ -84,8 +109,8 @@ export function TeamCarousel() {
               {/* Image - Responsive positioning */}
               <div className="absolute bg-repeat bg-size-[197.419921875px_198px] bg-top-left h-[clamp(120px,36vw,144px)] left-[clamp(15px,5vw,20px)] rounded-[12px] top-[clamp(15px,5vw,20px)] w-[clamp(120px,36vw,144px)] overflow-hidden">
                 <Image
-                  src="/images/Dorin Acru.jpg"
-                  alt="Dorin Acru"
+                  src={mobilePhoto}
+                  alt={`${member.name} ${member.surname}`}
                   fill
                   className="object-cover"
                 />
@@ -96,9 +121,9 @@ export function TeamCarousel() {
                 className="absolute font-sans font-semibold leading-[1.2] left-[calc(50%+clamp(18px,6vw,24px))] text-[clamp(16px,5vw,20px)] text-blue-900 top-[clamp(30px,10vw,40px)]"
                 style={{ fontVariationSettings: "'wdth' 100" }}
               >
-                Dorin
+                {member.name}
                 <br />
-                Acru
+                {member.surname}
               </p>
 
               {/* Position - Responsive positioning */}
@@ -106,7 +131,7 @@ export function TeamCarousel() {
                 className="absolute font-sans font-normal leading-[1.1] left-[clamp(15px,5vw,20px)] text-[clamp(16px,5vw,20px)] text-blue-900 top-[clamp(160px,45vw,184px)] tracking-[-0.4px]"
                 style={{ fontVariationSettings: "'wdth' 100" }}
               >
-                Marketing Manager
+                {member.position}
               </p>
 
               {/* Description - Responsive positioning */}
@@ -114,9 +139,12 @@ export function TeamCarousel() {
                 className="absolute font-sans font-normal leading-[1.2] left-[clamp(15px,5vw,20px)] text-[#000618] text-[clamp(11px,3.25vw,13px)] top-[clamp(190px,54vw,218px)] tracking-[-0.26px] w-[calc(100%-clamp(30px,10vw,40px))] max-w-[271px] whitespace-pre-wrap break-words"
                 style={{ fontVariationSettings: "'wdth' 100" }}
               >
-                Building trust through precision, clarity
-                <br />
-                and modern medical management.
+                {descriptionLines.map((line, idx) => (
+                  <span key={`mobile-team-desc-${idx}`}>
+                    {line}
+                    {idx < descriptionLines.length - 1 ? <br /> : null}
+                  </span>
+                ))}
               </p>
 
               {/* Pagination Dots - Responsive positioning */}
@@ -128,27 +156,29 @@ export function TeamCarousel() {
                   <img
                     alt=""
                     className="block max-w-none size-full"
-                    src="/images/team-member-1.png"
+                    src={dotImagePrimary}
                   />
                 </div>
                 <div className="size-[clamp(8px,2.5vw,10px)]">
                   <img
                     alt=""
                     className="block max-w-none size-full"
-                    src="/images/team-member-2.png"
+                    src={dotImageSecondary}
                   />
                 </div>
                 <div className="size-[clamp(8px,2.5vw,10px)]">
                   <img
                     alt=""
                     className="block max-w-none size-full"
-                    src="/images/team-member-2.png"
+                    src={dotImageSecondary}
                   />
                 </div>
               </div>
             </div>
           </div>
         </div>
+          );
+        })()}
       </div>
 
       {/* Desktop Carousel - Slider only (no title/CTA) */}
@@ -296,7 +326,5 @@ export function TeamCarousel() {
     </div>
   );
 }
-
-
 
 

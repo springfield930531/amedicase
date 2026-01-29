@@ -1,0 +1,18 @@
+{
+  "collectionName": "components_sections_video_embeds",
+  "info": {
+    "displayName": "Video embed",
+    "icon": "play"
+  },
+  "attributes": {
+    "label": {
+      "type": "string"
+    },
+    "youtubeId": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string"
+    }
+  }
+}

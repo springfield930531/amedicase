@@ -962,6 +962,11 @@ export interface ApiPagePage extends Struct.CollectionTypeSchema {
         'sections.services-page-quality',
         'sections.services-page-how-it-works',
         'sections.services-page-why-choose',
+        'sections.about-hero',
+        'sections.mission-values',
+        'sections.about-team',
+        'sections.video-embed',
+        'sections.about-why-choose',
         'sections.page-hero',
         'sections.story-block',
         'sections.image-overlay',
@@ -969,11 +974,18 @@ export interface ApiPagePage extends Struct.CollectionTypeSchema {
         'sections.card-grid',
         'sections.icon-steps',
         'sections.process-stages',
+        'sections.process-why',
+        'sections.contact-info-form',
+        'sections.faq-list',
         'sections.contact-block',
       ]
     >;
     seo: Schema.Attribute.Component<'shared.seo', false>;
     slug: Schema.Attribute.UID<'title'> & Schema.Attribute.Required;
+    template: Schema.Attribute.Relation<
+      'manyToOne',
+      'api::service-page-template.service-page-template'
+    >;
     title: Schema.Attribute.String & Schema.Attribute.Required;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
@@ -1025,6 +1037,76 @@ export interface ApiProcessPageProcessPage extends Struct.SingleTypeSchema {
       Schema.Attribute.Private;
     publishedAt: Schema.Attribute.DateTime;
     title: Schema.Attribute.String & Schema.Attribute.DefaultTo<'Process page'>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiServicePageTemplateServicePageTemplate
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'service_page_templates';
+  info: {
+    description: 'Reusable template for service-like pages';
+    displayName: 'Service Page Template';
+    pluralName: 'service-page-templates';
+    singularName: 'service-page-template';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  pluginOptions: {
+    'content-manager': {
+      visible: true;
+    };
+    'content-type-builder': {
+      visible: true;
+    };
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    defaultSeo: Schema.Attribute.Component<'shared.seo', false>;
+    description: Schema.Attribute.Text;
+    flags: Schema.Attribute.JSON;
+    key: Schema.Attribute.UID<'name'> & Schema.Attribute.Required;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::service-page-template.service-page-template'
+    > &
+      Schema.Attribute.Private;
+    name: Schema.Attribute.String & Schema.Attribute.Required;
+    pages: Schema.Attribute.Relation<'oneToMany', 'api::page.page'>;
+    publishedAt: Schema.Attribute.DateTime;
+    sections: Schema.Attribute.DynamicZone<
+      [
+        'shared.background-pattern',
+        'sections.services-page-hero',
+        'sections.services-page-pillars',
+        'sections.services-page-how-we-help',
+        'sections.services-page-quality',
+        'sections.services-page-how-it-works',
+        'sections.services-page-why-choose',
+        'sections.about-hero',
+        'sections.mission-values',
+        'sections.about-team',
+        'sections.video-embed',
+        'sections.about-why-choose',
+        'sections.page-hero',
+        'sections.story-block',
+        'sections.image-overlay',
+        'sections.benefit-cards',
+        'sections.card-grid',
+        'sections.icon-steps',
+        'sections.process-stages',
+        'sections.process-why',
+        'sections.contact-info-form',
+        'sections.faq-list',
+        'sections.contact-block',
+      ]
+    >;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -1659,6 +1741,7 @@ declare module '@strapi/strapi' {
       'api::hospice-page.hospice-page': ApiHospicePageHospicePage;
       'api::page.page': ApiPagePage;
       'api::process-page.process-page': ApiProcessPageProcessPage;
+      'api::service-page-template.service-page-template': ApiServicePageTemplateServicePageTemplate;
       'api::services-page.services-page': ApiServicesPageServicesPage;
       'api::site-setting.site-setting': ApiSiteSettingSiteSetting;
       'plugin::content-releases.release': PluginContentReleasesRelease;

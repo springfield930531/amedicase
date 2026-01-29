@@ -52,6 +52,10 @@ export function ServicesSection({ data }: ServicesSectionProps) {
   const services = data?.services?.length ? data.services : defaultServices;
   const ctaLabel = data?.cta?.label || "Explore All Services";
   const ctaUrl = data?.cta?.url || "/services";
+  const getMobileCardClass = (index: number) =>
+    index === 1 || index === 3
+      ? `${cardBaseClass} flex flex-col items-center justify-center gap-3 p-4 sm:p-5 lg:p-6 text-center`
+      : `${cardBaseClass} flex flex-col gap-3 p-4 sm:p-5 lg:p-6 text-center`;
 
   return (
     <section id="services" className="relative bg-[#f1f5ff] pt-[40px] md:pt-16 xl:-mt-[50px] xl:pt-20 pb-[40px] md:pb-16 xl:pb-20 overflow-hidden">
@@ -71,55 +75,22 @@ export function ServicesSection({ data }: ServicesSectionProps) {
             {/* Services Container - Responsive Grid */}
             <div className="w-full">
               <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8 w-full">
-                {/* Card 1: Customer Support */}
-                <div className={`${cardBaseClass} flex flex-col gap-3 p-4 sm:p-5 lg:p-6 text-center`}>
-                  <p className="font-sans font-medium text-[#0b1737] text-base sm:text-lg leading-tight tracking-[-0.4px]" style={{ fontVariationSettings: "'wdth' 100" }}>
-                    {services[0]?.title || defaultServices[0].title}
-                  </p>
-                  <p className="font-sans font-normal text-[#0b1737] text-sm leading-tight tracking-[-0.26px] whitespace-pre-line break-words" style={{ fontVariationSettings: "'wdth' 100" }}>
-                    {services[0]?.description || defaultServices[0].description}
-                  </p>
-                </div>
-
-                {/* Card 2: Accounting & Finance */}
-                <div className={`${cardBaseClass} flex flex-col items-center justify-center gap-3 p-4 sm:p-5 lg:p-6 text-center`}>
-                  <p className="font-sans font-medium text-[#0b1737] text-base sm:text-lg leading-tight tracking-[-0.4px] whitespace-pre-line" style={{ fontVariationSettings: "'wdth' 100" }}>
-                    {services[1]?.title || defaultServices[1].title}
-                  </p>
-                  <p className="font-sans font-normal text-[#0b1737] text-sm leading-tight tracking-[-0.26px] whitespace-pre-line" style={{ fontVariationSettings: "'wdth' 100" }}>
-                    {services[1]?.description || defaultServices[1].description}
-                  </p>
-                </div>
-
-                {/* Card 3: QuickBooks support */}
-                <div className={`${cardBaseClass} flex flex-col gap-3 p-4 sm:p-5 lg:p-6 text-center`}>
-                  <p className="font-sans font-medium text-[#0b1737] text-base sm:text-lg leading-tight tracking-[-0.4px]" style={{ fontVariationSettings: "'wdth' 100" }}>
-                    {services[2]?.title || defaultServices[2].title}
-                  </p>
-                  <p className="font-sans font-normal text-[#0b1737] text-sm leading-tight tracking-[-0.26px] whitespace-pre-wrap break-words" style={{ fontVariationSettings: "'wdth' 100" }}>
-                    {services[2]?.description || defaultServices[2].description}
-                  </p>
-                </div>
-
-                {/* Card 4: Recruitment, Credentialing */}
-                <div className={`${cardBaseClass} flex flex-col items-center justify-center gap-3 p-4 sm:p-5 lg:p-6 text-center`}>
-                  <p className="font-sans font-medium text-[#0b1737] text-base sm:text-lg leading-tight tracking-[-0.4px] whitespace-pre-line" style={{ fontVariationSettings: "'wdth' 100" }}>
-                    {services[3]?.title || defaultServices[3].title}
-                  </p>
-                  <p className="font-sans font-normal text-[#0b1737] text-sm leading-tight tracking-[-0.26px] whitespace-pre-line" style={{ fontVariationSettings: "'wdth' 100" }}>
-                    {services[3]?.description || defaultServices[3].description}
-                  </p>
-                </div>
-
-                {/* Card 5: Creative & Development */}
-                <div className={`${cardBaseClass} flex flex-col gap-3 p-4 sm:p-5 lg:p-6 text-center`}>
-                  <p className="font-sans font-medium text-[#0b1737] text-base sm:text-lg leading-tight tracking-[-0.4px]" style={{ fontVariationSettings: "'wdth' 100" }}>
-                    {services[4]?.title || defaultServices[4].title}
-                  </p>
-                  <p className="font-sans font-normal text-[#0b1737] text-sm leading-tight tracking-[-0.26px] whitespace-pre-wrap break-words" style={{ fontVariationSettings: "'wdth' 100" }}>
-                    {services[4]?.description || defaultServices[4].description}
-                  </p>
-                </div>
+                {services.map((service, index) => (
+                  <div key={`service-mobile-${index}`} className={getMobileCardClass(index)}>
+                    <p
+                      className="font-sans font-medium text-[#0b1737] text-base sm:text-lg leading-tight tracking-[-0.4px] whitespace-pre-line"
+                      style={{ fontVariationSettings: "'wdth' 100" }}
+                    >
+                      {service.title}
+                    </p>
+                    <p
+                      className="font-sans font-normal text-[#0b1737] text-sm leading-tight tracking-[-0.26px] whitespace-pre-line break-words"
+                      style={{ fontVariationSettings: "'wdth' 100" }}
+                    >
+                      {service.description}
+                    </p>
+                  </div>
+                ))}
 
                 {/* CTA Card - Explore All Services - Refactored with flex */}
                 <Link 

@@ -1,11 +1,9 @@
 import type { CSSProperties } from "react";
-import type { Metadata } from "next";
 import { Header } from "@/components/sections/Header";
 import { Footer } from "@/components/sections/Footer";
 import { ContactSection } from "@/components/sections/ContactSection";
 import svgPaths from "@/lib/imports/svg-ie2km5jka3";
 import Image from "next/image";
-import { getPageBySlug } from "@/lib/strapi";
 import { getMediaUrl } from "@/lib/strapi-home";
 import type {
   BackgroundPatternSection,
@@ -19,32 +17,16 @@ import type {
   ServicesWhyChooseSection,
 } from "@/lib/page-types";
 
-export async function generateMetadata(): Promise<Metadata> {
-  const servicePage = (await getPageBySlug("services")) as PageEntry | null;
-  const seo = servicePage?.seo;
-  const ogImage = seo?.ogImage ? getMediaUrl(seo.ogImage) : undefined;
-  return {
-    title: seo?.metaTitle,
-    description: seo?.metaDescription,
-    alternates: seo?.canonicalUrl ? { canonical: seo.canonicalUrl } : undefined,
-    robots: seo?.noIndex ? { index: false, follow: false } : undefined,
-    openGraph: seo
-      ? {
-          title: seo.ogTitle || seo.metaTitle,
-          description: seo.ogDescription || seo.metaDescription,
-          images: ogImage ? [ogImage] : undefined,
-        }
-      : undefined,
-  };
-}
-
 type ExtendedCSSProperties = CSSProperties & {
   textEdge?: string;
   leadingTrim?: string;
 };
 
-export default async function ServicesPage() {
-  const page = (await getPageBySlug("services")) as PageEntry | null;
+type ServiceStyleAProps = {
+  page: PageEntry | null;
+};
+
+export function ServiceStyleA({ page }: ServiceStyleAProps) {
   const sections = page?.sections || [];
   const contactBlock = sections.find(
     (section: any) => section.__component === "sections.contact-block"

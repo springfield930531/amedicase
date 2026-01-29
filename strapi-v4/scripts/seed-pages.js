@@ -82,7 +82,8 @@ const upsertPage = async (payload) => {
     throw new Error(`Failed to lookup page: ${search.status} ${text}`);
   }
   const json = await search.json();
-  const existingId = json?.data?.[0]?.id;
+  const existing = json?.data?.[0];
+  const existingId = existing?.documentId || existing?.id;
 
   const url = existingId ? `${STRAPI_URL}/api/pages/${existingId}` : `${STRAPI_URL}/api/pages`;
   const method = existingId ? "PUT" : "POST";
@@ -101,9 +102,46 @@ const upsertPage = async (payload) => {
   }
 };
 
+const upsertTemplate = async (payload) => {
+  const search = await fetch(
+    `${STRAPI_URL}/api/service-page-templates?filters[key][$eq]=${encodeURIComponent(payload.data.key)}`,
+    {
+      headers: {
+        Authorization: `Bearer ${STRAPI_API_TOKEN}`,
+      },
+    }
+  );
+  if (!search.ok) {
+    const text = await search.text();
+    throw new Error(`Failed to lookup template: ${search.status} ${text}`);
+  }
+  const json = await search.json();
+  const existing = json?.data?.[0];
+  const existingId = existing?.documentId || existing?.id;
+
+  const url = existingId
+    ? `${STRAPI_URL}/api/service-page-templates/${existingId}`
+    : `${STRAPI_URL}/api/service-page-templates`;
+  const method = existingId ? "PUT" : "POST";
+  const res = await fetch(url, {
+    method,
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${STRAPI_API_TOKEN}`,
+    },
+    body: JSON.stringify(payload),
+  });
+
+  if (!res.ok) {
+    const text = await res.text();
+    throw new Error(`Failed to upsert template ${payload.data.key}: ${res.status} ${text}`);
+  }
+};
+
 const main = async () => {
   const mediaIds = {
     heroServices: await uploadFile(img("images/services/hero-services.jpg"), "hero-services.jpg"),
+    processHero: await uploadFile(img("images/process/hero-background.jpg"), "process-hero-background.jpg"),
     officeDocs: await uploadFile(
       img("images/creative-development/office-documents-background.jpg"),
       "office-documents-background.jpg"
@@ -112,6 +150,18 @@ const main = async () => {
       img("images/creative-development/white-shapes-overlay.svg"),
       "white-shapes-overlay.svg"
     ),
+    contactSubtract: await uploadFile(
+      img("images/contact/subtract-overlay.svg"),
+      "contact-subtract-overlay.svg"
+    ),
+    aboutWhyChooseImage: await uploadFile(
+      img("images/why-choose-image-figma.png"),
+      "why-choose-image-figma.png"
+    ),
+    teamMemberPhoto: await uploadFile(img("images/team-member-photo.jpg"), "team-member-photo.jpg"),
+    teamMemberMobilePhoto: await uploadFile(img("images/Dorin Acru.jpg"), "Dorin Acru.jpg"),
+    teamDotPrimary: await uploadFile(img("images/team-member-1.png"), "team-member-1.png"),
+    teamDotSecondary: await uploadFile(img("images/team-member-2.png"), "team-member-2.png"),
     cardBg1: await uploadFile(img("images/creative-development/card-bg-1.svg"), "card-bg-1.svg"),
     cardBg2: await uploadFile(img("images/creative-development/card-bg-2.svg"), "card-bg-2.svg"),
     cardBg3: await uploadFile(img("images/creative-development/card-bg-3.svg"), "card-bg-3.svg"),
@@ -926,12 +976,518 @@ const main = async () => {
         contactBlock,
       ],
     },
+    {
+      slug: "about",
+      title: "About",
+      seo: {
+        metaTitle: "About | Amedicase",
+        metaDescription:
+          "Meet the team behind Amedicase and learn how we power home health operations behind the scenes.",
+        ogTitle: "About | Amedicase",
+        ogDescription:
+          "Meet the team behind Amedicase and learn how we power home health operations behind the scenes.",
+        canonicalUrl: "/about",
+        noIndex: false,
+      },
+      sections: [
+        {
+          __component: "sections.about-hero",
+          badgeLabel: "About Us",
+          title: "We Power Home Health Operations Behind the Scenes",
+          titleDesktop: "We Power Home Health Operations\nBehind the Scenes",
+          subtitle:
+            "From billing and intake to back-office support, our healthcare-trained teams keep your agency efficient, compliant and ready to grow.",
+          subtitleDesktop:
+            "From billing and intake to back-office support, our healthcare-trained teams\nkeep your agency efficient, compliant and ready to grow.",
+          backgroundImage: mediaIds.heroServices,
+          primaryCta: {
+            label: "Book a Free Consultation",
+            url: "#",
+            isExternal: false,
+          },
+          secondaryText: "Meet the Team",
+        },
+        {
+          __component: "sections.story-block",
+          label: "Our Story",
+          title: "Built to Help Home Health Agencies Operate Smarter",
+          body:
+            "Amedicase was founded by healthcare operations specialists who saw how much time U.S. home health agencies spent managing administrative tasks instead of patient care. We built a model that combines trained professionals, strong compliance, and modern workflows, helping agencies delegate what slows them down and focus on what truly matters: their patients.",
+        },
+        {
+          __component: "sections.mission-values",
+          label: "Mission & Values",
+          cards: [
+            {
+              title: "Accuracy First",
+              description: "We measure, verify, and improve every process.",
+            },
+            {
+              title: "Compliance by Design",
+              description: "HIPAA-compliant from onboarding to reporting.",
+            },
+            {
+              title: "People Before Process",
+              description: "Our strength is our trained, motivated team.",
+            },
+            {
+              title: "Transparency Always",
+              description: "Real-time communication and shared dashboards.",
+            },
+            {
+              title: "Continuous Growth",
+              description: "We learn, optimize, and help our partners scale.",
+            },
+          ],
+          cta: {
+            label: "Explore All Services",
+            url: "/services",
+            isExternal: false,
+          },
+        },
+        {
+          __component: "sections.about-team",
+          label: "Our Team Behind the Care",
+          title: "Meet the People Who Keep Healthcare Moving",
+          subtitle:
+            "Our success is built by people who understand both the human and operational sides of home health.\n\nEach member of our team brings professionalism, compassion, and precision to every process, from billing to patient support.",
+          teamMembers: [
+            {
+              firstName: "Dorin",
+              lastName: "Acru",
+              role: "Marketing Manager",
+              bio: "Building trust through precision, clarity\nand modern medical management.",
+              photo: mediaIds.teamMemberPhoto,
+              order: 0,
+            },
+            {
+              firstName: "Dorin",
+              lastName: "Acru",
+              role: "Marketing Manager",
+              bio: "Building trust through precision, clarity\nand modern medical management.",
+              photo: mediaIds.teamMemberPhoto,
+              order: 1,
+            },
+            {
+              firstName: "Dorin",
+              lastName: "Acru",
+              role: "Marketing Manager",
+              bio: "Building trust through precision, clarity\nand modern medical management.",
+              photo: mediaIds.teamMemberPhoto,
+              order: 2,
+            },
+          ],
+          mobileProfilePhoto: mediaIds.teamMemberMobilePhoto,
+          dotImagePrimary: mediaIds.teamDotPrimary,
+          dotImageSecondary: mediaIds.teamDotSecondary,
+        },
+        {
+          __component: "sections.video-embed",
+          label: "Inside Amedicase",
+          title: "Inside Amedicase",
+          youtubeId: "M7lc1UVf-VE",
+        },
+        {
+          __component: "sections.about-why-choose",
+          label: "Why Choose Amedicase",
+          title: "Why Leading Home Health Agencies Choose Us",
+          benefits: [
+            { label: "HIPAA-Compliant & Secure Data Handling" },
+            { label: "Up to 60% Cost Savings vs\nU.S. Operations" },
+            { label: "Healthcare-trained Teams \nwith U.S. Experience" },
+            { label: "Dedicated Account Managers" },
+            { label: "Real-time Communication \n& U.S. Time-Zone Overlap" },
+          ],
+          cta: {
+            label: "Contact",
+            url: "/#contact",
+            isExternal: false,
+          },
+          image: mediaIds.aboutWhyChooseImage,
+          overlayColor: "rgba(30,58,138,0.5)",
+        },
+      ],
+    },
+    {
+      slug: "contact",
+      title: "Contact",
+      seo: {
+        metaTitle: "Contact | Amedicase",
+        metaDescription:
+          "Get in touch with our team for consultations, service inquiries or onboarding questions.",
+        ogTitle: "Contact | Amedicase",
+        ogDescription:
+          "Get in touch with our team for consultations, service inquiries or onboarding questions.",
+        canonicalUrl: "/contact",
+        noIndex: false,
+      },
+      sections: [
+        {
+          __component: "sections.page-hero",
+          badgeLabel: "Contact Us",
+          title:
+            "Get in touch with our team for consultations, service inquiries or onboarding questions.",
+          titleDesktop:
+            "Get in touch with our team for consultations,\nservice inquiries or onboarding questions.",
+          backgroundImage: mediaIds.heroServices,
+          cta: {
+            label: "Book a Discovery Call",
+            url: "/#contact",
+            isExternal: false,
+          },
+        },
+        {
+          __component: "sections.story-block",
+          label: "Our Story",
+          title: "We're Here to Support Your Agency",
+          body:
+            "Whether you want to explore outsourcing options, request a service breakdown or discuss your agency's current workflow challenges, our team is ready to help.\n\nWe respond quickly, maintain full transparency and aim to understand your needs clearly before recommending solutions.",
+        },
+        {
+          __component: "sections.image-overlay",
+          backgroundImage: mediaIds.officeDocs,
+          overlayColor: "rgba(208,17,39,0.2)",
+          overlayImage: mediaIds.contactSubtract,
+        },
+        {
+          __component: "sections.contact-info-form",
+          label: "Contact Information",
+          infoCards: [
+            {
+              title: "Main Office",
+              body: "Amedicase Operations\nChișinău, Moldova",
+            },
+            {
+              title: "Email",
+              body: "support@amedicase.com",
+            },
+            {
+              title: "Phone",
+              body: "+373 (xxx) xxx xxx",
+            },
+            {
+              title: "Business Hours",
+              body: "Monday — Friday: 9:00–18:00 (EET)\nU.S. overlap included.",
+            },
+          ],
+          formTitle: "Send Us a Message",
+          fields: [
+            { name: "firstName", type: "text", placeholder: "First Name" },
+            { name: "lastName", type: "text", placeholder: "Last Name" },
+            { name: "email", type: "email", placeholder: "Email" },
+            { name: "phone", type: "tel", placeholder: "Phone Number" },
+            { name: "company", type: "text", placeholder: "Company Name" },
+            { name: "message", type: "textarea", placeholder: "Message / Service Inquiry", rows: 4 },
+          ],
+          submitLabel: "Submit",
+        },
+        {
+          __component: "sections.image-overlay",
+          backgroundImage: mediaIds.officeDocs,
+          overlayColor: "rgba(30,58,138,0.2)",
+          overlayImage: mediaIds.contactSubtract,
+        },
+        {
+          __component: "sections.faq-list",
+          label: "FAQ",
+          items: [
+            {
+              question: "How fast do you respond?",
+              answer: "Usually within a few hours during business days.",
+            },
+            {
+              question: "Do you offer a free consultation?",
+              answer: "Yes, all discovery calls and workflow assessments are free.",
+            },
+            {
+              question: "Can we start with a small team?",
+              answer: "Yes, you can start with one specialist and scale as needed.",
+            },
+          ],
+        },
+      ],
+    },
+    {
+      slug: "process",
+      title: "Process",
+      seo: {
+        metaTitle: "Process | Amedicase",
+        metaDescription:
+          "A clear, efficient and compliance-aligned workflow designed for healthcare providers.",
+        ogTitle: "Process | Amedicase",
+        ogDescription:
+          "A clear, efficient and compliance-aligned workflow designed for healthcare providers.",
+        canonicalUrl: "/process",
+        noIndex: false,
+      },
+      sections: [
+        {
+          __component: "sections.page-hero",
+          badgeLabel: "Process",
+          title: "Our Process",
+          subtitle:
+            "A clear, efficient and compliance-aligned workflow designed for healthcare providers.",
+          backgroundImage: mediaIds.processHero,
+          cta: {
+            label: "Book a Discovery Call",
+            url: "/#contact",
+            isExternal: false,
+          },
+        },
+        {
+          __component: "sections.story-block",
+          label: "Our Story",
+          title: "How Amedicase Works",
+          body:
+            "Every partnership begins with clarity. Our process ensures that your outsourced team integrates smoothly into your operations, maintains HIPAA-aligned standards and supports your agency with precision and consistency.\n\nWe follow a simple, transparent 4-stage model used across all Home Health and Hospice services.",
+        },
+        {
+          __component: "sections.image-overlay",
+          backgroundImage: mediaIds.officeDocs,
+          overlayColor: "rgba(30,58,138,0.2)",
+          overlayImage: mediaIds.whiteShapes,
+        },
+        {
+          __component: "sections.process-stages",
+          label: "The Amedicase Process",
+          stages: [
+            {
+              stageLabel: "Stage 1",
+              title: "Assessment",
+              description:
+                "We review your workflows, EMR usage, operational challenges and define the exact tasks to outsource.\n\nGoal: clarity, task mapping, expectations, KPIs.",
+            },
+            {
+              stageLabel: "Stage 2",
+              title: "Talent Selection",
+              description:
+                "We assign trained specialists aligned with your operational needs: billing, intake, coordination, admin or digital tasks.\n\nGoal: match skills, onboarding readiness, HIPAA alignment.",
+            },
+            {
+              stageLabel: "Stage 3",
+              title: "Seamless Integration",
+              description:
+                "Your remote team works directly inside your systems: EMR, communication tools, schedules, documentation flows, operating like an extension of your in-house staff.\n\nGoal: smooth handover, workflow adoption, daily coordination.",
+            },
+            {
+              stageLabel: "Stage 4",
+              title: "Monitoring & Optimization",
+              description:
+                "We provide continuous monitoring, reporting, QA checks and performance tracking. As your agency grows, your team scales at any time.\n\nGoal: consistency, quality, scalability.",
+            },
+          ],
+        },
+        {
+          __component: "sections.image-overlay",
+          backgroundImage: mediaIds.officeDocs,
+          overlayColor: "rgba(30,58,138,0.2)",
+          overlayImage: mediaIds.whiteShapes,
+        },
+        {
+          __component: "sections.process-why",
+          label: "Why This Process Works",
+          title: "Simple setup. Fast integration. Measurable results.",
+          body:
+            "Every partnership begins with clarity. Our process ensures that your outsourced team integrates smoothly into your operations, maintains HIPAA-aligned standards and supports your agency with precision and consistency.\n\nWe follow a simple, transparent 4-stage model used across all Home Health and Hospice services.",
+        },
+        contactBlock,
+      ],
+    },
+    {
+      slug: "privacy-policy",
+      title: "Privacy Policy",
+      seo: {
+        metaTitle: "Privacy Policy | Amedicase",
+        metaDescription: "Learn how Amedicase collects, uses, and protects your personal information.",
+        ogTitle: "Privacy Policy | Amedicase",
+        ogDescription: "Learn how Amedicase collects, uses, and protects your personal information.",
+        canonicalUrl: "/privacy-policy",
+        noIndex: false,
+      },
+      sections: [
+        {
+          __component: "sections.page-hero",
+          badgeLabel: "Legal",
+          title: "Privacy Policy",
+          subtitle:
+            "This policy explains how we collect, use, and safeguard information when you visit our website or use our services.",
+        },
+        {
+          __component: "sections.story-block",
+          label: "Overview",
+          title: "Your Privacy Matters",
+          body:
+            "We respect your privacy and are committed to protecting your personal data. This Privacy Policy explains what information we collect, how we use it, and the choices you have.\n\nInformation We Collect\nWe may collect information you provide directly (name, email, phone, company details) and information collected automatically (IP address, browser type, usage data).\n\nHow We Use Information\nWe use your information to respond to inquiries, provide services, improve our website, and comply with legal obligations.\n\nCookies & Analytics\nWe use cookies and similar technologies to understand usage patterns and improve user experience. You can control cookies through your browser settings.\n\nData Sharing\nWe do not sell your personal information. We may share data with trusted service providers who assist in operating our site and services, under confidentiality agreements.\n\nData Retention & Security\nWe retain data only as long as needed and apply reasonable security measures to protect it.\n\nYour Rights\nYou can request access, correction, or deletion of your personal data by contacting us.\n\nContact\nFor questions about this policy, email us at support@amedicase.com.",
+        },
+      ],
+    },
+    {
+      slug: "terms",
+      title: "Terms of Service",
+      seo: {
+        metaTitle: "Terms of Service | Amedicase",
+        metaDescription: "Read the terms and conditions for using Amedicase services and website.",
+        ogTitle: "Terms of Service | Amedicase",
+        ogDescription: "Read the terms and conditions for using Amedicase services and website.",
+        canonicalUrl: "/terms",
+        noIndex: false,
+      },
+      sections: [
+        {
+          __component: "sections.page-hero",
+          badgeLabel: "Legal",
+          title: "Terms of Service",
+          subtitle:
+            "By accessing or using our website and services, you agree to these terms. Please read them carefully.",
+        },
+        {
+          __component: "sections.story-block",
+          label: "Overview",
+          title: "Terms & Conditions",
+          body:
+            "These Terms govern your access to and use of Amedicase services and website.\n\nUse of Services\nYou agree to use our services lawfully and not to misuse, disrupt, or harm our systems or other users.\n\nIntellectual Property\nAll content, branding, and materials on this site are owned by Amedicase or licensed to us and are protected by law.\n\nThird-Party Links\nOur website may contain links to third-party sites. We are not responsible for their content or practices.\n\nDisclaimers\nServices are provided on an \"as-is\" basis. We do not guarantee uninterrupted or error-free service.\n\nLimitation of Liability\nTo the maximum extent permitted by law, Amedicase is not liable for indirect or consequential damages.\n\nChanges to Terms\nWe may update these Terms from time to time. Continued use constitutes acceptance of the updated terms.\n\nContact\nFor questions, contact support@amedicase.com.",
+        },
+      ],
+    },
+    {
+      slug: "cookies",
+      title: "Cookie Policy",
+      seo: {
+        metaTitle: "Cookie Policy | Amedicase",
+        metaDescription: "Learn how Amedicase uses cookies and how you can manage your preferences.",
+        ogTitle: "Cookie Policy | Amedicase",
+        ogDescription: "Learn how Amedicase uses cookies and how you can manage your preferences.",
+        canonicalUrl: "/cookies",
+        noIndex: false,
+      },
+      sections: [
+        {
+          __component: "sections.page-hero",
+          badgeLabel: "Legal",
+          title: "Cookie Policy",
+          subtitle:
+            "This policy explains how we use cookies and similar technologies on our website.",
+        },
+        {
+          __component: "sections.story-block",
+          label: "Overview",
+          title: "Cookies & Tracking",
+          body:
+            "Cookies are small text files stored on your device to help websites function and improve user experience.\n\nTypes of Cookies We Use\nNecessary cookies enable core functionality. Analytics cookies help us understand site usage and improve performance. Preference cookies remember your settings.\n\nManaging Cookies\nYou can control or disable cookies in your browser settings. Note that some features may not function properly without cookies.\n\nThird-Party Cookies\nWe may use third-party tools (such as analytics providers) that set their own cookies.\n\nUpdates\nWe may update this policy to reflect changes in our use of cookies.\n\nContact\nFor questions, email support@amedicase.com.",
+        },
+      ],
+    },
+  ];
+
+  const templateSource = (slug) => pages.find((page) => page.slug === slug);
+
+  const templates = [
+    {
+      key: "service-style-a",
+      name: "Service Style A (Services)",
+      description: "Services page layout: hero + pillars + how we help + quality + how it works + why choose + contact.",
+      flags: { style: "services", hasBackgroundPattern: true },
+      defaultSeo: templateSource("services")?.seo,
+      sections: templateSource("services")?.sections || [],
+    },
+    {
+      key: "service-style-b",
+      name: "Service Style B (Home Health / Hospice)",
+      description: "Service page layout: hero + story + overlay + benefits + overlay + how-it-works + contact.",
+      flags: { style: "benefits", hasIconSteps: true },
+      defaultSeo: templateSource("home-health")?.seo,
+      sections: templateSource("home-health")?.sections || [],
+    },
+    {
+      key: "service-style-c",
+      name: "Service Style C (Accounting / Support / Creative)",
+      description: "Service page layout: hero + story + overlay + card grid + process stages + contact.",
+      flags: { style: "card-grid", hasProcessStages: true },
+      defaultSeo: templateSource("accounting-finance")?.seo,
+      sections: templateSource("accounting-finance")?.sections || [],
+    },
+    {
+      key: "legal-style",
+      name: "Legal Style (Policy Pages)",
+      description: "Legal page layout: hero + story block.",
+      flags: { style: "legal", hasHero: true },
+      defaultSeo: templateSource("privacy-policy")?.seo,
+      sections: templateSource("privacy-policy")?.sections || [],
+    },
   ];
 
   for (const page of pages) {
     await upsertPage({ data: page });
     console.log(`Seeded page: ${page.slug}`);
   }
+
+  for (const template of templates) {
+    await upsertTemplate({ data: template });
+    console.log(`Seeded template: ${template.key}`);
+  }
+
+  const applyTemplateToPage = async (slug, templateKey) => {
+    const templateSearch = await fetch(
+      `${STRAPI_URL}/api/service-page-templates?filters[key][$eq]=${encodeURIComponent(templateKey)}`,
+      {
+        headers: {
+          Authorization: `Bearer ${STRAPI_API_TOKEN}`,
+        },
+      }
+    );
+    if (!templateSearch.ok) {
+      const text = await templateSearch.text();
+      throw new Error(`Failed to lookup template ${templateKey}: ${templateSearch.status} ${text}`);
+    }
+    const templateJson = await templateSearch.json();
+    const template = templateJson?.data?.[0];
+    const templateId = template?.documentId || template?.id;
+    if (!templateId) {
+      throw new Error(`Template not found: ${templateKey}`);
+    }
+
+    const pageSearch = await fetch(
+      `${STRAPI_URL}/api/pages?filters[slug][$eq]=${encodeURIComponent(slug)}`,
+      {
+        headers: {
+          Authorization: `Bearer ${STRAPI_API_TOKEN}`,
+        },
+      }
+    );
+    if (!pageSearch.ok) {
+      const text = await pageSearch.text();
+      throw new Error(`Failed to lookup page ${slug}: ${pageSearch.status} ${text}`);
+    }
+    const pageJson = await pageSearch.json();
+    const page = pageJson?.data?.[0];
+    const pageId = page?.documentId || page?.id;
+    if (!pageId) {
+      throw new Error(`Page not found: ${slug}`);
+    }
+
+    const res = await fetch(`${STRAPI_URL}/api/pages/${pageId}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${STRAPI_API_TOKEN}`,
+      },
+      body: JSON.stringify({
+        data: {
+          template: templateId,
+        },
+      }),
+    });
+
+    if (!res.ok) {
+      const text = await res.text();
+      throw new Error(`Failed to set template on ${slug}: ${res.status} ${text}`);
+    }
+    console.log(`Applied template ${templateKey} to page ${slug}`);
+  };
+
+  await applyTemplateToPage("privacy-policy", "legal-style");
+  await applyTemplateToPage("terms", "legal-style");
+  await applyTemplateToPage("cookies", "legal-style");
 
   console.log("All pages seeded successfully.");
 };

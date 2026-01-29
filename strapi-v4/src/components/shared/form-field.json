@@ -1,0 +1,28 @@
+{
+  "collectionName": "components_shared_form_fields",
+  "info": {
+    "displayName": "Form field",
+    "icon": "pen"
+  },
+  "attributes": {
+    "name": {
+      "type": "string"
+    },
+    "type": {
+      "type": "enumeration",
+      "enum": [
+        "text",
+        "email",
+        "tel",
+        "textarea"
+      ],
+      "default": "text"
+    },
+    "placeholder": {
+      "type": "string"
+    },
+    "rows": {
+      "type": "integer"
+    }
+  }
+}

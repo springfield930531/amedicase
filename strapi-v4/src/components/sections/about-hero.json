@@ -1,0 +1,40 @@
+{
+  "collectionName": "components_sections_about_heroes",
+  "info": {
+    "displayName": "About hero",
+    "icon": "image"
+  },
+  "attributes": {
+    "badgeLabel": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string"
+    },
+    "titleDesktop": {
+      "type": "string"
+    },
+    "subtitle": {
+      "type": "text"
+    },
+    "subtitleDesktop": {
+      "type": "text"
+    },
+    "backgroundImage": {
+      "type": "media",
+      "allowedTypes": [
+        "images",
+        "files"
+      ],
+      "multiple": false
+    },
+    "primaryCta": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.cta"
+    },
+    "secondaryText": {
+      "type": "string"
+    }
+  }
+}
