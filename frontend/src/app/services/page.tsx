@@ -1,23 +1,226 @@
 import type { CSSProperties } from "react";
+import type { Metadata } from "next";
 import { Header } from "@/components/sections/Header";
 import { Footer } from "@/components/sections/Footer";
+import { ContactSection } from "@/components/sections/ContactSection";
 import svgPaths from "@/lib/imports/svg-ie2km5jka3";
 import Image from "next/image";
+import { getServicePage } from "@/lib/strapi";
+import { fetchHomePage, getMediaUrl } from "@/lib/strapi-home";
+import type { ServicePageData } from "@/lib/service-page-types";
+
+export async function generateMetadata(): Promise<Metadata> {
+  const servicePage = (await getServicePage()) as ServicePageData | null;
+  const seo = servicePage?.seo;
+  const ogImage = seo?.ogImage ? getMediaUrl(seo.ogImage) : undefined;
+  return {
+    title: seo?.metaTitle,
+    description: seo?.metaDescription,
+    alternates: seo?.canonicalUrl ? { canonical: seo.canonicalUrl } : undefined,
+    robots: seo?.noIndex ? { index: false, follow: false } : undefined,
+    openGraph: seo
+      ? {
+          title: seo.ogTitle || seo.metaTitle,
+          description: seo.ogDescription || seo.metaDescription,
+          images: ogImage ? [ogImage] : undefined,
+        }
+      : undefined,
+  };
+}
 
 type ExtendedCSSProperties = CSSProperties & {
   textEdge?: string;
   leadingTrim?: string;
 };
 
-export default function ServicesPage() {
+export default async function ServicesPage() {
+  const servicePage = (await getServicePage()) as ServicePageData | null;
+  const homePage = await fetchHomePage();
+  const homeSections = homePage?.contentSections || [];
+  const contactBlock = homeSections.find((section: any) => section.__component === "sections.contact-block");
+  const fallback: ServicePageData = {
+    backgroundPattern: {
+      enabled: true,
+      svgPath: svgPaths.p2ff94480,
+      viewBox: "0 0 517 1300",
+      fill: "#7F92C7",
+      opacity: 0.5,
+      width: 516,
+      height: 1300,
+      top: 572,
+      left: 0,
+    },
+    hero: {
+      badgeLabel: "SeRvices",
+      title: "End-to-End Outsourcing Solutions for Home Health Agencies",
+      titleDesktop: "End-to-End Outsourcing Solutions\nfor Home Health Agencies",
+      subtitle:
+        "From patient intake to billing and operations — Amedicase helps U.S. home health providers streamline workflows, cut costs, and focus on patient care.",
+      subtitleDesktop:
+        "From patient intake to billing and operations — Amedicase helps\nU.S. home health providers streamline workflows, cut costs, and focus on patient care.",
+      primaryCta: { label: "Book a Free Consultation", url: "#" },
+      secondaryCta: { label: "Download Service Overview", url: "#" },
+    },
+    servicePillars: {
+      label: "Our Service Pillars",
+      cards: [
+        {
+          title: "Billing & Finance",
+          titleMobile: "Billing &\nFinance",
+          titleDesktop: "Billing & Finance",
+          description: "Accurate billing.\nFaster payments.",
+          descriptionDesktop: "Accurate billing. Faster payments.",
+          descriptionMobile: "Accurate billing.\nFaster payments.",
+          learnMoreLabel: "Learn More",
+          learnMoreUrl: "#",
+          imageStyle: { heightPercent: 121.49, widthPercent: 100, leftPercent: 0, topPercent: -17.42 },
+        },
+        {
+          title: "Patient Intake & Support",
+          titleMobile: "Patient Intake\n& Support",
+          titleDesktop: "Patient Intake & Support",
+          description: "Accurate billing.\nFaster payments.",
+          descriptionDesktop: "Accurate billing. Faster payments.",
+          descriptionMobile: "Accurate billing.\nFaster payments.",
+          learnMoreLabel: "Learn More",
+          learnMoreUrl: "#",
+          imageStyle: { heightPercent: 100, widthPercent: 237.04, leftPercent: -71.67, topPercent: 0 },
+        },
+        {
+          title: "Operations & Admin Support",
+          titleMobile: "Operations &\nAdmin Support",
+          titleDesktop: "Operations & Admin Support",
+          description: "Reliable back-office for\nclinical teams.",
+          descriptionDesktop: "Reliable back-office for clinical teams.",
+          descriptionMobile: "Reliable back-office for\nclinical teams.",
+          learnMoreLabel: "Learn More",
+          learnMoreUrl: "#",
+          imageStyle: { heightPercent: 100, widthPercent: 187.27, leftPercent: -26.67, topPercent: 0 },
+        },
+        {
+          title: "Digital Presence & Growth",
+          titleMobile: "Digital Presence\n& Growth",
+          titleDesktop: "Digital Presence & Growth",
+          description: "Power your agency with\nsmart technology.",
+          descriptionDesktop: "Power your agency with smart technology.",
+          descriptionMobile: "Power your agency with\nsmart technology.",
+          learnMoreLabel: "Learn More",
+          learnMoreUrl: "#",
+          imageStyle: { heightPercent: 119.99, widthPercent: 100, leftPercent: 0, topPercent: -6 },
+        },
+      ],
+    },
+    howWeHelp: {
+      label: "How We Help Home Health Agencies",
+      title: "Designed to Help You Operate Efficiently and Scale with Confidence.",
+      benefits: [
+        { label: "Reduce Costs up to 60% without compromising HIPAA compliance." },
+        { label: "Focus on Patient Care. Let us handle admin load." },
+        { label: "Scale Seamlessly. Expand your team as your caseload grows." },
+      ],
+      bulletIconBlur: 2,
+    },
+    weDeliverQuality: {
+      title: "We deliver quality.",
+      overlayColor: "rgba(30,58,138,0.6)",
+      mobileTopSvgPath: svgPaths.p1d182d80,
+      mobileBottomSvgPath:
+        "M0 34.8145C0 34.8145 27.9409 0.328038 47.5434 0.00417593C62.2703 -0.242293 73.8502 10.493 77.4164 13.2432C80.9825 15.9934 101.892 36.0728 105.452 41.3932C105.452 41.3932 85.1446 24.8508 74.9695 19.3996C58.1924 10.4098 49.5877 13.6578 30.7556 29.6969C21.6295 37.4624 17.9227 44.1626 0 34.8145Z",
+      mobileSvgViewBox: "0 0 106 42",
+    },
+    howItWorks: {
+      label: "How It Works",
+      steps: [
+        { title: "Discovery & Planning", description: "We identify your workflow needs and define clear KPIs." },
+        { title: "Onboarding & Training", description: "Your dedicated Amedicase team gets trained on your EMR tools and processes." },
+        { title: "Execution & Support", description: "We manage daily operations, reports, and QA checks." },
+        { title: "Ongoing Optimization", description: "Continuous performance tracking and scaling when needed." },
+      ],
+      cta: { label: "Start Your Free Discovery Call", url: "#" },
+    },
+    whyChoose: {
+      label: "Why Choose Amedicase",
+      benefits: [
+        { label: "HIPAA-Compliant &\nSecure Data Handling" },
+        { label: "Up to 60% Cost Savings\nvs. U.S. Operations" },
+        { label: "Healthcare-trained Teams\nwith U.S. Experience" },
+        { label: "Dedicated Account\nManagers" },
+        { label: "Real-time Communication\n& U.S. Time-Zone Overlap" },
+      ],
+      mobileSeparatorSvgPath:
+        "M0 1C0 1 72.4345 43.848 110.792 36.0488C139.61 30.1945 156.566 8.2968 162.077 2.4327C167.589 -3.4315 197.842 -44.0714 202 -54C202 -54 171.074 -19.2124 154.097 -6.272C126.106 15.0674 107.647 13.5761 62.5873 -3.8195C40.7548 -12.2382 30.0361 -21.2691 0 1.1229Z",
+      mobileSeparatorViewBox: "0 0 280 2",
+    },
+  };
+
+  const page = servicePage || fallback;
+  const backgroundPattern = page.backgroundPattern || fallback.backgroundPattern;
+  const hero = page.hero || fallback.hero;
+  const servicePillars = page.servicePillars || fallback.servicePillars;
+  const howWeHelp = page.howWeHelp || fallback.howWeHelp;
+  const weDeliverQuality = page.weDeliverQuality || fallback.weDeliverQuality;
+  const howItWorks = page.howItWorks || fallback.howItWorks;
+  const whyChoose = page.whyChoose || fallback.whyChoose;
+
+  const getUrl = (media: any, fallbackUrl?: string) => getMediaUrl(media) || fallbackUrl || "";
+  const getAlt = (media: any, fallbackAlt?: string) =>
+    media?.alternativeText || media?.data?.attributes?.alternativeText || fallbackAlt || "";
+  const toPercent = (value?: number | string) => (value !== undefined && value !== null ? `${value}%` : undefined);
+  const splitLines = (value?: string) => (value ? value.split("\n") : []);
+  const renderWithBreaks = (value?: string) => {
+    if (!value) return null;
+    const parts = value.split("\n");
+    return parts.map((part, index) => (
+      <span key={`${part}-${index}`}>
+        {part}
+        {index < parts.length - 1 ? <br /> : null}
+      </span>
+    ));
+  };
+  const normalizeDesktop = (value?: string) => value?.replace(/\n/g, " ");
+
+  const pillarCards = servicePillars?.cards?.length ? servicePillars.cards : fallback.servicePillars?.cards || [];
+  const pillarCard1 = pillarCards[0] || {};
+  const pillarCard2 = pillarCards[1] || {};
+  const pillarCard3 = pillarCards[2] || {};
+  const pillarCard4 = pillarCards[3] || {};
+  const howItWorksSteps = howItWorks?.steps?.length ? howItWorks.steps : fallback.howItWorks?.steps || [];
+  const whyChooseBenefits = whyChoose?.benefits?.length ? whyChoose.benefits : fallback.whyChoose?.benefits || [];
+  const whyChooseLine1 = splitLines(whyChooseBenefits[1]?.label || "Up to 60% Cost Savings\nvs. U.S. Operations");
+
+  const heroPrimaryUrl = hero?.primaryCta?.url || "#";
+  const heroSecondaryUrl = hero?.secondaryCta?.url || "#";
+  const heroPrimaryExternal = hero?.primaryCta?.isExternal;
+  const heroSecondaryExternal = hero?.secondaryCta?.isExternal;
+  const howItWorksCtaUrl = howItWorks?.cta?.url || "#";
+  const howItWorksCtaExternal = howItWorks?.cta?.isExternal;
+
+  const card1Lines = splitLines(pillarCard1.descriptionMobile || pillarCard1.description);
+  const card2Lines = splitLines(pillarCard2.descriptionMobile || pillarCard2.description);
+  const card3Lines = splitLines(pillarCard3.descriptionMobile || pillarCard3.description);
+  const card4Lines = splitLines(pillarCard4.descriptionMobile || pillarCard4.description);
   return (
     <div className="min-h-screen bg-[#f1f5ff] relative overflow-x-hidden">
       {/* Background Pattern - Decorative element, absolute is appropriate here */}
-      <div className="absolute top-[572px] left-0 w-[516px] max-w-[100vw] h-[1300px] opacity-80 pointer-events-none z-0 overflow-hidden">
-        <svg className="w-full h-full" fill="none" viewBox="0 0 517 1300">
-          <path d={svgPaths.p2ff94480} fill="#7F92C7" opacity="0.5" />
-        </svg>
-      </div>
+      {backgroundPattern?.enabled !== false && backgroundPattern?.svgPath ? (
+        <div
+          className="absolute max-w-[100vw] opacity-80 pointer-events-none z-0 overflow-hidden"
+          style={{
+            top: backgroundPattern?.top ?? 572,
+            left: backgroundPattern?.left ?? 0,
+            width: backgroundPattern?.width ?? 516,
+            height: backgroundPattern?.height ?? 1300,
+          }}
+        >
+          <svg className="w-full h-full" fill="none" viewBox={backgroundPattern?.viewBox || "0 0 517 1300"}>
+            <path
+              d={backgroundPattern?.svgPath || svgPaths.p2ff94480}
+              fill={backgroundPattern?.fill || "#7F92C7"}
+              opacity={backgroundPattern?.opacity ?? 0.5}
+            />
+          </svg>
+        </div>
+      ) : null}
 
       <Header />
       
@@ -34,7 +237,7 @@ export default function ServicesPage() {
                     className="absolute left-[20px] top-[10px] font-sans font-medium text-[#d01127] text-[13px] uppercase"
                     style={{ fontVariationSettings: "'wdth' 100" }}
                   >
-                    SeRvices
+                    {hero?.badgeLabel || "SeRvices"}
                   </p>
                 </div>
               </div>
@@ -43,8 +246,8 @@ export default function ServicesPage() {
               <div className="absolute inset-0 overflow-hidden rounded-xl">
                 <div className="absolute inset-0 overflow-hidden">
                   <img
-                    src="/images/services/hero-services.jpg"
-                    alt="Healthcare professionals working"
+                    src={getUrl(hero?.backgroundImage, "/images/services/hero-services.jpg")}
+                    alt={getAlt(hero?.backgroundImage, "Healthcare professionals working")}
                     className="absolute inset-0 w-full h-full object-cover"
                     style={{
                       height: '113.88%',
@@ -68,32 +271,38 @@ export default function ServicesPage() {
                       className="font-sans font-semibold text-[clamp(28px,4vw,33px)] text-[#1c398e] leading-[1.1] tracking-[-0.66px] whitespace-pre-wrap max-w-[292px]"
                       style={{ fontVariationSettings: "'wdth' 100" }}
                     >
-                      End-to-End Outsourcing Solutions for Home Health Agencies
+                      {hero?.title || fallback.hero?.title}
                     </h1>
                     <p 
                       className="font-sans font-normal text-[clamp(12px,1.8vw,13px)] text-[#1c398e] leading-[1.4] tracking-[-0.26px] whitespace-pre-wrap max-w-[292px]"
                       style={{ fontVariationSettings: "'wdth' 100" }}
                     >
-                      From patient intake to billing and operations — Amedicase helps U.S. home health providers streamline workflows, cut costs, and focus on patient care.
+                      {hero?.subtitle || fallback.hero?.subtitle}
                     </p>
                   </div>
                   <div className="flex flex-col gap-[20px] items-start">
-                    <button 
+                    <a 
                       className="backdrop-blur-[7px] bg-gradient-to-b from-[rgba(45,78,174,0.64)] to-[rgba(34,62,140,0.48)] rounded-[8px] border border-[rgba(50,59,159,0.8)] h-[45px] w-full max-w-[239px] font-sans font-semibold text-[clamp(16px,2.5vw,18px)] text-[#f1f5ff] tracking-[-0.36px] hover:opacity-90 transition-opacity flex items-center justify-center capitalize"
                       style={{ fontVariationSettings: "'wdth' 100" }}
+                      href={heroPrimaryUrl}
+                      target={heroPrimaryExternal ? "_blank" : undefined}
+                      rel={heroPrimaryExternal ? "noreferrer" : undefined}
                     >
-                      Book a Free Consultation
-                    </button>
-                    <p 
+                      {hero?.primaryCta?.label || "Book a Free Consultation"}
+                    </a>
+                    <a 
                       className="font-sans font-normal text-[#d01127] text-[clamp(12px,1.8vw,13px)] underline tracking-[-0.26px] text-right w-full mb-[5px]"
                       style={{ 
                         fontVariationSettings: "'wdth' 100", 
                         textDecorationSkipInk: 'none', 
                         textUnderlinePosition: 'from-font' 
                       }}
+                      href={heroSecondaryUrl}
+                      target={heroSecondaryExternal ? "_blank" : undefined}
+                      rel={heroSecondaryExternal ? "noreferrer" : undefined}
                     >
-                      Download Service Overview
-                    </p>
+                      {hero?.secondaryCta?.label || "Download Service Overview"}
+                    </a>
                   </div>
                 </div>
               </div>
@@ -106,8 +315,8 @@ export default function ServicesPage() {
             <div className="absolute inset-0 overflow-hidden">
               <div className="absolute inset-0 overflow-hidden">
                 <img
-                  src="/images/services/hero-services.jpg"
-                  alt="Healthcare professionals working"
+                  src={getUrl(hero?.backgroundImage, "/images/services/hero-services.jpg")}
+                  alt={getAlt(hero?.backgroundImage, "Healthcare professionals working")}
                   className="absolute h-[200.03%] left-[-30.99%] max-w-none top-[-42.98%] w-[131.05%] object-cover"
                 />
               </div>
@@ -121,7 +330,7 @@ export default function ServicesPage() {
                 className="absolute left-[calc(50%-620px)] top-[15px] font-sans font-medium text-[#d01127] text-[20px] uppercase z-20"
                 style={{ fontVariationSettings: "'wdth' 100" }}
               >
-                SeRvices
+                {hero?.badgeLabel || "SeRvices"}
               </p>
               
               {/* Content Card - Using flexbox instead of absolute */}
@@ -131,35 +340,41 @@ export default function ServicesPage() {
                     className="font-sans font-semibold text-[52px] tracking-[-1.04px] w-full"
                     style={{ fontVariationSettings: "'wdth' 100" }}
                   >
-                    End-to-End Outsourcing Solutions{'\n'}for Home Health Agencies
+                    {hero?.titleDesktop || hero?.title || fallback.hero?.titleDesktop}
                   </h1>
                   <p 
                     className="font-sans font-normal text-[33px] tracking-[-0.66px] w-full"
                     style={{ fontVariationSettings: "'wdth' 100" }}
                   >
-                    From patient intake to billing and operations — Amedicase helps{'\n'}U.S. home health providers streamline workflows, cut costs, and focus on patient care.
+                    {hero?.subtitleDesktop || hero?.subtitle || fallback.hero?.subtitleDesktop}
                   </p>
                 </div>
                 
                 <div className="flex flex-col gap-[20px] items-start w-[419px]">
-                  <button 
+                  <a 
                     className="backdrop-blur-[3.777px] backdrop-filter bg-gradient-to-b border border-[rgba(50,59,159,0.8)] border-solid from-[rgba(45,78,174,0.64)] items-center justify-center p-[20px] relative rounded-[8px] to-[rgba(34,62,140,0.48)] w-full hover:opacity-90 transition-opacity flex"
                     style={{ fontVariationSettings: "'wdth' 100" }}
+                    href={heroPrimaryUrl}
+                    target={heroPrimaryExternal ? "_blank" : undefined}
+                    rel={heroPrimaryExternal ? "noreferrer" : undefined}
                   >
                     <p className="capitalize font-sans font-semibold leading-[1.1] text-[#f1f5ff] text-[33px] text-center tracking-[-0.66px] whitespace-nowrap" style={{ fontVariationSettings: "'wdth' 100" }}>
-                      Book a Free Consultation
+                      {hero?.primaryCta?.label || "Book a Free Consultation"}
                     </p>
-                  </button>
-                  <p 
+                  </a>
+                  <a 
                     className="font-sans font-normal leading-[1.4] text-[#d01127] text-[20px] tracking-[-0.4px] underline w-full whitespace-pre-wrap"
                     style={{ 
                       fontVariationSettings: "'wdth' 100",
                       textDecorationSkipInk: 'none',
                       textUnderlinePosition: 'from-font'
                     }}
+                    href={heroSecondaryUrl}
+                    target={heroSecondaryExternal ? "_blank" : undefined}
+                    rel={heroSecondaryExternal ? "noreferrer" : undefined}
                   >
-                    Download Service Overview
-                  </p>
+                    {hero?.secondaryCta?.label || "Download Service Overview"}
+                  </a>
                 </div>
               </div>
             </div>
@@ -180,7 +395,7 @@ export default function ServicesPage() {
                 fontVariationSettings: "'wdth' 100",
               } as ExtendedCSSProperties}
             >
-              Our Service Pillars
+              {servicePillars?.label || "Our Service Pillars"}
             </p>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-[40px] lg:gap-[60px]">
@@ -190,14 +405,14 @@ export default function ServicesPage() {
                 <div className="flex gap-[20px] items-start pl-[20px] pr-[37px] py-[20px] overflow-hidden">
                   <div className="h-[150px] w-[121.5px] flex-shrink-0 overflow-hidden rounded-[12px] relative">
                     <img
-                      src="/images/services/billing-finance-new.jpg"
-                      alt="Billing & Finance"
+                      src={getUrl(pillarCard1.image, "/images/services/billing-finance-new.jpg")}
+                      alt={getAlt(pillarCard1.image, "Billing & Finance")}
                       className="absolute inset-0 w-full h-full object-cover"
                       style={{
-                        height: '121.49%',
-                        left: 0,
-                        top: '-17.42%',
-                        width: '100%',
+                        height: toPercent(pillarCard1.imageStyle?.heightPercent) || "121.49%",
+                        left: toPercent(pillarCard1.imageStyle?.leftPercent) || "0%",
+                        top: toPercent(pillarCard1.imageStyle?.topPercent) || "-17.42%",
+                        width: toPercent(pillarCard1.imageStyle?.widthPercent) || "100%",
                       }}
                     />
                   </div>
@@ -205,22 +420,35 @@ export default function ServicesPage() {
                   <div className="flex flex-1 flex-col gap-[32px] items-start min-w-0">
                     <div className="flex flex-col gap-[20px] items-start justify-center">
                       <h3 className="font-sans font-medium text-[20px] lg:text-[26px] text-[#0b1737] leading-[1.1] tracking-[-0.4px] lg:tracking-[-0.52px] lg:whitespace-nowrap" style={{ fontVariationSettings: "'wdth' 100" }}>
-                        <span className="lg:hidden">Billing &<br />Finance</span>
-                        <span className="hidden lg:inline">Billing & Finance</span>
+                        <span className="lg:hidden">
+                          {renderWithBreaks(pillarCard1.titleMobile || pillarCard1.title || "Billing &\nFinance")}
+                        </span>
+                        <span className="hidden lg:inline">
+                          {pillarCard1.titleDesktop || pillarCard1.title || "Billing & Finance"}
+                        </span>
                       </h3>
                       <div className="font-sans font-normal text-[13px] lg:text-[17px] text-[#0b1737] leading-[1.2] tracking-[-0.26px] lg:tracking-[-0.34px] whitespace-nowrap" style={{ fontVariationSettings: "'wdth' 100" }}>
-                        <p className="mb-0 lg:inline lg:mr-2">Accurate billing.</p>
-                        <p className="lg:inline">Faster payments.</p>
+                        <p className="mb-0 lg:inline lg:mr-2">
+                          {card1Lines[0] || "Accurate billing."}
+                        </p>
+                        <p className="lg:inline">{card1Lines[1] || "Faster payments."}</p>
                       </div>
                     </div>
-                    <div className="flex gap-[10px] items-center w-full">
+                    <a
+                      className="flex gap-[10px] items-center w-full"
+                      href={pillarCard1.learnMoreUrl || "#"}
+                    >
                       <p className="font-sans font-semibold text-[18px] lg:text-[23px] text-[#1f3b8a] tracking-[-0.36px] lg:tracking-[-0.46px] capitalize" style={{ fontVariationSettings: "'wdth' 100" }}>
-                        Learn More
+                        {pillarCard1.learnMoreLabel || "Learn More"}
                       </p>
                       <div className="w-[20px] h-[20px] lg:w-[26px] lg:h-[26px] flex-shrink-0">
-                        <img src="/images/services/arrow-icon.svg" alt="Arrow" className="w-full h-full" />
+                        <img
+                          src={getUrl(pillarCard1.learnMoreIcon, "/images/services/arrow-icon.svg")}
+                          alt={getAlt(pillarCard1.learnMoreIcon, "Arrow")}
+                          className="w-full h-full"
+                        />
                       </div>
-                    </div>
+                    </a>
                   </div>
                 </div>
               </div>
@@ -231,14 +459,14 @@ export default function ServicesPage() {
                   <div className="h-[150px] w-[120px] flex-shrink-0 overflow-hidden rounded-[12px] relative">
                     <div className="absolute inset-0 overflow-hidden pointer-events-none rounded-[12px]">
                       <img
-                        src="/images/services/patient-intake-correct.jpg"
-                        alt="Patient Intake & Support"
+                        src={getUrl(pillarCard2.image, "/images/services/patient-intake-correct.jpg")}
+                        alt={getAlt(pillarCard2.image, "Patient Intake & Support")}
                         className="absolute h-full max-w-none"
                         style={{
-                          left: '-71.67%',
-                          width: '237.04%',
-                          top: 0,
-                          height: '100%',
+                          left: toPercent(pillarCard2.imageStyle?.leftPercent) || "-71.67%",
+                          width: toPercent(pillarCard2.imageStyle?.widthPercent) || "237.04%",
+                          top: toPercent(pillarCard2.imageStyle?.topPercent) || "0%",
+                          height: toPercent(pillarCard2.imageStyle?.heightPercent) || "100%",
                         }}
                       />
                     </div>
@@ -247,22 +475,35 @@ export default function ServicesPage() {
                   <div className="flex flex-1 flex-col gap-[32px] items-start min-w-0">
                     <div className="flex flex-col gap-[20px] items-start justify-center w-full">
                       <h3 className="font-sans font-medium text-[20px] lg:text-[26px] text-[#0b1737] leading-[1.1] tracking-[-0.4px] lg:tracking-[-0.52px] lg:whitespace-nowrap" style={{ fontVariationSettings: "'wdth' 100" }}>
-                        <span className="lg:hidden">Patient Intake<br />& Support</span>
-                        <span className="hidden lg:inline">Patient Intake & Support</span>
+                        <span className="lg:hidden">
+                          {renderWithBreaks(pillarCard2.titleMobile || pillarCard2.title || "Patient Intake\n& Support")}
+                        </span>
+                        <span className="hidden lg:inline">
+                          {pillarCard2.titleDesktop || pillarCard2.title || "Patient Intake & Support"}
+                        </span>
                       </h3>
                       <div className="font-sans font-normal text-[13px] lg:text-[17px] text-[#0b1737] leading-[1.2] tracking-[-0.26px] lg:tracking-[-0.34px] whitespace-nowrap" style={{ fontVariationSettings: "'wdth' 100" }}>
-                        <p className="mb-0 lg:inline lg:mr-2">Accurate billing.</p>
-                        <p className="lg:inline">Faster payments.</p>
+                        <p className="mb-0 lg:inline lg:mr-2">
+                          {card2Lines[0] || "Accurate billing."}
+                        </p>
+                        <p className="lg:inline">{card2Lines[1] || "Faster payments."}</p>
                       </div>
                     </div>
-                    <div className="flex gap-[10px] items-center w-full">
+                    <a
+                      className="flex gap-[10px] items-center w-full"
+                      href={pillarCard2.learnMoreUrl || "#"}
+                    >
                       <p className="font-sans font-semibold text-[18px] lg:text-[23px] text-[#1f3b8a] tracking-[-0.36px] lg:tracking-[-0.46px] capitalize" style={{ fontVariationSettings: "'wdth' 100" }}>
-                        Learn More
+                        {pillarCard2.learnMoreLabel || "Learn More"}
                       </p>
                       <div className="w-[20px] h-[20px] lg:w-[26px] lg:h-[26px] flex-shrink-0">
-                        <img src="/images/services/arrow-icon.svg" alt="Arrow" className="w-full h-full" />
+                        <img
+                          src={getUrl(pillarCard2.learnMoreIcon, "/images/services/arrow-icon.svg")}
+                          alt={getAlt(pillarCard2.learnMoreIcon, "Arrow")}
+                          className="w-full h-full"
+                        />
                       </div>
-                    </div>
+                    </a>
                   </div>
                 </div>
               </div>
@@ -273,14 +514,14 @@ export default function ServicesPage() {
                   <div className="h-[150px] w-[120px] flex-shrink-0 overflow-hidden rounded-[12px] relative">
                     <div className="absolute inset-0 overflow-hidden pointer-events-none rounded-[12px]">
                       <img
-                        src="/images/services/operations-admin-correct.jpg"
-                        alt="Operations & Admin Support"
+                        src={getUrl(pillarCard3.image, "/images/services/operations-admin-correct.jpg")}
+                        alt={getAlt(pillarCard3.image, "Operations & Admin Support")}
                         className="absolute h-full max-w-none"
                         style={{
-                          left: '-26.67%',
-                          width: '187.27%',
-                          top: 0,
-                          height: '100%',
+                          left: toPercent(pillarCard3.imageStyle?.leftPercent) || "-26.67%",
+                          width: toPercent(pillarCard3.imageStyle?.widthPercent) || "187.27%",
+                          top: toPercent(pillarCard3.imageStyle?.topPercent) || "0%",
+                          height: toPercent(pillarCard3.imageStyle?.heightPercent) || "100%",
                         }}
                       />
                     </div>
@@ -289,22 +530,37 @@ export default function ServicesPage() {
                   <div className="flex flex-1 flex-col gap-[32px] items-start min-w-0">
                     <div className="flex flex-col gap-[20px] items-start justify-center w-full">
                       <h3 className="font-sans font-medium text-[20px] lg:text-[26px] text-[#0b1737] leading-[1.1] tracking-[-0.4px] lg:tracking-[-0.52px] lg:whitespace-nowrap" style={{ fontVariationSettings: "'wdth' 100" }}>
-                        <span className="lg:hidden">Operations &<br />Admin Support</span>
-                        <span className="hidden lg:inline">Operations & Admin Support</span>
+                        <span className="lg:hidden">
+                          {renderWithBreaks(pillarCard3.titleMobile || pillarCard3.title || "Operations &\nAdmin Support")}
+                        </span>
+                        <span className="hidden lg:inline">
+                          {pillarCard3.titleDesktop || pillarCard3.title || "Operations & Admin Support"}
+                        </span>
                       </h3>
                       <p className="font-sans font-normal text-[13px] lg:text-[17px] text-[#0b1737] leading-[1.2] tracking-[-0.26px] lg:tracking-[-0.34px] lg:whitespace-nowrap" style={{ fontVariationSettings: "'wdth' 100" }}>
-                        <span className="lg:hidden">Reliable back-office for<br />clinical teams.</span>
-                        <span className="hidden lg:inline">Reliable back-office for clinical teams.</span>
+                        <span className="lg:hidden">
+                          {renderWithBreaks(card3Lines.join("\n") || "Reliable back-office for\nclinical teams.")}
+                        </span>
+                        <span className="hidden lg:inline">
+                          {pillarCard3.descriptionDesktop || pillarCard3.description || "Reliable back-office for clinical teams."}
+                        </span>
                       </p>
                     </div>
-                    <div className="flex gap-[10px] items-center w-full">
+                    <a
+                      className="flex gap-[10px] items-center w-full"
+                      href={pillarCard3.learnMoreUrl || "#"}
+                    >
                       <p className="font-sans font-semibold text-[18px] lg:text-[23px] text-[#1f3b8a] tracking-[-0.36px] lg:tracking-[-0.46px] capitalize" style={{ fontVariationSettings: "'wdth' 100" }}>
-                        Learn More
+                        {pillarCard3.learnMoreLabel || "Learn More"}
                       </p>
                       <div className="w-[20px] h-[20px] lg:w-[26px] lg:h-[26px] flex-shrink-0">
-                        <img src="/images/services/arrow-icon.svg" alt="Arrow" className="w-full h-full" />
+                        <img
+                          src={getUrl(pillarCard3.learnMoreIcon, "/images/services/arrow-icon.svg")}
+                          alt={getAlt(pillarCard3.learnMoreIcon, "Arrow")}
+                          className="w-full h-full"
+                        />
                       </div>
-                    </div>
+                    </a>
                   </div>
                 </div>
               </div>
@@ -314,14 +570,14 @@ export default function ServicesPage() {
                 <div className="flex gap-[20px] items-start pl-[20px] pr-[10px] py-[20px] overflow-hidden">
                   <div className="h-[150px] w-[120px] flex-shrink-0 overflow-hidden rounded-[12px] relative">
                     <img
-                      src="/images/services/digital-growth-new.jpg"
-                      alt="Digital Presence & Growth"
+                      src={getUrl(pillarCard4.image, "/images/services/digital-growth-new.jpg")}
+                      alt={getAlt(pillarCard4.image, "Digital Presence & Growth")}
                       className="absolute inset-0 w-full h-full object-cover"
                       style={{
-                        height: '119.99%',
-                        left: 0,
-                        top: '-6%',
-                        width: '100%',
+                        height: toPercent(pillarCard4.imageStyle?.heightPercent) || "119.99%",
+                        left: toPercent(pillarCard4.imageStyle?.leftPercent) || "0%",
+                        top: toPercent(pillarCard4.imageStyle?.topPercent) || "-6%",
+                        width: toPercent(pillarCard4.imageStyle?.widthPercent) || "100%",
                       }}
                     />
                   </div>
@@ -329,22 +585,37 @@ export default function ServicesPage() {
                   <div className="flex flex-col gap-[32px] items-start w-[150px] lg:w-auto">
                     <div className="flex flex-col gap-[20px] items-start justify-center w-full">
                       <h3 className="font-sans font-medium text-[20px] lg:text-[26px] text-[#0b1737] leading-[1.1] tracking-[-0.4px] lg:tracking-[-0.52px] lg:whitespace-nowrap" style={{ fontVariationSettings: "'wdth' 100" }}>
-                        <span className="lg:hidden">Digital Presence<br />& Growth</span>
-                        <span className="hidden lg:inline">Digital Presence & Growth</span>
+                        <span className="lg:hidden">
+                          {renderWithBreaks(pillarCard4.titleMobile || pillarCard4.title || "Digital Presence\n& Growth")}
+                        </span>
+                        <span className="hidden lg:inline">
+                          {pillarCard4.titleDesktop || pillarCard4.title || "Digital Presence & Growth"}
+                        </span>
                       </h3>
                       <p className="font-sans font-normal text-[13px] lg:text-[17px] text-[#0b1737] leading-[1.2] tracking-[-0.26px] lg:tracking-[-0.34px] lg:whitespace-nowrap" style={{ fontVariationSettings: "'wdth' 100" }}>
-                        <span className="lg:hidden">Power your agency with<br />smart technology.</span>
-                        <span className="hidden lg:inline">Power your agency with smart technology.</span>
+                        <span className="lg:hidden">
+                          {renderWithBreaks(card4Lines.join("\n") || "Power your agency with\nsmart technology.")}
+                        </span>
+                        <span className="hidden lg:inline">
+                          {pillarCard4.descriptionDesktop || pillarCard4.description || "Power your agency with smart technology."}
+                        </span>
                       </p>
                     </div>
-                    <div className="flex gap-[10px] items-center w-[127px] lg:w-full">
+                    <a
+                      className="flex gap-[10px] items-center w-[127px] lg:w-full"
+                      href={pillarCard4.learnMoreUrl || "#"}
+                    >
                       <p className="font-sans font-semibold text-[18px] lg:text-[23px] text-[#1f3b8a] tracking-[-0.36px] lg:tracking-[-0.46px] capitalize" style={{ fontVariationSettings: "'wdth' 100" }}>
-                        Learn More
+                        {pillarCard4.learnMoreLabel || "Learn More"}
                       </p>
                       <div className="w-[20px] h-[20px] lg:w-[26px] lg:h-[26px] flex-shrink-0">
-                        <img src="/images/services/arrow-icon.svg" alt="Arrow" className="w-full h-full" />
+                        <img
+                          src={getUrl(pillarCard4.learnMoreIcon, "/images/services/arrow-icon.svg")}
+                          alt={getAlt(pillarCard4.learnMoreIcon, "Arrow")}
+                          className="w-full h-full"
+                        />
                       </div>
-                    </div>
+                    </a>
                   </div>
                 </div>
               </div>
@@ -363,10 +634,10 @@ export default function ServicesPage() {
               color: 'transparent',
               fontVariationSettings: "'wdth' 100",
             } as ExtendedCSSProperties}>
-              How We Help Home Health Agencies
+              {howWeHelp?.label || "How We Help Home Health Agencies"}
             </p>
             <h2 className="font-sans font-semibold text-[33px] lg:text-[52px] text-[#000618] leading-[1.1] tracking-[-0.66px] lg:tracking-[-1.04px] mb-8 lg:mb-0 lg:w-[952px] whitespace-pre-wrap" style={{ fontVariationSettings: "'wdth' 100" }}>
-              Designed to Help You Operate Efficiently and Scale with Confidence.
+              {howWeHelp?.title || "Designed to Help You Operate Efficiently and Scale with Confidence."}
             </h2>
             
             {/* Benefit Items - Refactored with flexbox structure */}
@@ -379,7 +650,12 @@ export default function ServicesPage() {
                   {/* Icon dot - absolute positioning for precise placement */}
                   <div className="absolute left-[20px] top-[20px] w-[10px] h-[10px] z-10">
                     <div className="absolute inset-[-40%]">
-                      <img alt="" className="block max-w-none size-full" src="/images/services/icon-dot.svg" style={{ filter: 'blur(2px)' }} />
+                      <img
+                        alt=""
+                        className="block max-w-none size-full"
+                        src={getUrl(howWeHelp?.bulletIcon, "/images/services/icon-dot.svg")}
+                        style={{ filter: `blur(${howWeHelp?.bulletIconBlur ?? 2}px)` }}
+                      />
                     </div>
                   </div>
                   {/* Text content */}
@@ -391,7 +667,7 @@ export default function ServicesPage() {
                       WebkitFontSmoothing: 'antialiased'
                     }}
                   >
-                    Reduce Costs up to 60% without compromising HIPAA compliance.
+                    {howWeHelp?.benefits?.[0]?.label || "Reduce Costs up to 60% without compromising HIPAA compliance."}
                   </p>
                 </div>
               </div>
@@ -402,7 +678,12 @@ export default function ServicesPage() {
                   <div className="backdrop-blur-[2.667px] backdrop-filter bg-gradient-to-b from-[rgba(204,211,234,0.02)] to-[rgba(80,86,104,0.01)] rounded-[10.667px] border-[0.667px] border-[rgba(99,103,146,0.5)] border-solid w-[30px] h-full min-h-[60px] shadow-[0px_2.667px_5.333px_0px_rgba(114,116,146,0.3)] flex-shrink-0" />
                   <div className="absolute left-[20px] top-[20px] w-[10px] h-[10px] z-10">
                     <div className="absolute inset-[-40%]">
-                      <img alt="" className="block max-w-none size-full" src="/images/services/icon-dot.svg" style={{ filter: 'blur(2px)' }} />
+                      <img
+                        alt=""
+                        className="block max-w-none size-full"
+                        src={getUrl(howWeHelp?.bulletIcon, "/images/services/icon-dot.svg")}
+                        style={{ filter: `blur(${howWeHelp?.bulletIconBlur ?? 2}px)` }}
+                      />
                     </div>
                   </div>
                   <p 
@@ -413,7 +694,7 @@ export default function ServicesPage() {
                       WebkitFontSmoothing: 'antialiased'
                     }}
                   >
-                    Focus on Patient Care. Let us handle admin load.
+                    {howWeHelp?.benefits?.[1]?.label || "Focus on Patient Care. Let us handle admin load."}
                   </p>
                 </div>
               </div>
@@ -424,7 +705,12 @@ export default function ServicesPage() {
                   <div className="backdrop-blur-[2.667px] backdrop-filter bg-gradient-to-b from-[rgba(204,211,234,0.02)] to-[rgba(80,86,104,0.01)] rounded-[10.667px] border-[0.667px] border-[rgba(99,103,146,0.5)] border-solid w-[30px] h-full min-h-[60px] shadow-[0px_2.667px_5.333px_0px_rgba(114,116,146,0.3)] flex-shrink-0" />
                   <div className="absolute left-[20px] top-[20px] w-[10px] h-[10px] z-10">
                     <div className="absolute inset-[-40%]">
-                      <img alt="" className="block max-w-none size-full" src="/images/services/icon-dot.svg" style={{ filter: 'blur(2px)' }} />
+                      <img
+                        alt=""
+                        className="block max-w-none size-full"
+                        src={getUrl(howWeHelp?.bulletIcon, "/images/services/icon-dot.svg")}
+                        style={{ filter: `blur(${howWeHelp?.bulletIconBlur ?? 2}px)` }}
+                      />
                     </div>
                   </div>
                   <p 
@@ -435,7 +721,7 @@ export default function ServicesPage() {
                       WebkitFontSmoothing: 'antialiased'
                     }}
                   >
-                    Scale Seamlessly. Expand your team as your caseload grows.
+                    {howWeHelp?.benefits?.[2]?.label || "Scale Seamlessly. Expand your team as your caseload grows."}
                   </p>
                 </div>
               </div>
@@ -450,26 +736,49 @@ export default function ServicesPage() {
             <div className="lg:hidden">
               <div className="relative rounded-[12px] overflow-hidden aspect-[320/213] max-w-2xl mx-auto">
                 <Image
-                  src="/images/services/we-deliver-quality.jpg"
-                  alt="We deliver quality"
+                  src={getUrl(weDeliverQuality?.backgroundImage, "/images/services/we-deliver-quality.jpg")}
+                  alt={getAlt(weDeliverQuality?.backgroundImage, "We deliver quality")}
                   fill
                   className="object-cover rounded-[12px]"
                 />
-                <div className="absolute inset-0 bg-[rgba(30,58,138,0.6)] mix-blend-hard-light" />
+                <div
+                  className="absolute inset-0 mix-blend-hard-light"
+                  style={{ backgroundColor: weDeliverQuality?.overlayColor || "rgba(30,58,138,0.6)" }}
+                />
                 
                 {/* Content Overlay - Using flexbox */}
                 <div className="absolute inset-0 flex flex-col items-center justify-center gap-[16px]">
                   <div className="w-[80px] h-[32px]">
-                    <svg className="w-full h-full" fill="none" viewBox="0 0 106 42">
-                      <path d={svgPaths.p1d182d80} fill="#F1F5FF" />
+                    <svg
+                      className="w-full h-full"
+                      fill="none"
+                      viewBox={weDeliverQuality?.mobileSvgViewBox || "0 0 106 42"}
+                    >
+                      <path
+                        d={weDeliverQuality?.mobileTopSvgPath || svgPaths.p1d182d80}
+                        fill="#F1F5FF"
+                      />
                     </svg>
                   </div>
-                  <p className="font-sans font-medium text-[20px] text-[#f1f5ff] text-center leading-[1.1] tracking-[-0.4px]" style={{ fontVariationSettings: "'wdth' 100" }}>
-                    We deliver quality.
+                  <p
+                    className="font-sans font-medium text-[20px] text-[#f1f5ff] text-center leading-[1.1] tracking-[-0.4px]"
+                    style={{ fontVariationSettings: "'wdth' 100" }}
+                  >
+                    {weDeliverQuality?.title || "We deliver quality."}
                   </p>
                   <div className="w-[80px] h-[32px]">
-                    <svg className="w-full h-full" fill="none" viewBox="0 0 106 42">
-                      <path d="M0 34.8145C0 34.8145 27.9409 0.328038 47.5434 0.00417593C62.2703 -0.242293 73.8502 10.493 77.4164 13.2432C80.9825 15.9934 101.892 36.0728 105.452 41.3932C105.452 41.3932 85.1446 24.8508 74.9695 19.3996C58.1924 10.4098 49.5877 13.6578 30.7556 29.6969C21.6295 37.4624 17.9227 44.1626 0 34.8145Z" fill="#F1F5FF" />
+                    <svg
+                      className="w-full h-full"
+                      fill="none"
+                      viewBox={weDeliverQuality?.mobileSvgViewBox || "0 0 106 42"}
+                    >
+                      <path
+                        d={
+                          weDeliverQuality?.mobileBottomSvgPath ||
+                          "M0 34.8145C0 34.8145 27.9409 0.328038 47.5434 0.00417593C62.2703 -0.242293 73.8502 10.493 77.4164 13.2432C80.9825 15.9934 101.892 36.0728 105.452 41.3932C105.452 41.3932 85.1446 24.8508 74.9695 19.3996C58.1924 10.4098 49.5877 13.6578 30.7556 29.6969C21.6295 37.4624 17.9227 44.1626 0 34.8145Z"
+                        }
+                        fill="#F1F5FF"
+                      />
                     </svg>
                   </div>
                 </div>
@@ -481,21 +790,36 @@ export default function ServicesPage() {
               {/* Background Image - absolute positioning for background is appropriate */}
               <div className="absolute inset-0 rounded-[12px] overflow-hidden">
                 <div className="absolute inset-0 overflow-hidden rounded-[12px]">
-                  <img alt="We deliver quality" className="absolute h-[139.7%] left-0 max-w-none top-[-18.25%] w-full rounded-[12px]" src="/images/services/we-deliver-quality.jpg" />
+                  <img
+                    alt={getAlt(weDeliverQuality?.backgroundImage, "We deliver quality")}
+                    className="absolute h-[139.7%] left-0 max-w-none top-[-18.25%] w-full rounded-[12px]"
+                    src={getUrl(weDeliverQuality?.backgroundImage, "/images/services/we-deliver-quality.jpg")}
+                  />
                 </div>
-                <div className="absolute bg-[rgba(30,58,138,0.6)] inset-0 mix-blend-hard-light rounded-[12px]" />
+                <div
+                  className="absolute inset-0 mix-blend-hard-light rounded-[12px]"
+                  style={{ backgroundColor: weDeliverQuality?.overlayColor || "rgba(30,58,138,0.6)" }}
+                />
               </div>
               
               {/* Content - Using flexbox for centering */}
               <div className="relative z-10 flex flex-col gap-[60px] items-center">
                 <div className="h-[82.786px] w-[210.904px]">
-                  <img alt="Arrow" className="block max-w-none size-full" src="/images/services/arrow-vector-1.svg" />
+                  <img
+                    alt={getAlt(weDeliverQuality?.desktopTopIcon, "Arrow")}
+                    className="block max-w-none size-full"
+                    src={getUrl(weDeliverQuality?.desktopTopIcon, "/images/services/arrow-vector-1.svg")}
+                  />
                 </div>
                 <p className="font-sans font-medium leading-[1.1] text-[#f1f5ff] text-[52px] text-center tracking-[-1.04px]" style={{ fontVariationSettings: "'wdth' 100" }}>
-                  We deliver quality.
+                  {weDeliverQuality?.title || "We deliver quality."}
                 </p>
                 <div className="h-[82.786px] w-[210.904px]">
-                  <img alt="Arrow" className="block max-w-none size-full" src="/images/services/arrow-vector-2.svg" />
+                  <img
+                    alt={getAlt(weDeliverQuality?.desktopBottomIcon, "Arrow")}
+                    className="block max-w-none size-full"
+                    src={getUrl(weDeliverQuality?.desktopBottomIcon, "/images/services/arrow-vector-2.svg")}
+                  />
                 </div>
               </div>
             </div>
@@ -518,49 +842,67 @@ export default function ServicesPage() {
                   fontVariationSettings: "'wdth' 100",
                 } as ExtendedCSSProperties}
               >
-                How It Works
+                {howItWorks?.label || "How It Works"}
               </p>
 
               <div className="flex flex-col gap-[20px] items-start">
                 <div className="flex flex-col gap-[10px] items-start w-full">
                   <p className="font-sans font-medium text-[20px] text-[#0b1737] leading-[1.2] tracking-[-0.4px] w-full" style={{ fontVariationSettings: "'wdth' 100" }}>
-                    Discovery & Planning
+                    {howItWorksSteps[0]?.title || "Discovery & Planning"}
                   </p>
                   <p className="font-sans font-normal text-[13px] text-[#2b4691] leading-[1.4] tracking-[-0.26px] w-full" style={{ fontVariationSettings: "'wdth' 100" }}>
-                    We identify your workflow needs and define clear KPIs.
+                    {renderWithBreaks(
+                      howItWorksSteps[0]?.description ||
+                        "We identify your workflow needs and define clear KPIs."
+                    )}
                   </p>
                 </div>
                 <div className="flex flex-col gap-[10px] items-start w-full">
                   <p className="font-sans font-medium text-[20px] text-[#0b1737] leading-[1.2] tracking-[-0.4px] w-full" style={{ fontVariationSettings: "'wdth' 100" }}>
-                    Onboarding & Training
+                    {howItWorksSteps[1]?.title || "Onboarding & Training"}
                   </p>
                   <p className="font-sans font-normal text-[13px] text-[#2b4691] leading-[1.4] tracking-[-0.26px] w-full" style={{ fontVariationSettings: "'wdth' 100" }}>
-                    Your dedicated Amedicase team gets trained on<br />your EMR tools and processes.
+                    {renderWithBreaks(
+                      howItWorksSteps[1]?.description ||
+                        "Your dedicated Amedicase team gets trained on\nyour EMR tools and processes."
+                    )}
                   </p>
                 </div>
                 <div className="flex flex-col gap-[10px] items-start w-full">
                   <p className="font-sans font-medium text-[20px] text-[#0b1737] leading-[1.2] tracking-[-0.4px] w-full" style={{ fontVariationSettings: "'wdth' 100" }}>
-                    Execution & Support
+                    {howItWorksSteps[2]?.title || "Execution & Support"}
                   </p>
                   <p className="font-sans font-normal text-[13px] text-[#2b4691] leading-[1.4] tracking-[-0.26px] w-full" style={{ fontVariationSettings: "'wdth' 100" }}>
-                    We manage daily operations, reports, and QA checks.
+                    {renderWithBreaks(
+                      howItWorksSteps[2]?.description ||
+                        "We manage daily operations, reports, and QA checks."
+                    )}
                   </p>
                 </div>
                 <div className="flex flex-col gap-[10px] items-start w-full">
                   <p className="font-sans font-medium text-[20px] text-[#0b1737] leading-[1.2] tracking-[-0.4px] w-full" style={{ fontVariationSettings: "'wdth' 100" }}>
-                    Ongoing Optimization
+                    {howItWorksSteps[3]?.title || "Ongoing Optimization"}
                   </p>
                   <p className="font-sans font-normal text-[13px] text-[#2b4691] leading-[1.4] tracking-[-0.26px] w-full" style={{ fontVariationSettings: "'wdth' 100" }}>
-                    Continuous performance tracking and scaling<br />when needed.
+                    {renderWithBreaks(
+                      howItWorksSteps[3]?.description ||
+                        "Continuous performance tracking and scaling\nwhen needed."
+                    )}
                   </p>
                 </div>
               </div>
 
               {/* CTA Button */}
               <div className="mt-8">
-                <button className="w-full backdrop-blur-[3.777px] bg-gradient-to-b from-[rgba(45,78,174,0.64)] to-[rgba(34,62,140,0.48)] rounded-[8px] border border-[rgba(50,59,159,0.8)] shadow-[0px_1px_4px_0px_rgba(27,30,79,0.3)] px-5 py-[17px] font-sans font-semibold text-[18px] text-[#f1f5ff] leading-[110%] hover:opacity-90 transition-opacity" style={{ fontVariationSettings: "'wdth' 100" }}>
-                  Start Your Free Discovery Call
-                </button>
+                <a
+                  className="w-full backdrop-blur-[3.777px] bg-gradient-to-b from-[rgba(45,78,174,0.64)] to-[rgba(34,62,140,0.48)] rounded-[8px] border border-[rgba(50,59,159,0.8)] shadow-[0px_1px_4px_0px_rgba(27,30,79,0.3)] px-5 py-[17px] font-sans font-semibold text-[18px] text-[#f1f5ff] leading-[110%] hover:opacity-90 transition-opacity"
+                  style={{ fontVariationSettings: "'wdth' 100" }}
+                  href={howItWorksCtaUrl}
+                  target={howItWorksCtaExternal ? "_blank" : undefined}
+                  rel={howItWorksCtaExternal ? "noreferrer" : undefined}
+                >
+                  {howItWorks?.cta?.label || "Start Your Free Discovery Call"}
+                </a>
               </div>
             </div>
 
@@ -577,14 +919,18 @@ export default function ServicesPage() {
                   fontVariationSettings: "'wdth' 100",
                 } as ExtendedCSSProperties}
               >
-                How It Works
+                {howItWorks?.label || "How It Works"}
               </p>
 
               {/* Content Layout - Using flexbox */}
               <div className="flex gap-[116px] items-center pl-[55px]">
                 {/* Image */}
                 <div className="relative shrink-0 size-[456px]">
-                  <img alt="How It Works" className="block max-w-none size-full" src="/images/services/how-it-works-vector.svg" />
+                  <img
+                    alt={getAlt(howItWorks?.illustration, "How It Works")}
+                    className="block max-w-none size-full"
+                    src={getUrl(howItWorks?.illustration, "/images/services/how-it-works-vector.svg")}
+                  />
                 </div>
                 
                 {/* Steps List - Using flexbox */}
@@ -593,50 +939,56 @@ export default function ServicesPage() {
                     {/* Step 1: Discovery & Planning */}
                     <div className="flex flex-col gap-[10px] items-start w-full">
                       <p className="font-sans font-medium leading-[1.2] text-[#0b1737] text-[33px] tracking-[-0.66px]" style={{ fontVariationSettings: "'wdth' 100" }}>
-                        Discovery & Planning
+                        {howItWorksSteps[0]?.title || "Discovery & Planning"}
                       </p>
                       <p className="font-sans font-normal leading-[1.4] text-[#2b4691] text-[20px] tracking-[-0.4px]" style={{ fontVariationSettings: "'wdth' 100" }}>
-                        We identify your workflow needs and define clear KPIs.
+                        {howItWorksSteps[0]?.description || "We identify your workflow needs and define clear KPIs."}
                       </p>
                     </div>
                     
                     {/* Step 2: Onboarding & Training */}
                     <div className="flex flex-col gap-[20px] items-start w-full">
                       <p className="font-sans font-medium leading-[1.2] text-[#0b1737] text-[33px] tracking-[-0.66px]" style={{ fontVariationSettings: "'wdth' 100" }}>
-                        Onboarding & Training
+                        {howItWorksSteps[1]?.title || "Onboarding & Training"}
                       </p>
                       <p className="font-sans font-normal leading-[1.4] text-[#2b4691] text-[20px] tracking-[-0.4px]" style={{ fontVariationSettings: "'wdth' 100" }}>
-                        Your dedicated Amedicase team gets trained on your EMR tools and processes.
+                        {howItWorksSteps[1]?.description || "Your dedicated Amedicase team gets trained on your EMR tools and processes."}
                       </p>
                     </div>
                     
                     {/* Step 3: Execution & Support */}
                     <div className="flex flex-col gap-[20px] items-start">
                       <p className="font-sans font-medium leading-[1.2] text-[#0b1737] text-[33px] tracking-[-0.66px]" style={{ fontVariationSettings: "'wdth' 100" }}>
-                        Execution & Support
+                        {howItWorksSteps[2]?.title || "Execution & Support"}
                       </p>
                       <p className="font-sans font-normal leading-[1.4] text-[#2b4691] text-[20px] tracking-[-0.4px]" style={{ fontVariationSettings: "'wdth' 100" }}>
-                        We manage daily operations, reports, and QA checks.
+                        {howItWorksSteps[2]?.description || "We manage daily operations, reports, and QA checks."}
                       </p>
                     </div>
                     
                     {/* Step 4: Ongoing Optimization */}
                     <div className="flex flex-col gap-[20px] items-start">
                       <p className="font-sans font-medium leading-[1.2] text-[#0b1737] text-[33px] tracking-[-0.66px]" style={{ fontVariationSettings: "'wdth' 100" }}>
-                        Ongoing Optimization
+                        {howItWorksSteps[3]?.title || "Ongoing Optimization"}
                       </p>
                       <p className="font-sans font-normal leading-[1.4] text-[#2b4691] text-[20px] tracking-[-0.4px]" style={{ fontVariationSettings: "'wdth' 100" }}>
-                        Continuous performance tracking and scaling when needed.
+                        {howItWorksSteps[3]?.description || "Continuous performance tracking and scaling when needed."}
                       </p>
                     </div>
                   </div>
                   
                   {/* CTA Button */}
-                  <button className="backdrop-blur-[3.777px] backdrop-filter bg-gradient-to-b border border-[rgba(50,59,159,0.8)] border-solid from-[rgba(45,78,174,0.64)] items-center justify-center p-[20px] relative rounded-[8px] to-[rgba(34,62,140,0.48)] w-full hover:opacity-90 transition-opacity flex" style={{ fontVariationSettings: "'wdth' 100" }}>
+                  <a
+                    className="backdrop-blur-[3.777px] backdrop-filter bg-gradient-to-b border border-[rgba(50,59,159,0.8)] border-solid from-[rgba(45,78,174,0.64)] items-center justify-center p-[20px] relative rounded-[8px] to-[rgba(34,62,140,0.48)] w-full hover:opacity-90 transition-opacity flex"
+                    style={{ fontVariationSettings: "'wdth' 100" }}
+                    href={howItWorksCtaUrl}
+                    target={howItWorksCtaExternal ? "_blank" : undefined}
+                    rel={howItWorksCtaExternal ? "noreferrer" : undefined}
+                  >
                     <p className="font-sans font-semibold leading-[1.1] text-[#f1f5ff] text-[33px] text-center tracking-[-0.66px]" style={{ fontVariationSettings: "'wdth' 100" }}>
-                      Start Your Free Discovery Call
+                      {howItWorks?.cta?.label || "Start Your Free Discovery Call"}
                     </p>
-                  </button>
+                  </a>
                 </div>
               </div>
             </div>
@@ -655,7 +1007,7 @@ export default function ServicesPage() {
                   fontVariationSettings: "'wdth' 100"
                 }}
               >
-                Why Choose Amedicase
+                {whyChoose?.label || "Why Choose Amedicase"}
               </p>
 
               {/* Benefits List - Using flexbox instead of absolute positioning */}
@@ -664,11 +1016,23 @@ export default function ServicesPage() {
                   className="font-sans font-medium leading-[1.4] text-[#0b1737] text-[20px] text-center tracking-[-0.4px] w-[194px]"
                   style={{ fontVariationSettings: "'wdth' 100" }}
                 >
-                  HIPAA-Compliant & <br aria-hidden="true" />Secure Data Handling
+                  {renderWithBreaks(whyChooseBenefits[0]?.label || "HIPAA-Compliant &\nSecure Data Handling")}
                 </p>
                 <div className="w-[280px] h-[2px]">
-                  <svg className="w-full h-full" fill="none" viewBox="0 0 280 2" preserveAspectRatio="none">
-                    <path d="M0 1C0 1 72.4345 43.848 110.792 36.0488C139.61 30.1945 156.566 8.2968 162.077 2.4327C167.589 -3.4315 197.842 -44.0714 202 -54C202 -54 171.074 -19.2124 154.097 -6.272C126.106 15.0674 107.647 13.5761 62.5873 -3.8195C40.7548 -12.2382 30.0361 -21.2691 0 1.1229Z" fill="#0b1737" opacity="0.2" />
+                  <svg
+                    className="w-full h-full"
+                    fill="none"
+                    viewBox={whyChoose?.mobileSeparatorViewBox || "0 0 280 2"}
+                    preserveAspectRatio="none"
+                  >
+                    <path
+                      d={
+                        whyChoose?.mobileSeparatorSvgPath ||
+                        "M0 1C0 1 72.4345 43.848 110.792 36.0488C139.61 30.1945 156.566 8.2968 162.077 2.4327C167.589 -3.4315 197.842 -44.0714 202 -54C202 -54 171.074 -19.2124 154.097 -6.272C126.106 15.0674 107.647 13.5761 62.5873 -3.8195C40.7548 -12.2382 30.0361 -21.2691 0 1.1229Z"
+                      }
+                      fill="#0b1737"
+                      opacity="0.2"
+                    />
                   </svg>
                 </div>
 
@@ -676,11 +1040,23 @@ export default function ServicesPage() {
                   className="font-sans font-medium leading-[1.4] text-[#0b1737] text-[20px] text-center tracking-[-0.4px] w-[211px]"
                   style={{ fontVariationSettings: "'wdth' 100" }}
                 >
-                  Up to 60% Cost Savings<br aria-hidden="true" />vs. U.S. Operations
+                  {renderWithBreaks(whyChooseBenefits[1]?.label || "Up to 60% Cost Savings\nvs. U.S. Operations")}
                 </p>
                 <div className="w-[280px] h-[2px]">
-                  <svg className="w-full h-full" fill="none" viewBox="0 0 280 2" preserveAspectRatio="none">
-                    <path d="M0 1C0 1 72.4345 43.848 110.792 36.0488C139.61 30.1945 156.566 8.2968 162.077 2.4327C167.589 -3.4315 197.842 -44.0714 202 -54C202 -54 171.074 -19.2124 154.097 -6.272C126.106 15.0674 107.647 13.5761 62.5873 -3.8195C40.7548 -12.2382 30.0361 -21.2691 0 1.1229Z" fill="#0b1737" opacity="0.2" />
+                  <svg
+                    className="w-full h-full"
+                    fill="none"
+                    viewBox={whyChoose?.mobileSeparatorViewBox || "0 0 280 2"}
+                    preserveAspectRatio="none"
+                  >
+                    <path
+                      d={
+                        whyChoose?.mobileSeparatorSvgPath ||
+                        "M0 1C0 1 72.4345 43.848 110.792 36.0488C139.61 30.1945 156.566 8.2968 162.077 2.4327C167.589 -3.4315 197.842 -44.0714 202 -54C202 -54 171.074 -19.2124 154.097 -6.272C126.106 15.0674 107.647 13.5761 62.5873 -3.8195C40.7548 -12.2382 30.0361 -21.2691 0 1.1229Z"
+                      }
+                      fill="#0b1737"
+                      opacity="0.2"
+                    />
                   </svg>
                 </div>
 
@@ -688,11 +1064,23 @@ export default function ServicesPage() {
                   className="font-sans font-medium leading-[1.4] text-[#0b1737] text-[20px] text-center tracking-[-0.4px] w-[237px]"
                   style={{ fontVariationSettings: "'wdth' 100" }}
                 >
-                  Healthcare-trained Teams <br aria-hidden="true" />with U.S. Experience
+                  {renderWithBreaks(whyChooseBenefits[2]?.label || "Healthcare-trained Teams\nwith U.S. Experience")}
                 </p>
                 <div className="w-[280px] h-[2px]">
-                  <svg className="w-full h-full" fill="none" viewBox="0 0 280 2" preserveAspectRatio="none">
-                    <path d="M0 1C0 1 72.4345 43.848 110.792 36.0488C139.61 30.1945 156.566 8.2968 162.077 2.4327C167.589 -3.4315 197.842 -44.0714 202 -54C202 -54 171.074 -19.2124 154.097 -6.272C126.106 15.0674 107.647 13.5761 62.5873 -3.8195C40.7548 -12.2382 30.0361 -21.2691 0 1.1229Z" fill="#0b1737" opacity="0.2" />
+                  <svg
+                    className="w-full h-full"
+                    fill="none"
+                    viewBox={whyChoose?.mobileSeparatorViewBox || "0 0 280 2"}
+                    preserveAspectRatio="none"
+                  >
+                    <path
+                      d={
+                        whyChoose?.mobileSeparatorSvgPath ||
+                        "M0 1C0 1 72.4345 43.848 110.792 36.0488C139.61 30.1945 156.566 8.2968 162.077 2.4327C167.589 -3.4315 197.842 -44.0714 202 -54C202 -54 171.074 -19.2124 154.097 -6.272C126.106 15.0674 107.647 13.5761 62.5873 -3.8195C40.7548 -12.2382 30.0361 -21.2691 0 1.1229Z"
+                      }
+                      fill="#0b1737"
+                      opacity="0.2"
+                    />
                   </svg>
                 </div>
 
@@ -700,11 +1088,23 @@ export default function ServicesPage() {
                   className="font-sans font-medium leading-[1.4] text-[#0b1737] text-[20px] text-center tracking-[-0.4px] w-[177px]"
                   style={{ fontVariationSettings: "'wdth' 100" }}
                 >
-                  Dedicated Account <br aria-hidden="true" />Managers
+                  {renderWithBreaks(whyChooseBenefits[3]?.label || "Dedicated Account\nManagers")}
                 </p>
                 <div className="w-[280px] h-[2px]">
-                  <svg className="w-full h-full" fill="none" viewBox="0 0 280 2" preserveAspectRatio="none">
-                    <path d="M0 1C0 1 72.4345 43.848 110.792 36.0488C139.61 30.1945 156.566 8.2968 162.077 2.4327C167.589 -3.4315 197.842 -44.0714 202 -54C202 -54 171.074 -19.2124 154.097 -6.272C126.106 15.0674 107.647 13.5761 62.5873 -3.8195C40.7548 -12.2382 30.0361 -21.2691 0 1.1229Z" fill="#0b1737" opacity="0.2" />
+                  <svg
+                    className="w-full h-full"
+                    fill="none"
+                    viewBox={whyChoose?.mobileSeparatorViewBox || "0 0 280 2"}
+                    preserveAspectRatio="none"
+                  >
+                    <path
+                      d={
+                        whyChoose?.mobileSeparatorSvgPath ||
+                        "M0 1C0 1 72.4345 43.848 110.792 36.0488C139.61 30.1945 156.566 8.2968 162.077 2.4327C167.589 -3.4315 197.842 -44.0714 202 -54C202 -54 171.074 -19.2124 154.097 -6.272C126.106 15.0674 107.647 13.5761 62.5873 -3.8195C40.7548 -12.2382 30.0361 -21.2691 0 1.1229Z"
+                      }
+                      fill="#0b1737"
+                      opacity="0.2"
+                    />
                   </svg>
                 </div>
 
@@ -712,7 +1112,7 @@ export default function ServicesPage() {
                   className="font-sans font-medium leading-[1.4] text-[#0b1737] text-[20px] text-center tracking-[-0.4px] w-[241px]"
                   style={{ fontVariationSettings: "'wdth' 100" }}
                 >
-                  Real-time Communication <br aria-hidden="true" />& U.S. Time-Zone Overlap
+                  {renderWithBreaks(whyChooseBenefits[4]?.label || "Real-time Communication\n& U.S. Time-Zone Overlap")}
                 </p>
               </div>
             </div>
@@ -730,7 +1130,7 @@ export default function ServicesPage() {
                   fontVariationSettings: "'wdth' 100",
                 } as ExtendedCSSProperties}
               >
-                Why Choose Amedicase
+                {whyChoose?.label || "Why Choose Amedicase"}
               </p>
 
               {/* Content Layout - Using flexbox instead of absolute */}
@@ -745,44 +1145,60 @@ export default function ServicesPage() {
                   {/* Content - Using flexbox instead of absolute positioning */}
                   <div className="relative flex flex-col gap-[20px] items-center px-[20px] py-[20px] w-full">
                     <p className="font-sans font-medium leading-[1.4] text-[#0b1737] text-[33px] text-center tracking-[-0.66px]" style={{ fontVariationSettings: "'wdth' 100" }}>
-                      HIPAA-Compliant &{'\n'}Secure Data Handling
+                      {renderWithBreaks(whyChooseBenefits[0]?.label || "HIPAA-Compliant &\nSecure Data Handling")}
                     </p>
                     <div className="h-0 relative shrink-0 w-[455px]">
                       <div className="absolute bottom-[-1.5px] left-0 right-0 top-[-1.5px]">
-                        <img alt="Separator" className="block max-w-none size-full" src="/images/services/separator-vector.svg" />
+                        <img
+                          alt={getAlt(whyChoose?.separatorImage, "Separator")}
+                          className="block max-w-none size-full"
+                          src={getUrl(whyChoose?.separatorImage, "/images/services/separator-vector.svg")}
+                        />
                       </div>
                     </div>
                     
                     <div className="font-sans font-medium leading-[1.4] text-[#0b1737] text-[33px] text-center tracking-[-0.66px] whitespace-nowrap" style={{ fontVariationSettings: "'wdth' 100" }}>
-                      <p className="mb-0">Up to 60% Cost Savings</p>
-                      <p>vs. U.S. Operations</p>
+                      <p className="mb-0">{whyChooseLine1[0] || "Up to 60% Cost Savings"}</p>
+                      <p>{whyChooseLine1[1] || "vs. U.S. Operations"}</p>
                     </div>
                     <div className="h-0 relative shrink-0 w-[455px]">
                       <div className="absolute bottom-[-1.5px] left-0 right-0 top-[-1.5px]">
-                        <img alt="Separator" className="block max-w-none size-full" src="/images/services/separator-vector.svg" />
+                        <img
+                          alt={getAlt(whyChoose?.separatorImage, "Separator")}
+                          className="block max-w-none size-full"
+                          src={getUrl(whyChoose?.separatorImage, "/images/services/separator-vector.svg")}
+                        />
                       </div>
                     </div>
                     
                     <p className="font-sans font-medium leading-[1.4] text-[#0b1737] text-[33px] text-center tracking-[-0.66px]" style={{ fontVariationSettings: "'wdth' 100" }}>
-                      Dedicated Account{'\n'}Managers
+                      {renderWithBreaks(whyChooseBenefits[3]?.label || "Dedicated Account\nManagers")}
                     </p>
                     <div className="h-0 relative shrink-0 w-[455px]">
                       <div className="absolute bottom-[-1.5px] left-0 right-0 top-[-1.5px]">
-                        <img alt="Separator" className="block max-w-none size-full" src="/images/services/separator-vector.svg" />
+                        <img
+                          alt={getAlt(whyChoose?.separatorImage, "Separator")}
+                          className="block max-w-none size-full"
+                          src={getUrl(whyChoose?.separatorImage, "/images/services/separator-vector.svg")}
+                        />
                       </div>
                     </div>
                     
                     <p className="font-sans font-medium leading-[1.4] text-[#0b1737] text-[33px] text-center tracking-[-0.66px]" style={{ fontVariationSettings: "'wdth' 100" }}>
-                      Healthcare-trained Teams{'\n'}with U.S. Experience
+                      {renderWithBreaks(whyChooseBenefits[2]?.label || "Healthcare-trained Teams\nwith U.S. Experience")}
                     </p>
                     <div className="h-0 relative shrink-0 w-[455px]">
                       <div className="absolute bottom-[-1.5px] left-0 right-0 top-[-1.5px]">
-                        <img alt="Separator" className="block max-w-none size-full" src="/images/services/separator-vector.svg" />
+                        <img
+                          alt={getAlt(whyChoose?.separatorImage, "Separator")}
+                          className="block max-w-none size-full"
+                          src={getUrl(whyChoose?.separatorImage, "/images/services/separator-vector.svg")}
+                        />
                       </div>
                     </div>
                     
                     <p className="font-sans font-medium leading-[1.4] text-[#0b1737] text-[33px] text-center tracking-[-0.66px]" style={{ fontVariationSettings: "'wdth' 100" }}>
-                      Real-time Communication{'\n'}& U.S. Time-Zone Overlap
+                      {renderWithBreaks(whyChooseBenefits[4]?.label || "Real-time Communication\n& U.S. Time-Zone Overlap")}
                     </p>
                   </div>
                 </div>
@@ -791,14 +1207,22 @@ export default function ServicesPage() {
                 <div className="relative shrink-0 w-[765px]" style={{ minHeight: '624px' }}>
                   <div className="absolute inset-0 rounded-[12px] overflow-hidden">
                     <div className="absolute inset-0 overflow-hidden rounded-[12px]">
-                      <img alt="Why Choose Amedicase" className="absolute h-full left-[-21.18%] max-w-none top-0 w-[147.36%]" src="/images/services/office-documents-filing-cabinet.jpg" />
+                      <img
+                        alt={getAlt(whyChoose?.rightImage, "Why Choose Amedicase")}
+                        className="absolute h-full left-[-21.18%] max-w-none top-0 w-[147.36%]"
+                        src={getUrl(whyChoose?.rightImage, "/images/services/office-documents-filing-cabinet.jpg")}
+                      />
                     </div>
                     <div className="absolute bg-[rgba(30,58,138,0.2)] inset-0 mix-blend-hard-light rounded-[12px]" />
                   </div>
                   {/* Subtract Overlay - absolute positioning for decorative overlay */}
                   <div className="absolute inset-0 pointer-events-none">
                     <div className="absolute inset-[-0.27%_-0.52%_-0.8%_-0.52%]">
-                      <img alt="Subtract" className="block max-w-none size-full" src="/images/services/subtract-overlay.svg" />
+                      <img
+                        alt={getAlt(whyChoose?.rightOverlay, "Subtract")}
+                        className="block max-w-none size-full"
+                        src={getUrl(whyChoose?.rightOverlay, "/images/services/subtract-overlay.svg")}
+                      />
                     </div>
                   </div>
                 </div>
@@ -806,6 +1230,7 @@ export default function ServicesPage() {
             </div>
           </div>
         </section>
+        <ContactSection data={contactBlock} />
       </main>
       <Footer />
     </div>

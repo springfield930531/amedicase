@@ -1,0 +1,51 @@
+{
+  "collectionName": "components_sections_services_page_qualities",
+  "info": {
+    "displayName": "Services page quality",
+    "icon": "award"
+  },
+  "attributes": {
+    "enabled": {
+      "type": "boolean",
+      "default": true
+    },
+    "title": {
+      "type": "string"
+    },
+    "backgroundImage": {
+      "type": "media",
+      "allowedTypes": [
+        "images"
+      ],
+      "multiple": false
+    },
+    "overlayColor": {
+      "type": "string"
+    },
+    "mobileTopSvgPath": {
+      "type": "text"
+    },
+    "mobileBottomSvgPath": {
+      "type": "text"
+    },
+    "mobileSvgViewBox": {
+      "type": "string"
+    },
+    "desktopTopIcon": {
+      "type": "media",
+      "allowedTypes": [
+        "images",
+        "files"
+      ],
+      "multiple": false
+    },
+    "desktopBottomIcon": {
+      "type": "media",
+      "allowedTypes": [
+        "images",
+        "files"
+      ],
+      "multiple": false
+    }
+  }
+}

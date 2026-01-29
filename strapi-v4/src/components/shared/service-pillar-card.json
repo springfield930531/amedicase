@@ -1,0 +1,54 @@
+{
+  "collectionName": "components_shared_service_pillar_cards",
+  "info": {
+    "displayName": "Service pillar card",
+    "icon": "th-large"
+  },
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "titleDesktop": {
+      "type": "string"
+    },
+    "titleMobile": {
+      "type": "string"
+    },
+    "description": {
+      "type": "text"
+    },
+    "descriptionDesktop": {
+      "type": "text"
+    },
+    "descriptionMobile": {
+      "type": "text"
+    },
+    "image": {
+      "type": "media",
+      "allowedTypes": [
+        "images"
+      ],
+      "multiple": false
+    },
+    "imageStyle": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.image-style"
+    },
+    "learnMoreLabel": {
+      "type": "string"
+    },
+    "learnMoreUrl": {
+      "type": "string"
+    },
+    "learnMoreIcon": {
+      "type": "media",
+      "allowedTypes": [
+        "images",
+        "files"
+      ],
+      "multiple": false
+    }
+  }
+}

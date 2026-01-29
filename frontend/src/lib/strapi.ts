@@ -10,6 +10,10 @@ const getStrapiUrl = () => {
   return process.env.STRAPI_URL || process.env.NEXT_PUBLIC_STRAPI_URL || 'http://localhost:1337';
 };
 
+const getPublicStrapiUrl = () => {
+  return process.env.NEXT_PUBLIC_STRAPI_URL || process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:1337';
+};
+
 export interface ContactFormData {
   firstName: string;
   lastName: string;
@@ -98,5 +102,36 @@ export async function submitContactForm(data: ContactFormData): Promise<{ succes
       success: false,
       error: error instanceof Error ? error.message : 'Unknown error occurred',
     };
+  }
+}
+
+export async function getServicePage() {
+  const baseUrl = getPublicStrapiUrl();
+  try {
+    const params = new URLSearchParams();
+    // Strapi v5 does not support populate=deep; explicitly populate needed media fields.
+    params.append("populate[seo][populate][0]", "ogImage");
+    params.append("populate[hero][populate][0]", "backgroundImage");
+    params.append("populate[servicePillars][populate][cards][populate][0]", "image");
+    params.append("populate[servicePillars][populate][cards][populate][1]", "learnMoreIcon");
+    params.append("populate[howWeHelp][populate][0]", "bulletIcon");
+    params.append("populate[weDeliverQuality][populate][0]", "backgroundImage");
+    params.append("populate[weDeliverQuality][populate][1]", "desktopTopIcon");
+    params.append("populate[weDeliverQuality][populate][2]", "desktopBottomIcon");
+    params.append("populate[howItWorks][populate][0]", "illustration");
+    params.append("populate[whyChoose][populate][0]", "separatorImage");
+    params.append("populate[whyChoose][populate][1]", "rightImage");
+    params.append("populate[whyChoose][populate][2]", "rightOverlay");
+    const response = await fetch(`${baseUrl}/api/services-page?${params.toString()}`, {
+      cache: "no-store",
+    });
+    if (!response.ok) {
+      return null;
+    }
+    const payload = await response.json();
+    return payload?.data?.attributes || payload?.data || null;
+  } catch (error) {
+    console.error("Failed to fetch services page from Strapi:", error);
+    return null;
   }
 }

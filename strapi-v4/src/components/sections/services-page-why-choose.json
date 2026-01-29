@@ -1,0 +1,50 @@
+{
+  "collectionName": "components_sections_services_page_why_choose",
+  "info": {
+    "displayName": "Services page why choose",
+    "icon": "flag-checkered"
+  },
+  "attributes": {
+    "enabled": {
+      "type": "boolean",
+      "default": true
+    },
+    "label": {
+      "type": "string"
+    },
+    "benefits": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.benefit"
+    },
+    "separatorImage": {
+      "type": "media",
+      "allowedTypes": [
+        "images",
+        "files"
+      ],
+      "multiple": false
+    },
+    "mobileSeparatorSvgPath": {
+      "type": "text"
+    },
+    "mobileSeparatorViewBox": {
+      "type": "string"
+    },
+    "rightImage": {
+      "type": "media",
+      "allowedTypes": [
+        "images"
+      ],
+      "multiple": false
+    },
+    "rightOverlay": {
+      "type": "media",
+      "allowedTypes": [
+        "images",
+        "files"
+      ],
+      "multiple": false
+    }
+  }
+}

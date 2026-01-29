@@ -1,0 +1,47 @@
+{
+  "collectionName": "components_sections_services_page_heroes",
+  "info": {
+    "displayName": "Services page hero",
+    "icon": "bullhorn"
+  },
+  "attributes": {
+    "enabled": {
+      "type": "boolean",
+      "default": true
+    },
+    "badgeLabel": {
+      "type": "string"
+    },
+    "title": {
+      "type": "text",
+      "required": true
+    },
+    "titleDesktop": {
+      "type": "text"
+    },
+    "subtitle": {
+      "type": "text"
+    },
+    "subtitleDesktop": {
+      "type": "text"
+    },
+    "backgroundImage": {
+      "type": "media",
+      "allowedTypes": [
+        "images"
+      ],
+      "multiple": false,
+      "required": true
+    },
+    "primaryCta": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.cta"
+    },
+    "secondaryCta": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.cta"
+    }
+  }
+}

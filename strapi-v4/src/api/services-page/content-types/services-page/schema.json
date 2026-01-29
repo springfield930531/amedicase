@@ -23,19 +23,45 @@
       "type": "string",
       "default": "Services page"
     },
-    "contentSections": {
-      "type": "dynamiczone",
-      "components": [
-        "sections.hero-section",
-        "sections.service-grid",
-        "sections.image-highlight",
-        "sections.coordinating-banner",
-        "sections.why-choose",
-        "sections.process-steps",
-        "sections.team-showcase",
-        "sections.testimonials",
-        "sections.contact-block"
-      ]
+    "seo": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.seo"
+    },
+    "backgroundPattern": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.background-pattern"
+    },
+    "hero": {
+      "type": "component",
+      "repeatable": false,
+      "component": "sections.services-page-hero"
+    },
+    "servicePillars": {
+      "type": "component",
+      "repeatable": false,
+      "component": "sections.services-page-pillars"
+    },
+    "howWeHelp": {
+      "type": "component",
+      "repeatable": false,
+      "component": "sections.services-page-how-we-help"
+    },
+    "weDeliverQuality": {
+      "type": "component",
+      "repeatable": false,
+      "component": "sections.services-page-quality"
+    },
+    "howItWorks": {
+      "type": "component",
+      "repeatable": false,
+      "component": "sections.services-page-how-it-works"
+    },
+    "whyChoose": {
+      "type": "component",
+      "repeatable": false,
+      "component": "sections.services-page-why-choose"
     }
   }
 }

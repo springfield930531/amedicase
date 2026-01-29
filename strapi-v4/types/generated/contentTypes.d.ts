@@ -996,22 +996,22 @@ export interface ApiServicesPageServicesPage extends Struct.SingleTypeSchema {
     };
   };
   attributes: {
-    contentSections: Schema.Attribute.DynamicZone<
-      [
-        'sections.hero-section',
-        'sections.service-grid',
-        'sections.image-highlight',
-        'sections.coordinating-banner',
-        'sections.why-choose',
-        'sections.process-steps',
-        'sections.team-showcase',
-        'sections.testimonials',
-        'sections.contact-block',
-      ]
+    backgroundPattern: Schema.Attribute.Component<
+      'shared.background-pattern',
+      false
     >;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
+    hero: Schema.Attribute.Component<'sections.services-page-hero', false>;
+    howItWorks: Schema.Attribute.Component<
+      'sections.services-page-how-it-works',
+      false
+    >;
+    howWeHelp: Schema.Attribute.Component<
+      'sections.services-page-how-we-help',
+      false
+    >;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
@@ -1019,11 +1019,24 @@ export interface ApiServicesPageServicesPage extends Struct.SingleTypeSchema {
     > &
       Schema.Attribute.Private;
     publishedAt: Schema.Attribute.DateTime;
+    seo: Schema.Attribute.Component<'shared.seo', false>;
+    servicePillars: Schema.Attribute.Component<
+      'sections.services-page-pillars',
+      false
+    >;
     title: Schema.Attribute.String &
       Schema.Attribute.DefaultTo<'Services page'>;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
+    weDeliverQuality: Schema.Attribute.Component<
+      'sections.services-page-quality',
+      false
+    >;
+    whyChoose: Schema.Attribute.Component<
+      'sections.services-page-why-choose',
+      false
+    >;
   };
 }
 

@@ -1,0 +1,21 @@
+{
+  "collectionName": "components_shared_image_styles",
+  "info": {
+    "displayName": "Image style",
+    "icon": "image"
+  },
+  "attributes": {
+    "heightPercent": {
+      "type": "decimal"
+    },
+    "widthPercent": {
+      "type": "decimal"
+    },
+    "leftPercent": {
+      "type": "decimal"
+    },
+    "topPercent": {
+      "type": "decimal"
+    }
+  }
+}

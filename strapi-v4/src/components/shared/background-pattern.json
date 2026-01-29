@@ -1,0 +1,37 @@
+{
+  "collectionName": "components_shared_background_patterns",
+  "info": {
+    "displayName": "Background pattern",
+    "icon": "brush"
+  },
+  "attributes": {
+    "enabled": {
+      "type": "boolean",
+      "default": true
+    },
+    "svgPath": {
+      "type": "text"
+    },
+    "viewBox": {
+      "type": "string"
+    },
+    "fill": {
+      "type": "string"
+    },
+    "opacity": {
+      "type": "decimal"
+    },
+    "width": {
+      "type": "integer"
+    },
+    "height": {
+      "type": "integer"
+    },
+    "top": {
+      "type": "integer"
+    },
+    "left": {
+      "type": "integer"
+    }
+  }
+}

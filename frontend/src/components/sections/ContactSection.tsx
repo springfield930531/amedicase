@@ -41,6 +41,14 @@ export function ContactSection({ data }: ContactSectionProps) {
       : defaultTestimonialVideos;
   const label = data?.label || "What Our Clients Say";
   const title = data?.title || "Ready to Build Your Outsource Team?";
+  const contactEmail = data?.contactEmail;
+  const socialLinks = Array.isArray(data?.socialLinks) ? data.socialLinks : [];
+  const facebookLink = socialLinks.find((link: any) => link?.platform?.toLowerCase?.().includes("facebook"));
+  const instagramLink = socialLinks.find((link: any) => link?.platform?.toLowerCase?.().includes("instagram"));
+  const emailHref = contactEmail ? `mailto:${contactEmail}` : "#";
+  const facebookHref = facebookLink?.url || "#";
+  const instagramHref = instagramLink?.url || "#";
+  const isExternal = (url: string) => /^https?:\/\//i.test(url);
 
   const [activeIndex, setActiveIndex] = useState(0);
   
@@ -198,24 +206,37 @@ export function ContactSection({ data }: ContactSectionProps) {
                 
                 {/* Social Links - Hidden on mobile, visible on tablet/desktop */}
                 <div className="hidden md:flex flex-col gap-[40px] items-start w-[185px]">
-                  <div className="flex gap-[20px] items-center">
+                  <a
+                    className="flex gap-[20px] items-center"
+                    href={emailHref}
+                  >
                     <img alt="Mail" src="/images/mail-icon.svg" className="w-[24px] h-[24px]" />
                     <p className="font-sans font-medium leading-none text-[20px] text-blue-900 tracking-[-0.4px]" style={{ fontVariationSettings: "'wdth' 100" }}>
                       Our Email
                     </p>
-                  </div>
-                  <div className="flex gap-[20px] items-center w-full">
+                  </a>
+                  <a
+                    className="flex gap-[20px] items-center w-full"
+                    href={facebookHref}
+                    target={isExternal(facebookHref) ? "_blank" : undefined}
+                    rel={isExternal(facebookHref) ? "noreferrer" : undefined}
+                  >
                     <img alt="Facebook" src="/images/facebook-icon.svg" className="w-[24px] h-[24px]" />
                     <p className="font-sans font-medium leading-none text-[20px] text-blue-900 tracking-[-0.4px]" style={{ fontVariationSettings: "'wdth' 100" }}>
                       Facebook Page
                     </p>
-                  </div>
-                  <div className="flex gap-[20px] items-center w-full">
+                  </a>
+                  <a
+                    className="flex gap-[20px] items-center w-full"
+                    href={instagramHref}
+                    target={isExternal(instagramHref) ? "_blank" : undefined}
+                    rel={isExternal(instagramHref) ? "noreferrer" : undefined}
+                  >
                     <img alt="Instagram" src="/images/instagram-icon.svg" className="w-[24px] h-[24px]" />
                     <p className="font-sans font-medium leading-none text-[20px] text-blue-900 tracking-[-0.4px]" style={{ fontVariationSettings: "'wdth' 100" }}>
                       Instagram Page
                     </p>
-                  </div>
+                  </a>
                 </div>
               </div>
           </div>
