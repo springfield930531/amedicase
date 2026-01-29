@@ -156,3 +156,30 @@ export async function getPageBySlug(slug: string) {
     return null;
   }
 }
+
+export async function getSiteSettings() {
+  const baseUrl = getPublicStrapiUrl();
+  try {
+    const params = new URLSearchParams();
+    params.set("populate[header][populate]", "*");
+    params.set("populate[header][populate][navigation][populate]", "*");
+    params.set("populate[header][populate][navigation][populate][children][populate]", "*");
+    params.set("populate[footer][populate]", "*");
+    params.set("populate[footer][populate][columns][populate]", "*");
+    params.set("populate[footer][populate][socialLinks][populate]", "*");
+    params.set("populate[footer][populate][legalLinks][populate]", "*");
+    params.set("populate[brandAssets][populate]", "*");
+    params.set("populate[defaultSeo][populate]", "*");
+    const response = await fetch(`${baseUrl}/api/site-setting?${params.toString()}`, {
+      cache: "no-store",
+    });
+    if (!response.ok) {
+      return null;
+    }
+    const payload = await response.json();
+    return payload?.data?.attributes || payload?.data || null;
+  } catch (error) {
+    console.error("Failed to fetch site settings from Strapi:", error);
+    return null;
+  }
+}

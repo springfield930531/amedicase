@@ -468,6 +468,20 @@ export interface SharedImageStyle extends Struct.ComponentSchema {
   };
 }
 
+export interface SharedNavItem extends Struct.ComponentSchema {
+  collectionName: 'components_shared_nav_items';
+  info: {
+    displayName: 'Nav item';
+    icon: 'link';
+  };
+  attributes: {
+    children: Schema.Attribute.Component<'shared.navigation-link', true>;
+    isExternal: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
+    label: Schema.Attribute.String & Schema.Attribute.Required;
+    url: Schema.Attribute.String & Schema.Attribute.Required;
+  };
+}
+
 export interface SharedNavigationLink extends Struct.ComponentSchema {
   collectionName: 'components_shared_navigation_links';
   info: {
@@ -603,6 +617,62 @@ export interface SharedTestimonial extends Struct.ComponentSchema {
   };
 }
 
+export interface SiteBrandAssets extends Struct.ComponentSchema {
+  collectionName: 'components_site_brand_assets';
+  info: {
+    displayName: 'Brand assets';
+    icon: 'image';
+  };
+  attributes: {
+    appleTouchIcon: Schema.Attribute.Media<'images' | 'files'>;
+    favicon: Schema.Attribute.Media<'images' | 'files'>;
+    siteName: Schema.Attribute.String;
+  };
+}
+
+export interface SiteFooter extends Struct.ComponentSchema {
+  collectionName: 'components_site_footers';
+  info: {
+    displayName: 'Footer';
+    icon: 'layer';
+  };
+  attributes: {
+    columns: Schema.Attribute.Component<'site.footer-column', true>;
+    copyrightText: Schema.Attribute.String;
+    footerLogo: Schema.Attribute.Media<'images' | 'files'>;
+    footerLogoAlt: Schema.Attribute.String;
+    legalLinks: Schema.Attribute.Component<'shared.navigation-link', true>;
+    navigation: Schema.Attribute.Component<'shared.navigation-link', true>;
+    socialLinks: Schema.Attribute.Component<'shared.social-link', true>;
+  };
+}
+
+export interface SiteFooterColumn extends Struct.ComponentSchema {
+  collectionName: 'components_site_footer_columns';
+  info: {
+    displayName: 'Footer column';
+    icon: 'list';
+  };
+  attributes: {
+    links: Schema.Attribute.Component<'shared.navigation-link', true>;
+    title: Schema.Attribute.String;
+  };
+}
+
+export interface SiteHeader extends Struct.ComponentSchema {
+  collectionName: 'components_site_headers';
+  info: {
+    displayName: 'Header';
+    icon: 'layer';
+  };
+  attributes: {
+    headerCta: Schema.Attribute.Component<'shared.cta', false>;
+    logo: Schema.Attribute.Media<'images' | 'files'>;
+    logoAlt: Schema.Attribute.String;
+    navigation: Schema.Attribute.Component<'shared.nav-item', true>;
+  };
+}
+
 declare module '@strapi/strapi' {
   export module Public {
     export interface ComponentSchemas {
@@ -634,6 +704,7 @@ declare module '@strapi/strapi' {
       'shared.cta': SharedCta;
       'shared.icon-step': SharedIconStep;
       'shared.image-style': SharedImageStyle;
+      'shared.nav-item': SharedNavItem;
       'shared.navigation-link': SharedNavigationLink;
       'shared.process-stage': SharedProcessStage;
       'shared.process-step': SharedProcessStep;
@@ -643,6 +714,10 @@ declare module '@strapi/strapi' {
       'shared.social-link': SharedSocialLink;
       'shared.team-member': SharedTeamMember;
       'shared.testimonial': SharedTestimonial;
+      'site.brand-assets': SiteBrandAssets;
+      'site.footer': SiteFooter;
+      'site.footer-column': SiteFooterColumn;
+      'site.header': SiteHeader;
     }
   }
 }

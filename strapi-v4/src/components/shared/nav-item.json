@@ -1,0 +1,26 @@
+{
+  "collectionName": "components_shared_nav_items",
+  "info": {
+    "displayName": "Nav item",
+    "icon": "link"
+  },
+  "attributes": {
+    "label": {
+      "type": "string",
+      "required": true
+    },
+    "url": {
+      "type": "string",
+      "required": true
+    },
+    "isExternal": {
+      "type": "boolean",
+      "default": false
+    },
+    "children": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.navigation-link"
+    }
+  }
+}

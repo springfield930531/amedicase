@@ -1,0 +1,17 @@
+{
+  "collectionName": "components_site_footer_columns",
+  "info": {
+    "displayName": "Footer column",
+    "icon": "list"
+  },
+  "attributes": {
+    "title": {
+      "type": "string"
+    },
+    "links": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.navigation-link"
+    }
+  }
+}

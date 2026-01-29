@@ -1,7 +1,64 @@
 import svgPaths from "@/lib/imports/svg-v80ao031r3";
 import Link from "next/link";
+import { getSiteSettings } from "@/lib/strapi";
+import { getMediaUrl } from "@/lib/strapi-home";
+import type { NavItem, SocialLink } from "@/lib/site-settings-types";
 
-export function Footer() {
+const fallbackNavigation: NavItem[] = [
+  { label: "About", url: "/about" },
+  { label: "Services", url: "/services" },
+  { label: "Process", url: "/process" },
+  { label: "Case Studies", url: "/case-studies" },
+  { label: "Contact", url: "/contact" },
+];
+
+const fallbackColumns: Array<{ links: NavItem[] }> = [
+  { links: [{ label: "About", url: "/about" }, { label: "Sevices", url: "/services" }] },
+  { links: [{ label: "Process", url: "/process" }, { label: "Case Studies", url: "/case-studies" }, { label: "Contact", url: "/contact" }] },
+  { links: [{ label: "Home Health", url: "/home-health" }, { label: "Hospice", url: "/hospice" }, { label: "Acount and Finance", url: "/accounting-finance" }] },
+  { links: [{ label: "Customer Support", url: "/customer-support" }, { label: "Back Office and administration", url: "/services" }, { label: "Creative and development", url: "/creative-development" }] },
+];
+
+const fallbackLegalLinks: NavItem[] = [
+  { label: "Privacy Policy", url: "#privacy" },
+  { label: "Terms of Service", url: "#terms" },
+  { label: "Cookies", url: "#cookies" },
+];
+
+const fallbackSocialLinks: SocialLink[] = [
+  { platform: "Email", url: "mailto:team@amedicase.com" },
+  { platform: "Facebook", url: "https://www.facebook.com/amedicase" },
+  { platform: "Instagram", url: "https://www.instagram.com/amedicase" },
+];
+
+const fallbackCopyright = "© Copyright 2025 amedicase. All Rights Reserved.";
+
+const isExternal = (url?: string) => /^https?:\/\//i.test(url || "") || /^mailto:/i.test(url || "");
+
+const resolveLinks = (links?: NavItem[]) => (links && links.length ? links : fallbackNavigation);
+const resolveColumns = (columns?: Array<{ links?: NavItem[] }>) => (columns && columns.length ? columns : fallbackColumns);
+const resolveLegalLinks = (links?: NavItem[]) => (links && links.length ? links : fallbackLegalLinks);
+const resolveSocialLinks = (links?: SocialLink[]) => (links && links.length ? links : fallbackSocialLinks);
+
+const getFallbackSocialIcon = (platform?: string) => {
+  const normalized = platform?.toLowerCase() || "";
+  if (normalized.includes("mail")) return "/images/mail-icon.svg";
+  if (normalized.includes("facebook")) return "/images/facebook-icon.svg";
+  if (normalized.includes("instagram")) return "/images/instagram-icon.svg";
+  return "/images/mail-icon.svg";
+};
+
+export async function Footer() {
+  const settings = await getSiteSettings();
+  const footer = settings?.footer;
+  const footerLogoUrl = getMediaUrl(footer?.footerLogo);
+  const navigation = resolveLinks(footer?.navigation);
+  const columns = resolveColumns(footer?.columns);
+  const legalLinks = resolveLegalLinks(footer?.legalLinks);
+  const socialLinks = resolveSocialLinks(footer?.socialLinks);
+  const copyrightText = footer?.copyrightText || fallbackCopyright;
+  const logoAlt = footer?.footerLogoAlt || "Amedicase";
+
   return (
     <footer className="relative bg-[#f1f5ff] py-0 md:py-20 xl:pt-[7rem] xl:pb-[2rem] w-full">
       <div className="mx-auto max-w-[1440px] px-5 md:px-8 xl:px-0 w-full">
@@ -14,51 +71,23 @@ export function Footer() {
             {/* Navigation Links - Left */}
               <nav className="flex flex-col gap-[20px]">
                 <ul className="flex flex-col gap-[20px] list-none m-0 p-0">
-                  <li>
-                    <Link 
-                      href="/about" 
-                      className="font-sans font-medium text-[#0b1737] text-[13px] leading-none tracking-[-0.26px] hover:text-[#d01127] transition-colors"
-                      style={{ fontVariationSettings: "'wdth' 100" }}
-                    >
-                About
-              </Link>
-                  </li>
-                  <li>
-                    <Link 
-                      href="/services" 
-                      className="font-sans font-medium text-[#0b1737] text-[13px] leading-none tracking-[-0.26px] hover:text-[#d01127] transition-colors"
-                      style={{ fontVariationSettings: "'wdth' 100" }}
-                    >
-                Services
-              </Link>
-                  </li>
-                  <li>
-                    <Link 
-                      href="/process" 
-                      className="font-sans font-medium text-[#0b1737] text-[13px] leading-none tracking-[-0.26px] hover:text-[#d01127] transition-colors"
-                      style={{ fontVariationSettings: "'wdth' 100" }}
-                    >
-                Process
-              </Link>
-                  </li>
-                  <li>
-                    <Link 
-                      href="/case-studies" 
-                      className="font-sans font-medium text-[#0b1737] text-[13px] leading-none tracking-[-0.26px] hover:text-[#d01127] transition-colors"
-                      style={{ fontVariationSettings: "'wdth' 100" }}
-                    >
-                Case Studies
-              </Link>
-                  </li>
-                  <li>
-                    <Link 
-                      href="/contact" 
-                      className="font-sans font-medium text-[#0b1737] text-[13px] leading-none tracking-[-0.26px] hover:text-[#d01127] transition-colors"
-                      style={{ fontVariationSettings: "'wdth' 100" }}
-                    >
-                Contact
-              </Link>
-                  </li>
+                  {navigation.map((item, index) => {
+                    const href = item.url || "#";
+                    const external = item.isExternal || isExternal(href);
+                    return (
+                      <li key={`${item.label || "nav"}-${index}`}>
+                        <Link
+                          href={href}
+                          target={external ? "_blank" : undefined}
+                          rel={external ? "noreferrer" : undefined}
+                          className="font-sans font-medium text-[#0b1737] text-[13px] leading-none tracking-[-0.26px] hover:text-[#d01127] transition-colors"
+                          style={{ fontVariationSettings: "'wdth' 100" }}
+                        >
+                          {item.label}
+                        </Link>
+                      </li>
+                    );
+                  })}
                 </ul>
               </nav>
 
@@ -66,28 +95,39 @@ export function Footer() {
               <div className="flex flex-col items-end gap-[15px]">
                 {/* Logo - Same as Header */}
                 <Link href="/" className="w-[180px] h-auto cursor-pointer">
-                  <svg className="w-full h-auto" fill="none" preserveAspectRatio="xMidYMid meet" viewBox="0 0 261 60">
-                    <g>
-                      <path d={svgPaths.p35dee300} fill="#D01127" />
-                      <path d={svgPaths.p3dbfe200} fill="#1E3A8A" />
-                      <path d={svgPaths.p2ad3e180} fill="#1E3A8A" />
-                      <path d={svgPaths.p3f849240} fill="#1E3A8A" />
-                      <path d={svgPaths.p36641b00} fill="#D01127" />
-                    </g>
-                  </svg>
+                  {footerLogoUrl ? (
+                    <img alt={logoAlt} className="w-full h-auto" src={footerLogoUrl} />
+                  ) : (
+                    <svg className="w-full h-auto" fill="none" preserveAspectRatio="xMidYMid meet" viewBox="0 0 261 60">
+                      <g>
+                        <path d={svgPaths.p35dee300} fill="#D01127" />
+                        <path d={svgPaths.p3dbfe200} fill="#1E3A8A" />
+                        <path d={svgPaths.p2ad3e180} fill="#1E3A8A" />
+                        <path d={svgPaths.p3f849240} fill="#1E3A8A" />
+                        <path d={svgPaths.p36641b00} fill="#D01127" />
+                      </g>
+                    </svg>
+                  )}
                 </Link>
 
                 {/* Social Icons - Only icons, no text */}
                 <div className="flex items-center gap-[8px]">
-                  <a href="#mail" className="w-[24px] h-[24px] hover:opacity-70 transition-opacity">
-                    <img alt="Mail" className="w-full h-full object-contain" src="/images/mail-icon.svg" />
-                </a>
-                  <a href="#facebook" className="w-[24px] h-[24px] hover:opacity-70 transition-opacity">
-                    <img alt="Facebook" className="w-full h-full object-contain" src="/images/facebook-icon.svg" />
-                </a>
-                  <a href="#instagram" className="w-[24px] h-[24px] hover:opacity-70 transition-opacity">
-                    <img alt="Instagram" className="w-full h-full object-contain" src="/images/instagram-icon.svg" />
-                </a>
+                  {socialLinks.map((link, index) => {
+                    const href = link.url || "#";
+                    const iconUrl = getMediaUrl(link.icon) || getFallbackSocialIcon(link.platform);
+                    const external = isExternal(href);
+                    return (
+                      <a
+                        key={`${link.platform || "social"}-${index}`}
+                        href={href}
+                        target={external ? "_blank" : undefined}
+                        rel={external ? "noreferrer" : undefined}
+                        className="w-[24px] h-[24px] hover:opacity-70 transition-opacity"
+                      >
+                        <img alt={link.platform || "Social"} className="w-full h-full object-contain" src={iconUrl} />
+                      </a>
+                    );
+                  })}
                 </div>
               </div>
             </div>
@@ -96,33 +136,23 @@ export function Footer() {
           {/* Legal Links */}
           <nav className="flex flex-wrap gap-[20px] items-center justify-center mt-[15px]">
             <ul className="flex flex-wrap gap-[20px] items-center justify-center list-none m-0 p-0">
-              <li>
-                <a 
-                  href="#privacy" 
-                  className="font-sans font-normal text-[#6175ad] text-[13px] leading-[1.1] tracking-[-0.26px] hover:text-[#d01127] transition-colors"
-                  style={{ fontVariationSettings: "'wdth' 100" }}
-                >
-              Privacy Policy
-            </a>
-              </li>
-              <li>
-                <a 
-                  href="#terms" 
-                  className="font-sans font-normal text-[#6175ad] text-[13px] leading-[1.1] tracking-[-0.26px] hover:text-[#d01127] transition-colors"
-                  style={{ fontVariationSettings: "'wdth' 100" }}
-                >
-              Terms of Service
-            </a>
-              </li>
-              <li>
-                <a 
-                  href="#cookies" 
-                  className="font-sans font-normal text-[#6175ad] text-[13px] leading-[1.1] tracking-[-0.26px] hover:text-[#d01127] transition-colors"
-                  style={{ fontVariationSettings: "'wdth' 100" }}
-                >
-              Cookies
-            </a>
-              </li>
+              {legalLinks.map((item, index) => {
+                const href = item.url || "#";
+                const external = item.isExternal || isExternal(href);
+                return (
+                  <li key={`${item.label || "legal"}-${index}`}>
+                    <a
+                      href={href}
+                      target={external ? "_blank" : undefined}
+                      rel={external ? "noreferrer" : undefined}
+                      className="font-sans font-normal text-[#6175ad] text-[13px] leading-[1.1] tracking-[-0.26px] hover:text-[#d01127] transition-colors"
+                      style={{ fontVariationSettings: "'wdth' 100" }}
+                    >
+                      {item.label}
+                    </a>
+                  </li>
+                );
+              })}
             </ul>
           </nav>
 
@@ -132,7 +162,7 @@ export function Footer() {
               className="font-sans font-normal text-[#6175ad] text-[13px] leading-[1.1] text-center tracking-[-0.26px]"
               style={{ fontVariationSettings: "'wdth' 100" }}
             >
-              © Copyright 2025 amedicase. All Rights Reserved.
+              {copyrightText}
             </p>
           </div>
         </div>
@@ -141,95 +171,95 @@ export function Footer() {
         <div className="hidden md:flex flex-col gap-[120px] items-center relative w-full">
           {/* Top Section - 4 Columns Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 md:gap-[60px] lg:gap-[80px] items-start justify-center w-full">
-            {/* Column 1 */}
-            <div className="flex flex-col gap-[60px] items-start justify-center">
-              <Link href="/about" className="font-sans font-medium leading-none text-[#0b1737] text-[20px] tracking-[-0.4px] hover:text-[#d01127] transition-colors" style={{ fontVariationSettings: "'wdth' 100" }}>
-                About
-              </Link>
-              <div className="flex flex-col gap-[60px] items-start justify-center">
-                <Link href="/services" className="font-sans font-medium leading-none text-[#0b1737] text-[20px] tracking-[-0.4px] hover:text-[#d01127] transition-colors" style={{ fontVariationSettings: "'wdth' 100" }}>
-                  Sevices
-                </Link>
-              </div>
-            </div>
+            {columns.map((column, columnIndex) => {
+              const links = column.links || [];
+              const primary = links[0];
+              const secondary = links.slice(1);
 
-            {/* Column 2 */}
-            <div className="flex flex-col gap-[60px] items-start justify-center">
-              <Link href="/process" className="font-sans font-medium leading-none text-[#0b1737] text-[20px] tracking-[-0.4px] hover:text-[#d01127] transition-colors" style={{ fontVariationSettings: "'wdth' 100" }}>
-                Process
-              </Link>
-              <div className="flex flex-col gap-[60px] items-start justify-center">
-                <Link href="/case-studies" className="font-sans font-medium leading-none text-[#0b1737] text-[20px] tracking-[-0.4px] hover:text-[#d01127] transition-colors" style={{ fontVariationSettings: "'wdth' 100" }}>
-                  Case Studies
-                </Link>
-                <Link href="/contact" className="font-sans font-medium leading-none text-[#0b1737] text-[20px] tracking-[-0.4px] hover:text-[#d01127] transition-colors" style={{ fontVariationSettings: "'wdth' 100" }}>
-                  Contact
-                </Link>
-              </div>
-            </div>
-
-            {/* Column 3 */}
-            <div className="flex flex-col gap-[60px] items-start justify-center">
-              <Link href="/home-health" className="font-sans font-medium leading-none text-[#0b1737] text-[20px] tracking-[-0.4px] hover:text-[#d01127] transition-colors" style={{ fontVariationSettings: "'wdth' 100" }}>
-                Home Health
-              </Link>
-              <div className="flex flex-col gap-[60px] items-start justify-center">
-                <Link href="/hospice" className="font-sans font-medium leading-none text-[#0b1737] text-[20px] tracking-[-0.4px] hover:text-[#d01127] transition-colors" style={{ fontVariationSettings: "'wdth' 100" }}>
-                  Hospice
-                </Link>
-                <Link href="/accounting-finance" className="font-sans font-medium leading-none text-[#0b1737] text-[20px] tracking-[-0.4px] hover:text-[#d01127] transition-colors" style={{ fontVariationSettings: "'wdth' 100" }}>
-                  Acount and Finance
-                </Link>
-              </div>
-            </div>
-
-            {/* Column 4 */}
-            <div className="flex flex-col gap-[60px] items-start justify-center">
-              <Link href="/customer-support" className="font-sans font-medium leading-none text-[#0b1737] text-[20px] tracking-[-0.4px] hover:text-[#d01127] transition-colors" style={{ fontVariationSettings: "'wdth' 100" }}>
-                Customer Support
-              </Link>
-              <div className="flex flex-col gap-[60px] items-start justify-center">
-                <Link href="/services" className="font-sans font-medium leading-none text-[#0b1737] text-[20px] tracking-[-0.4px] hover:text-[#d01127] transition-colors" style={{ fontVariationSettings: "'wdth' 100" }}>
-                  Back Office and administration
-                </Link>
-                <Link href="/creative-development" className="font-sans font-medium leading-none text-[#0b1737] text-[20px] tracking-[-0.4px] hover:text-[#d01127] transition-colors" style={{ fontVariationSettings: "'wdth' 100" }}>
-                  Creative and development
-                </Link>
-              </div>
-            </div>
+              return (
+                <div key={`footer-column-${columnIndex}`} className="flex flex-col gap-[60px] items-start justify-center">
+                  {primary ? (
+                    (() => {
+                      const href = primary.url || "#";
+                      const external = primary.isExternal || isExternal(href);
+                      return (
+                        <Link
+                          href={href}
+                          target={external ? "_blank" : undefined}
+                          rel={external ? "noreferrer" : undefined}
+                          className="font-sans font-medium leading-none text-[#0b1737] text-[20px] tracking-[-0.4px] hover:text-[#d01127] transition-colors"
+                          style={{ fontVariationSettings: "'wdth' 100" }}
+                        >
+                          {primary.label}
+                        </Link>
+                      );
+                    })()
+                  ) : null}
+                  <div className="flex flex-col gap-[60px] items-start justify-center">
+                    {secondary.map((link, linkIndex) => {
+                      const href = link.url || "#";
+                      const external = link.isExternal || isExternal(href);
+                      return (
+                        <Link
+                          key={`${link.label || "link"}-${linkIndex}`}
+                          href={href}
+                          target={external ? "_blank" : undefined}
+                          rel={external ? "noreferrer" : undefined}
+                          className="font-sans font-medium leading-none text-[#0b1737] text-[20px] tracking-[-0.4px] hover:text-[#d01127] transition-colors"
+                          style={{ fontVariationSettings: "'wdth' 100" }}
+                        >
+                          {link.label}
+                        </Link>
+                      );
+                    })}
+                  </div>
+                </div>
+              );
+            })}
           </div>
 
           {/* Bottom Section - Copyright, Logo, Policy Links */}
           <div className="flex flex-wrap md:gap-[40px] lg:gap-[120px] items-center justify-center w-full">
             {/* Copyright */}
             <p className="font-sans font-normal leading-[1.1] text-[#6175ad] text-[20px] text-center tracking-[-0.4px]" style={{ fontVariationSettings: "'wdth' 100" }}>
-              © Copyright 2025 amedicase. All Rights Reserved.
+              {copyrightText}
             </p>
 
             {/* Logo */}
             <div className="h-[40px] w-[176px] relative shrink-0 flex items-center justify-center">
-              <svg className="w-full h-full" fill="none" preserveAspectRatio="xMidYMid meet" viewBox="0 0 261 60">
-                <g>
-                  <path d={svgPaths.p35dee300} fill="#D01127" />
-                  <path d={svgPaths.p3dbfe200} fill="#1E3A8A" />
-                  <path d={svgPaths.p2ad3e180} fill="#1E3A8A" />
-                  <path d={svgPaths.p3f849240} fill="#1E3A8A" />
-                  <path d={svgPaths.p36641b00} fill="#D01127" />
-                </g>
-              </svg>
+              {footerLogoUrl ? (
+                <img alt={logoAlt} className="w-full h-full object-contain" src={footerLogoUrl} />
+              ) : (
+                <svg className="w-full h-full" fill="none" preserveAspectRatio="xMidYMid meet" viewBox="0 0 261 60">
+                  <g>
+                    <path d={svgPaths.p35dee300} fill="#D01127" />
+                    <path d={svgPaths.p3dbfe200} fill="#1E3A8A" />
+                    <path d={svgPaths.p2ad3e180} fill="#1E3A8A" />
+                    <path d={svgPaths.p3f849240} fill="#1E3A8A" />
+                    <path d={svgPaths.p36641b00} fill="#D01127" />
+                  </g>
+                </svg>
+              )}
             </div>
 
             {/* Policy Links */}
             <div className="flex flex-wrap gap-[60px] items-center justify-center">
-              <a href="#privacy" className="font-sans font-normal leading-[1.1] text-[#6175ad] text-[20px] tracking-[-0.4px] hover:text-[#d01127] transition-colors" style={{ fontVariationSettings: "'wdth' 100" }}>
-                Privacy Policy
-              </a>
-              <a href="#terms" className="font-sans font-normal leading-[1.1] text-[#6175ad] text-[20px] tracking-[-0.4px] hover:text-[#d01127] transition-colors" style={{ fontVariationSettings: "'wdth' 100" }}>
-                Terms of Service
-              </a>
-              <a href="#cookies" className="font-sans font-normal leading-[1.1] text-[#6175ad] text-[20px] tracking-[-0.4px] hover:text-[#d01127] transition-colors" style={{ fontVariationSettings: "'wdth' 100" }}>
-                Cookies
-              </a>
+              {legalLinks.map((item, index) => {
+                const href = item.url || "#";
+                const external = item.isExternal || isExternal(href);
+                return (
+                  <a
+                    key={`${item.label || "legal"}-${index}`}
+                    href={href}
+                    target={external ? "_blank" : undefined}
+                    rel={external ? "noreferrer" : undefined}
+                    className="font-sans font-normal leading-[1.1] text-[#6175ad] text-[20px] tracking-[-0.4px] hover:text-[#d01127] transition-colors"
+                    style={{ fontVariationSettings: "'wdth' 100" }}
+                  >
+                    {item.label}
+                  </a>
+                );
+              })}
             </div>
           </div>
         </div>

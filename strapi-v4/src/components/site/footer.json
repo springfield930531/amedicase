@@ -1,0 +1,43 @@
+{
+  "collectionName": "components_site_footers",
+  "info": {
+    "displayName": "Footer",
+    "icon": "layer"
+  },
+  "attributes": {
+    "footerLogo": {
+      "type": "media",
+      "allowedTypes": [
+        "images",
+        "files"
+      ],
+      "multiple": false
+    },
+    "footerLogoAlt": {
+      "type": "string"
+    },
+    "navigation": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.navigation-link"
+    },
+    "columns": {
+      "type": "component",
+      "repeatable": true,
+      "component": "site.footer-column"
+    },
+    "socialLinks": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.social-link"
+    },
+    "legalLinks": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.navigation-link"
+    },
+    "copyrightText": {
+      "type": "string"
+    }
+  }
+}

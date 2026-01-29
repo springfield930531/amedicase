@@ -1,0 +1,28 @@
+{
+  "collectionName": "components_site_brand_assets",
+  "info": {
+    "displayName": "Brand assets",
+    "icon": "image"
+  },
+  "attributes": {
+    "siteName": {
+      "type": "string"
+    },
+    "favicon": {
+      "type": "media",
+      "allowedTypes": [
+        "images",
+        "files"
+      ],
+      "multiple": false
+    },
+    "appleTouchIcon": {
+      "type": "media",
+      "allowedTypes": [
+        "images",
+        "files"
+      ],
+      "multiple": false
+    }
+  }
+}
