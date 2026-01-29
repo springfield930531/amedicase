@@ -1,0 +1,38 @@
+{
+  "collectionName": "components_sections_process_stages",
+  "info": {
+    "displayName": "Process stages",
+    "icon": "tasks"
+  },
+  "attributes": {
+    "label": {
+      "type": "string"
+    },
+    "stages": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.process-stage"
+    },
+    "arrowImage": {
+      "type": "media",
+      "allowedTypes": [
+        "images",
+        "files"
+      ],
+      "multiple": false
+    },
+    "arrowFinalImage": {
+      "type": "media",
+      "allowedTypes": [
+        "images",
+        "files"
+      ],
+      "multiple": false
+    },
+    "cta": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.cta"
+    }
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "collectionName": "components_shared_card_grid_items",
+  "info": {
+    "displayName": "Card grid item",
+    "icon": "clone"
+  },
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "description": {
+      "type": "text"
+    },
+    "backgroundImage": {
+      "type": "media",
+      "allowedTypes": [
+        "images",
+        "files"
+      ],
+      "multiple": false
+    }
+  }
+}

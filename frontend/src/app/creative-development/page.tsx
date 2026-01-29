@@ -1,10 +1,181 @@
+import type { Metadata } from "next";
 import { Header } from "@/components/sections/Header";
 import { Footer } from "@/components/sections/Footer";
 import { GradientTitle } from "@/components/shared/GradientTitle";
 import { TitleBlock } from "@/components/shared/TitleBlock";
 import { ContactSection } from "@/components/sections/ContactSection";
+import { getPageBySlug } from "@/lib/strapi";
+import { getMediaUrl } from "@/lib/strapi-home";
+import type {
+  CardGridSection,
+  ContactBlockSection,
+  ImageOverlaySection,
+  PageEntry,
+  PageHeroSection,
+  ProcessStagesSection,
+  StoryBlockSection,
+} from "@/lib/page-types";
 
-export default function CreativeDevelopmentPage() {
+export async function generateMetadata(): Promise<Metadata> {
+  const page = (await getPageBySlug("creative-development")) as PageEntry | null;
+  const seo = page?.seo;
+  const ogImage = seo?.ogImage ? getMediaUrl(seo.ogImage) : undefined;
+  return {
+    title: seo?.metaTitle,
+    description: seo?.metaDescription,
+    alternates: seo?.canonicalUrl ? { canonical: seo.canonicalUrl } : undefined,
+    robots: seo?.noIndex ? { index: false, follow: false } : undefined,
+    openGraph: seo
+      ? {
+          title: seo.ogTitle || seo.metaTitle,
+          description: seo.ogDescription || seo.metaDescription,
+          images: ogImage ? [ogImage] : undefined,
+        }
+      : undefined,
+  };
+}
+
+export default async function CreativeDevelopmentPage() {
+  const page = (await getPageBySlug("creative-development")) as PageEntry | null;
+  const sections = page?.sections || [];
+  const hero = sections.find(
+    (section): section is PageHeroSection => section.__component === "sections.page-hero"
+  );
+  const story = sections.find(
+    (section): section is StoryBlockSection => section.__component === "sections.story-block"
+  );
+  const overlays = sections.filter(
+    (section): section is ImageOverlaySection => section.__component === "sections.image-overlay"
+  );
+  const cardGrid = sections.find(
+    (section): section is CardGridSection => section.__component === "sections.card-grid"
+  );
+  const processStages = sections.find(
+    (section): section is ProcessStagesSection => section.__component === "sections.process-stages"
+  );
+  const contactBlock = sections.find(
+    (section): section is ContactBlockSection => section.__component === "sections.contact-block"
+  );
+
+  const fallback = {
+    hero: {
+      badgeLabel: "Creative and development",
+      title: "Outsource Creative & Development",
+      subtitle:
+        "Access trained, reliable and detail-oriented digital support specialists dedicated to improving your agency's online presence, documentation flows and patient experience.",
+      subtitleDesktop:
+        "Access trained, reliable and detail-oriented digital support specialists\ndedicated to improving your agency's online presence, documentation flows\nand patient experience.",
+      cta: { label: "Book a Discovery Call", url: "/#contact" },
+      ctaDesktop: { label: "Contact Us", url: "/#contact" },
+    },
+    story: {
+      label: "Our Story",
+      title: "Outsourcing Creative & Development for Healthcare Providers",
+      body:
+        "Whether you're a Home Health agency needing better patient forms, a Hospice provider requiring updated digital documentation, or simply a healthcare organization looking to maintain a strong and compliant online presence — Amedicase delivers the digital support your agency needs.\n\nOur team helps U.S. healthcare providers update websites, improve patient forms, maintain digital content, and manage online reputation through coordinated feedback and review management.\nWe support Home Health, Hospice, and Medical Billing organizations across the U.S., ensuring they remain professional, visible, and trusted online.",
+    },
+    overlays: [
+      {
+        backgroundImage: "/images/creative-development/office-documents-background.jpg",
+        overlayColor: "rgba(30,58,138,0.2)",
+        overlayImage: "/images/creative-development/white-shapes-overlay.svg",
+      },
+      {
+        backgroundImage: "/images/creative-development/office-documents-background.jpg",
+        overlayColor: "rgba(30,58,138,0.2)",
+        overlayImage: "/images/creative-development/white-shapes-overlay.svg",
+      },
+    ],
+    cardGrid: {
+      label: "What We Can Offer",
+      title:
+        "Digital support designed to strengthen your agency's online presence, documentation accuracy and patient experience.",
+      dotIcon: "/images/creative-development/dot-icon.svg",
+      cards: [
+        {
+          title: "Medical Form Designers",
+          description:
+            "Custom referral forms, intake templates, and digital documentation aligned with EMR needs.",
+          backgroundImage: "/images/creative-development/card-bg-1.svg",
+        },
+        {
+          title: "Website & Landing Page Support",
+          description: "Maintenance, updates, layout improvements, SEO basics, and compliance-driven content fixes.",
+          backgroundImage: "/images/creative-development/card-bg-2.svg",
+        },
+        {
+          title: "Workflow & Document Coordinators",
+          description:
+            "Digital documentation setup, EMR form mapping\nand patient-flow optimization for smoother operations.",
+          backgroundImage: "/images/creative-development/card-bg-3.svg",
+        },
+        {
+          title: "Digital Presence & Reputation Management",
+          description:
+            "Review monitoring, feedback collection, Google Business Profile optimization, online listings\nand response coordination, helping your agency strengthen trust and credibility online.",
+          backgroundImage: "/images/creative-development/card-bg-4.svg",
+        },
+      ],
+    },
+    processStages: {
+      label: "The Amedicase Process",
+      arrowImage: "/images/creative-development/arrow-down.svg",
+      arrowFinalImage: "/images/creative-development/arrow-down-final.svg",
+      stages: [
+        {
+          stageLabel: "Stage 1",
+          title: "Understanding Your Needs",
+          description:
+            "We analyze your website, digital assets, review platforms, online presence and internal documentation.\nWe identify what needs to be improved, updated or delegated, and build a clear outsourcing plan.",
+        },
+        {
+          stageLabel: "Stage 2",
+          title: "Assigning the Right Specialists",
+          description:
+            "We assign trained specialists experienced in healthcare documentation, website maintenance and online\nreputation management. Every team member is vetted, trained and aligned with HIPAA-compliant processes.",
+        },
+        {
+          stageLabel: "Stage 3",
+          title: "Seamless Integration Into Your Agency",
+          description:
+            "Your specialist integrates into your workflow, handling updates, review monitoring, feedback gathering\nand digital improvements as part of your day-to-day operations.",
+        },
+        {
+          stageLabel: "Stage 4",
+          title: "Quality Control & Continuous Support",
+          description:
+            "We monitor performance, provide reporting, manage reputation metrics, maintain digital consistency\nand scale your support team as your agency grows.",
+        },
+      ],
+      cta: { label: "Contact Us", url: "/#contact" },
+    },
+  };
+
+  const heroData = hero || fallback.hero;
+  const storyData = story || fallback.story;
+  const overlayFirst = overlays[0] || fallback.overlays[0];
+  const overlaySecond = overlays[1] || fallback.overlays[1];
+  const cardGridData = cardGrid || fallback.cardGrid;
+  const processData = processStages || fallback.processStages;
+  const heroCta = heroData?.cta || fallback.hero.cta;
+  const heroCtaDesktop = heroData?.ctaDesktop || heroData?.cta || fallback.hero.ctaDesktop;
+  const gridCards = cardGridData?.cards?.length ? cardGridData.cards : fallback.cardGrid.cards;
+  const stageItems = processData?.stages?.length ? processData.stages : fallback.processStages.stages;
+  const processCta = processData?.cta || fallback.processStages.cta;
+
+  const renderWithBreaks = (value?: string) => {
+    if (!value) return null;
+    const parts = value.split("\n");
+    return parts.map((part, index) => (
+      <span key={`${part}-${index}`}>
+        {part}
+        {index < parts.length - 1 ? <br /> : null}
+      </span>
+    ));
+  };
+  const getUrl = (media: any, fallbackUrl?: string) => getMediaUrl(media) || fallbackUrl || "";
+  const getAlt = (media: any, fallbackAlt?: string) =>
+    media?.alternativeText || media?.data?.attributes?.alternativeText || fallbackAlt || "";
   return (
     <div className="min-h-screen bg-[#f1f5ff] relative overflow-x-hidden">
       <Header />
@@ -23,7 +194,7 @@ export default function CreativeDevelopmentPage() {
                       className="font-sans font-medium text-[#d01127] text-[13px] uppercase whitespace-nowrap"
                       style={{ fontVariationSettings: "'wdth' 100" }}
                     >
-                      Creative and development
+                      {heroData?.badgeLabel || fallback.hero.badgeLabel}
                     </p>
                   </div>
                 </div>
@@ -32,8 +203,8 @@ export default function CreativeDevelopmentPage() {
               {/* Hero Image Background - Full width */}
               <div className="relative h-[562px] w-full -mt-[29px] overflow-hidden">
                 <img
-                  src="/images/services/hero-services.jpg"
-                  alt="Creative and development professionals"
+                  src={getUrl(heroData?.backgroundImage, "/images/services/hero-services.jpg")}
+                  alt={getAlt(heroData?.backgroundImage, "Creative and development professionals")}
                   className="w-full h-full object-cover object-center"
                 />
                 <div className="absolute bg-[rgba(240,242,248,0.2)] inset-0 pointer-events-none" />
@@ -46,23 +217,23 @@ export default function CreativeDevelopmentPage() {
                     className="font-sans font-semibold text-[clamp(24px,3vw,28px)] leading-[1.1] tracking-[-0.66px] w-full whitespace-pre-wrap"
                     style={{ fontVariationSettings: "'wdth' 100" }}
                   >
-                    Outsource Creative & Development
+                    {renderWithBreaks(heroData?.title || fallback.hero.title)}
                   </h1>
                   <p 
                     className="font-sans font-normal text-[clamp(11px,1.5vw,12px)] leading-[1.4] tracking-[-0.26px] w-full"
                     style={{ fontVariationSettings: "'wdth' 100" }}
                   >
-                    Access trained, reliable and detail-oriented digital support specialists dedicated to improving your agency&apos;s online presence, documentation flows and patient experience.
+                    {renderWithBreaks(heroData?.subtitle || fallback.hero.subtitle)}
                   </p>
                 </div>
                 <div className="flex flex-col gap-[20px] items-center">
                   <a 
-                    href="/#contact"
+                    href={heroCta?.url || "/#contact"}
                     className="backdrop-blur-[7px] backdrop-filter bg-gradient-to-b border border-[rgba(50,59,159,0.8)] border-solid from-[rgba(45,78,174,0.64)] items-center justify-center p-[16px] rounded-[8px] shadow-[0px_1px_4px_0px_rgba(191,192,215,0.3)] to-[rgba(34,62,140,0.48)] w-full hover:opacity-90 transition-opacity flex"
                     style={{ fontVariationSettings: "'wdth' 100" }}
                   >
                     <p className="capitalize font-sans font-semibold leading-[1.1] text-[#f1f5ff] text-[18px] text-center tracking-[-0.36px]" style={{ fontVariationSettings: "'wdth' 100" }}>
-                      Book a Discovery Call
+                      {heroCta?.label || "Book a Discovery Call"}
                     </p>
                   </a>
                 </div>
@@ -76,8 +247,8 @@ export default function CreativeDevelopmentPage() {
             <div className="absolute inset-0 overflow-hidden">
               <div className="absolute inset-0 overflow-hidden">
                 <img
-                  src="/images/services/hero-services.jpg"
-                  alt="Creative and development professionals"
+                  src={getUrl(heroData?.backgroundImage, "/images/services/hero-services.jpg")}
+                  alt={getAlt(heroData?.backgroundImage, "Creative and development professionals")}
                   className="absolute h-[200.03%] left-[-30.99%] max-w-none top-[-42.98%] w-[131.05%] object-cover"
                 />
               </div>
@@ -93,7 +264,7 @@ export default function CreativeDevelopmentPage() {
                     className="font-sans font-medium text-[#d01127] text-[33px] uppercase whitespace-nowrap"
                     style={{ fontVariationSettings: "'wdth' 100" }}
                   >
-                    Creative and development
+                    {heroData?.badgeLabelDesktop || heroData?.badgeLabel || fallback.hero.badgeLabel}
                   </p>
                 </div>
               </div>
@@ -105,24 +276,26 @@ export default function CreativeDevelopmentPage() {
                     className="font-sans font-semibold text-[52px] tracking-[-1.04px] w-full"
                     style={{ fontVariationSettings: "'wdth' 100" }}
                   >
-                    Outsource Creative & Development
+                    {renderWithBreaks(heroData?.titleDesktop || heroData?.title || fallback.hero.title)}
                   </h1>
                   <p 
                     className="font-sans font-normal text-[33px] tracking-[-0.66px] w-full"
                     style={{ fontVariationSettings: "'wdth' 100" }}
                   >
-                    Access trained, reliable and detail-oriented digital support specialists{'\n'}dedicated to improving your agency&apos;s online presence, documentation flows{'\n'}and patient experience.
+                    {renderWithBreaks(
+                      heroData?.subtitleDesktop || heroData?.subtitle || fallback.hero.subtitle
+                    )}
                   </p>
                 </div>
                 
                 <div className="flex flex-col gap-[20px] items-start w-[419px]">
                   <a 
-                    href="/#contact"
+                    href={heroCtaDesktop?.url || heroCta?.url || "/#contact"}
                     className="backdrop-blur-[3.777px] backdrop-filter bg-gradient-to-b border border-[rgba(50,59,159,0.8)] border-solid from-[rgba(45,78,174,0.64)] items-center justify-center p-[20px] relative rounded-[8px] to-[rgba(34,62,140,0.48)] w-full hover:opacity-90 transition-opacity flex"
                     style={{ fontVariationSettings: "'wdth' 100" }}
                   >
                     <p className="capitalize font-sans font-semibold leading-[1.1] text-[#f1f5ff] text-[33px] text-center tracking-[-0.66px] whitespace-nowrap" style={{ fontVariationSettings: "'wdth' 100" }}>
-                      Contact Us
+                      {heroCtaDesktop?.label || heroCta?.label || "Contact Us"}
                     </p>
                   </a>
                 </div>
@@ -135,7 +308,7 @@ export default function CreativeDevelopmentPage() {
         <section className="relative py-8 lg:py-16 overflow-x-hidden">
           <div className="mx-auto px-5 md:px-8 xl:px-0 max-w-[1440px]">
             <div className="flex flex-col gap-1 items-start mb-[40px] md:mb-[60px] w-full">
-              <GradientTitle label="Our Story" className="mb-0" />
+              <GradientTitle label={storyData?.label || fallback.story.label} className="mb-0" />
               <h2 
                 className="font-sans leading-[120%] w-full whitespace-pre-wrap -mt-[30px]"
                 style={{ 
@@ -147,7 +320,7 @@ export default function CreativeDevelopmentPage() {
                   letterSpacing: '-0.52px',
                 }}
               >
-                Outsourcing Creative & Development for Healthcare Providers
+                {renderWithBreaks(storyData?.title || fallback.story.title)}
               </h2>
               <p 
                 className="font-sans w-full mt-4"
@@ -161,9 +334,7 @@ export default function CreativeDevelopmentPage() {
                   letterSpacing: '-0.33px',
                 }}
               >
-                Whether you&apos;re a Home Health agency needing better patient forms, a Hospice provider requiring updated digital documentation, or simply a healthcare organization looking to maintain a strong and compliant online presence — Amedicase delivers the digital support your agency needs.
-                <br /><br />
-                Our team helps U.S. healthcare providers update websites, improve patient forms, maintain digital content, and manage online reputation through coordinated feedback and review management.{'\n'}We support Home Health, Hospice, and Medical Billing organizations across the U.S., ensuring they remain professional, visible, and trusted online.
+                {renderWithBreaks(storyData?.body || fallback.story.body)}
               </p>
             </div>
           </div>
@@ -175,8 +346,8 @@ export default function CreativeDevelopmentPage() {
             <div className="relative w-full rounded-[12px] overflow-hidden" style={{ aspectRatio: '1320/375', minHeight: '375px' }}>
               {/* Background Image */}
               <img
-                src="/images/creative-development/office-documents-background.jpg"
-                alt="Office documents and files"
+                src={getUrl(overlayFirst?.backgroundImage, "/images/creative-development/office-documents-background.jpg")}
+                alt={getAlt(overlayFirst?.backgroundImage, "Office documents and files")}
                 className="w-full h-full object-cover rounded-[8px]"
                 style={{
                   objectPosition: 'center center'
@@ -186,13 +357,16 @@ export default function CreativeDevelopmentPage() {
               {/* Overlays Container - Single absolute wrapper for all overlays */}
               <div className="absolute inset-0 rounded-[8px] pointer-events-none">
                 {/* Blue Overlay */}
-                <div className="w-full h-full bg-[rgba(30,58,138,0.2)] mix-blend-hard-light rounded-[8px]" />
+                <div
+                  className="w-full h-full mix-blend-hard-light rounded-[8px]"
+                  style={{ backgroundColor: overlayFirst?.overlayColor || "rgba(30,58,138,0.2)" }}
+                />
                 
                 {/* White Abstract Shapes Overlay */}
                 <div className="absolute inset-0 rounded-[8px] overflow-visible">
                   <img
-                    src="/images/creative-development/white-shapes-overlay.svg"
-                    alt=""
+                    src={getUrl(overlayFirst?.overlayImage, "/images/creative-development/white-shapes-overlay.svg")}
+                    alt={getAlt(overlayFirst?.overlayImage, "")}
                     className="w-full h-full object-cover"
                     style={{
                       transform: 'scale(1.1)',
@@ -209,8 +383,8 @@ export default function CreativeDevelopmentPage() {
         <section className="relative py-8 lg:py-16 overflow-x-hidden">
           <div className="mx-auto px-5 md:px-8 xl:px-0 max-w-[1440px]">
             <TitleBlock
-              label="What We Can Offer"
-              title="Digital support designed to strengthen your agency&apos;s online presence, documentation accuracy and patient experience."
+              label={cardGridData?.label || fallback.cardGrid.label}
+              title={cardGridData?.title || fallback.cardGrid.title}
             />
             
             {/* Services Grid - Responsive 2x2 on desktop, 1 column on mobile */}
@@ -219,25 +393,27 @@ export default function CreativeDevelopmentPage() {
                   <div className="relative w-full min-h-[117px]">
                     <div className="absolute inset-0">
                       <img
-                        src="/images/creative-development/card-bg-1.svg"
-                        alt=""
+                        src={getUrl(gridCards[0]?.backgroundImage, "/images/creative-development/card-bg-1.svg")}
+                        alt={getAlt(gridCards[0]?.backgroundImage, "")}
                         className="w-full h-full object-cover"
                       />
                     </div>
                     <div className="relative flex flex-col gap-[10px] p-[20px]">
                       <div className="flex items-start gap-[20px]">
                         <img
-                          src="/images/creative-development/dot-icon.svg"
-                          alt=""
+                          src={getUrl(cardGridData?.dotIcon, "/images/creative-development/dot-icon.svg")}
+                          alt={getAlt(cardGridData?.dotIcon, "")}
                           className="w-4 h-4 flex-shrink-0 mt-[2px] -ml-[5px]"
                           style={{ filter: 'blur(0.3px)' }}
                         />
                         <h3 className="font-sans font-bold leading-[1.2] text-[clamp(16px,2vw,18px)] text-blue-900 -mt-[5px]" style={{ fontVariationSettings: "'wdth' 100" }}>
-                          Medical Form Designers
+                          {gridCards[0]?.title || "Medical Form Designers"}
                         </h3>
                       </div>
                       <p className="font-sans font-normal leading-[1.4] text-[#000618] text-[clamp(14px,1.8vw,16px)] tracking-[-0.2px] pl-[36px] whitespace-pre-wrap" style={{ fontVariationSettings: "'wdth' 100" }}>
-                        Custom referral forms, intake templates, and digital documentation aligned with EMR needs.
+                        {renderWithBreaks(
+                          gridCards[0]?.description || fallback.cardGrid.cards[0].description
+                        )}
                       </p>
                     </div>
                   </div>
@@ -246,25 +422,27 @@ export default function CreativeDevelopmentPage() {
                   <div className="relative w-full min-h-[117px]">
                     <div className="absolute inset-0">
                       <img
-                        src="/images/creative-development/card-bg-2.svg"
-                        alt=""
+                        src={getUrl(gridCards[1]?.backgroundImage, "/images/creative-development/card-bg-2.svg")}
+                        alt={getAlt(gridCards[1]?.backgroundImage, "")}
                         className="w-full h-full object-cover"
                       />
                     </div>
                     <div className="relative flex flex-col gap-[10px] p-[20px]">
                       <div className="flex items-start gap-[20px]">
                         <img
-                          src="/images/creative-development/dot-icon.svg"
-                          alt=""
+                          src={getUrl(cardGridData?.dotIcon, "/images/creative-development/dot-icon.svg")}
+                          alt={getAlt(cardGridData?.dotIcon, "")}
                           className="w-4 h-4 flex-shrink-0 mt-[2px] -ml-[5px]"
                           style={{ filter: 'blur(0.3px)' }}
                         />
                         <h3 className="font-sans font-bold leading-[1.2] text-[clamp(16px,2vw,18px)] text-blue-900 -mt-[5px]" style={{ fontVariationSettings: "'wdth' 100" }}>
-                          Website & Landing Page Support
+                          {gridCards[1]?.title || "Website & Landing Page Support"}
                         </h3>
                       </div>
                       <p className="font-sans font-normal leading-[1.4] text-[#000618] text-[clamp(14px,1.8vw,16px)] tracking-[-0.2px] pl-[36px] whitespace-pre-wrap" style={{ fontVariationSettings: "'wdth' 100" }}>
-                        Maintenance, updates, layout improvements, SEO basics, and compliance-driven content fixes.
+                        {renderWithBreaks(
+                          gridCards[1]?.description || fallback.cardGrid.cards[1].description
+                        )}
                       </p>
                     </div>
                   </div>
@@ -273,25 +451,27 @@ export default function CreativeDevelopmentPage() {
                   <div className="relative w-full min-h-[145px]">
                     <div className="absolute inset-0">
                       <img
-                        src="/images/creative-development/card-bg-3.svg"
-                        alt=""
+                        src={getUrl(gridCards[2]?.backgroundImage, "/images/creative-development/card-bg-3.svg")}
+                        alt={getAlt(gridCards[2]?.backgroundImage, "")}
                         className="w-full h-full object-cover"
                       />
                     </div>
                     <div className="relative flex flex-col gap-[10px] p-[20px]">
                       <div className="flex items-start gap-[20px]">
                         <img
-                          src="/images/creative-development/dot-icon.svg"
-                          alt=""
+                          src={getUrl(cardGridData?.dotIcon, "/images/creative-development/dot-icon.svg")}
+                          alt={getAlt(cardGridData?.dotIcon, "")}
                           className="w-4 h-4 flex-shrink-0 mt-[2px] -ml-[5px]"
                           style={{ filter: 'blur(0.3px)' }}
                         />
                         <h3 className="font-sans font-bold leading-[1.2] text-[clamp(16px,2vw,18px)] text-blue-900 -mt-[5px]" style={{ fontVariationSettings: "'wdth' 100" }}>
-                          Workflow & Document Coordinators
+                          {gridCards[2]?.title || "Workflow & Document Coordinators"}
                         </h3>
                       </div>
                       <p className="font-sans font-normal leading-[1.4] text-[#000618] text-[clamp(14px,1.8vw,16px)] tracking-[-0.2px] pl-[36px] whitespace-pre-wrap" style={{ fontVariationSettings: "'wdth' 100" }}>
-                        Digital documentation setup, EMR form mapping{'\n'}and patient-flow optimization for smoother operations.
+                        {renderWithBreaks(
+                          gridCards[2]?.description || fallback.cardGrid.cards[2].description
+                        )}
                       </p>
                     </div>
                   </div>
@@ -300,25 +480,27 @@ export default function CreativeDevelopmentPage() {
                   <div className="relative w-full min-h-[173px]">
                     <div className="absolute inset-0">
                       <img
-                        src="/images/creative-development/card-bg-4.svg"
-                        alt=""
+                        src={getUrl(gridCards[3]?.backgroundImage, "/images/creative-development/card-bg-4.svg")}
+                        alt={getAlt(gridCards[3]?.backgroundImage, "")}
                         className="w-full h-full object-cover"
                       />
                     </div>
                     <div className="relative flex flex-col gap-[10px] p-[20px]">
                       <div className="flex items-start gap-[20px]">
                         <img
-                          src="/images/creative-development/dot-icon.svg"
-                          alt=""
+                          src={getUrl(cardGridData?.dotIcon, "/images/creative-development/dot-icon.svg")}
+                          alt={getAlt(cardGridData?.dotIcon, "")}
                           className="w-4 h-4 flex-shrink-0 mt-[2px] -ml-[5px]"
                           style={{ filter: 'blur(0.3px)' }}
                         />
                         <h3 className="font-sans font-bold leading-[1.2] text-[clamp(16px,2vw,18px)] text-blue-900 whitespace-nowrap -mt-[5px]" style={{ fontVariationSettings: "'wdth' 100" }}>
-                          Digital Presence & Reputation Management
+                          {gridCards[3]?.title || "Digital Presence & Reputation Management"}
                         </h3>
                       </div>
                       <p className="font-sans font-normal leading-[1.4] text-[#000618] text-[clamp(14px,1.8vw,16px)] tracking-[-0.2px] pl-[36px] whitespace-pre-wrap" style={{ fontVariationSettings: "'wdth' 100" }}>
-                        Review monitoring, feedback collection, Google Business Profile optimization, online listings{'\n'}and response coordination, helping your agency strengthen trust and credibility online.
+                        {renderWithBreaks(
+                          gridCards[3]?.description || fallback.cardGrid.cards[3].description
+                        )}
                       </p>
                     </div>
                   </div>
@@ -332,8 +514,8 @@ export default function CreativeDevelopmentPage() {
             <div className="relative w-full rounded-[12px] overflow-hidden" style={{ aspectRatio: '1320/375', minHeight: '375px' }}>
               {/* Background Image */}
               <img
-                src="/images/creative-development/office-documents-background.jpg"
-                alt="Office documents and files"
+                src={getUrl(overlaySecond?.backgroundImage, "/images/creative-development/office-documents-background.jpg")}
+                alt={getAlt(overlaySecond?.backgroundImage, "Office documents and files")}
                 className="w-full h-full object-cover rounded-[8px]"
                 style={{
                   objectPosition: 'center center'
@@ -343,13 +525,16 @@ export default function CreativeDevelopmentPage() {
               {/* Overlays Container - Single absolute wrapper for all overlays */}
               <div className="absolute inset-0 rounded-[8px] pointer-events-none">
                 {/* Blue Overlay */}
-                <div className="w-full h-full bg-[rgba(30,58,138,0.2)] mix-blend-hard-light rounded-[8px]" />
+                <div
+                  className="w-full h-full mix-blend-hard-light rounded-[8px]"
+                  style={{ backgroundColor: overlaySecond?.overlayColor || "rgba(30,58,138,0.2)" }}
+                />
                 
                 {/* White Abstract Shapes Overlay */}
                 <div className="absolute inset-0 rounded-[8px] overflow-visible">
                   <img
-                    src="/images/creative-development/white-shapes-overlay.svg"
-                    alt=""
+                    src={getUrl(overlaySecond?.overlayImage, "/images/creative-development/white-shapes-overlay.svg")}
+                    alt={getAlt(overlaySecond?.overlayImage, "")}
                     className="w-full h-full object-cover"
                     style={{
                       transform: 'scale(1.1)',
@@ -365,7 +550,7 @@ export default function CreativeDevelopmentPage() {
         {/* The Amedicase Process Section */}
         <section className="relative py-8 lg:py-16 overflow-x-hidden">
           <div className="mx-auto px-5 md:px-8 xl:px-0 max-w-[1440px]">
-            <GradientTitle label="The Amedicase Process" className="mb-0" />
+            <GradientTitle label={processData?.label || fallback.processStages.label} className="mb-0" />
             
             {/* Process Steps - Vertical Stack */}
             <div className="flex flex-col gap-[20px] items-center w-full max-w-[1002px] mx-auto mt-[40px] md:mt-[60px]">
@@ -374,14 +559,16 @@ export default function CreativeDevelopmentPage() {
                 <div className="flex flex-col gap-[40px] items-center justify-center text-center w-full">
                   <div className="flex flex-col font-sans font-medium gap-[20px] items-center leading-[1.2] text-[clamp(24px,3vw,33px)] tracking-[-0.66px]" style={{ fontVariationSettings: "'wdth' 100" }}>
                     <p className="text-[#d01127]">
-                      Stage 1
+                      {stageItems[0]?.stageLabel || "Stage 1"}
                     </p>
                     <p className="text-[#0b1737]">
-                      Understanding Your Needs
+                      {stageItems[0]?.title || "Understanding Your Needs"}
                     </p>
                   </div>
                   <p className="font-sans font-normal leading-[1.1] text-[#0b1737] text-[clamp(16px,2vw,20px)] tracking-[-0.4px] whitespace-pre-wrap" style={{ fontVariationSettings: "'wdth' 100" }}>
-                    We analyze your website, digital assets, review platforms, online presence and internal documentation.{'\n'}We identify what needs to be improved, updated or delegated, and build a clear outsourcing plan.
+                    {renderWithBreaks(
+                      stageItems[0]?.description || fallback.processStages.stages[0].description
+                    )}
                   </p>
                 </div>
               </div>
@@ -390,8 +577,8 @@ export default function CreativeDevelopmentPage() {
               <div className="flex h-[20px] items-center justify-center w-[44px]">
                 <div className="flex-none rotate-90">
                   <img 
-                    src="/images/creative-development/arrow-down.svg" 
-                    alt="" 
+                    src={getUrl(processData?.arrowImage, "/images/creative-development/arrow-down.svg")} 
+                    alt={getAlt(processData?.arrowImage, "")} 
                     className="h-[44px] w-[20px]"
                   />
                 </div>
@@ -402,14 +589,16 @@ export default function CreativeDevelopmentPage() {
                 <div className="flex flex-col gap-[40px] items-center justify-center text-center w-full">
                   <div className="flex flex-col font-sans font-medium gap-[20px] items-center leading-[1.2] text-[clamp(24px,3vw,33px)] tracking-[-0.66px]" style={{ fontVariationSettings: "'wdth' 100" }}>
                     <p className="text-[#d01127]">
-                      Stage 2
+                      {stageItems[1]?.stageLabel || "Stage 2"}
                     </p>
                     <p className="text-[#0b1737]">
-                      Assigning the Right Specialists
+                      {stageItems[1]?.title || "Assigning the Right Specialists"}
                     </p>
                   </div>
                   <p className="font-sans font-normal leading-[1.1] text-[#0b1737] text-[clamp(16px,2vw,20px)] tracking-[-0.4px] whitespace-pre-wrap" style={{ fontVariationSettings: "'wdth' 100" }}>
-                    We assign trained specialists experienced in healthcare documentation, website maintenance and online{'\n'}reputation management. Every team member is vetted, trained and aligned with HIPAA-compliant processes.
+                    {renderWithBreaks(
+                      stageItems[1]?.description || fallback.processStages.stages[1].description
+                    )}
                   </p>
                 </div>
               </div>
@@ -418,8 +607,8 @@ export default function CreativeDevelopmentPage() {
               <div className="flex h-[20px] items-center justify-center w-[44px]">
                 <div className="flex-none rotate-90">
                   <img 
-                    src="/images/creative-development/arrow-down.svg" 
-                    alt="" 
+                    src={getUrl(processData?.arrowImage, "/images/creative-development/arrow-down.svg")} 
+                    alt={getAlt(processData?.arrowImage, "")} 
                     className="h-[44px] w-[20px]"
                   />
                 </div>
@@ -430,14 +619,16 @@ export default function CreativeDevelopmentPage() {
                 <div className="flex flex-col gap-[40px] items-center justify-center text-center w-full">
                   <div className="flex flex-col font-sans font-medium gap-[20px] items-center leading-[1.2] text-[clamp(24px,3vw,33px)] tracking-[-0.66px]" style={{ fontVariationSettings: "'wdth' 100" }}>
                     <p className="text-[#d01127]">
-                      Stage 3
+                      {stageItems[2]?.stageLabel || "Stage 3"}
                     </p>
                     <p className="text-[#0b1737]">
-                      Seamless Integration Into Your Agency
+                      {stageItems[2]?.title || "Seamless Integration Into Your Agency"}
                     </p>
                   </div>
                   <p className="font-sans font-normal leading-[1.1] text-[#0b1737] text-[clamp(16px,2vw,20px)] tracking-[-0.4px] whitespace-pre-wrap" style={{ fontVariationSettings: "'wdth' 100" }}>
-                    Your specialist integrates into your workflow, handling updates, review monitoring, feedback gathering{'\n'}and digital improvements as part of your day-to-day operations.
+                    {renderWithBreaks(
+                      stageItems[2]?.description || fallback.processStages.stages[2].description
+                    )}
                   </p>
                 </div>
               </div>
@@ -446,8 +637,8 @@ export default function CreativeDevelopmentPage() {
               <div className="flex h-[20px] items-center justify-center w-[44px]">
                 <div className="flex-none rotate-90">
                   <img 
-                    src="/images/creative-development/arrow-down.svg" 
-                    alt="" 
+                    src={getUrl(processData?.arrowImage, "/images/creative-development/arrow-down.svg")} 
+                    alt={getAlt(processData?.arrowImage, "")} 
                     className="h-[44px] w-[20px]"
                   />
                 </div>
@@ -458,14 +649,16 @@ export default function CreativeDevelopmentPage() {
                 <div className="flex flex-col gap-[40px] items-center justify-center text-center w-full">
                   <div className="flex flex-col font-sans font-medium gap-[20px] items-center leading-[1.2] text-[clamp(24px,3vw,33px)] tracking-[-0.66px]" style={{ fontVariationSettings: "'wdth' 100" }}>
                     <p className="text-[#d01127]">
-                      Stage 4
+                      {stageItems[3]?.stageLabel || "Stage 4"}
                     </p>
                     <p className="text-[#0b1737]">
-                      Quality Control & Continuous Support
+                      {stageItems[3]?.title || "Quality Control & Continuous Support"}
                     </p>
                   </div>
                   <p className="font-sans font-normal leading-[1.1] text-[#0b1737] text-[clamp(16px,2vw,20px)] tracking-[-0.4px] whitespace-pre-wrap" style={{ fontVariationSettings: "'wdth' 100" }}>
-                    We monitor performance, provide reporting, manage reputation metrics, maintain digital consistency{'\n'}and scale your support team as your agency grows.
+                    {renderWithBreaks(
+                      stageItems[3]?.description || fallback.processStages.stages[3].description
+                    )}
                   </p>
                 </div>
               </div>
@@ -474,8 +667,8 @@ export default function CreativeDevelopmentPage() {
               <div className="flex h-[20px] items-center justify-center w-[44px]">
                 <div className="flex-none rotate-90">
                   <img 
-                    src="/images/creative-development/arrow-down-final.svg" 
-                    alt="" 
+                    src={getUrl(processData?.arrowFinalImage, "/images/creative-development/arrow-down-final.svg")} 
+                    alt={getAlt(processData?.arrowFinalImage, "")} 
                     className="h-[44px] w-[20px]"
                   />
                 </div>
@@ -483,11 +676,11 @@ export default function CreativeDevelopmentPage() {
 
               {/* Contact Us Button */}
               <a
-                href="/#contact"
+                href={processCta?.url || "/#contact"}
                 className="backdrop-blur-[3.777px] backdrop-filter bg-gradient-to-b border border-[rgba(209,51,69,0.8)] border-solid flex from-[rgba(205,27,48,0.24)] items-center justify-center px-[60px] py-[20px] relative rounded-[12px] shadow-[0px_1px_4px_0px_rgba(87,18,23,0.3)] to-[rgba(215,45,64,0.16)] hover:opacity-90 transition-opacity"
               >
                 <p className="font-sans font-semibold leading-[1.1] text-[#d4283c] text-[clamp(24px,3vw,33px)] text-center tracking-[-0.66px]" style={{ fontVariationSettings: "'wdth' 100" }}>
-                  Contact Us
+                  {processCta?.label || "Contact Us"}
                 </p>
               </a>
             </div>
@@ -495,11 +688,10 @@ export default function CreativeDevelopmentPage() {
         </section>
 
         {/* Contact Section */}
-        <ContactSection />
+        <ContactSection data={contactBlock} />
       </main>
       
       <Footer />
     </div>
   );
 }
-

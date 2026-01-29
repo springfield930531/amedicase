@@ -1,0 +1,45 @@
+{
+  "collectionName": "components_sections_page_heroes",
+  "info": {
+    "displayName": "Page hero",
+    "icon": "image"
+  },
+  "attributes": {
+    "badgeLabel": {
+      "type": "string"
+    },
+    "badgeLabelDesktop": {
+      "type": "string"
+    },
+    "title": {
+      "type": "text",
+      "required": true
+    },
+    "titleDesktop": {
+      "type": "text"
+    },
+    "subtitle": {
+      "type": "text"
+    },
+    "subtitleDesktop": {
+      "type": "text"
+    },
+    "backgroundImage": {
+      "type": "media",
+      "allowedTypes": [
+        "images"
+      ],
+      "multiple": false
+    },
+    "cta": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.cta"
+    },
+    "ctaDesktop": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.cta"
+    }
+  }
+}

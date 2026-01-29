@@ -926,6 +926,61 @@ export interface ApiHospicePageHospicePage extends Struct.SingleTypeSchema {
   };
 }
 
+export interface ApiPagePage extends Struct.CollectionTypeSchema {
+  collectionName: 'pages';
+  info: {
+    description: 'Static service pages';
+    displayName: 'Page';
+    pluralName: 'pages';
+    singularName: 'page';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  pluginOptions: {
+    'content-manager': {
+      visible: true;
+    };
+    'content-type-builder': {
+      visible: true;
+    };
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<'oneToMany', 'api::page.page'> &
+      Schema.Attribute.Private;
+    publishedAt: Schema.Attribute.DateTime;
+    sections: Schema.Attribute.DynamicZone<
+      [
+        'shared.background-pattern',
+        'sections.services-page-hero',
+        'sections.services-page-pillars',
+        'sections.services-page-how-we-help',
+        'sections.services-page-quality',
+        'sections.services-page-how-it-works',
+        'sections.services-page-why-choose',
+        'sections.page-hero',
+        'sections.story-block',
+        'sections.image-overlay',
+        'sections.benefit-cards',
+        'sections.card-grid',
+        'sections.icon-steps',
+        'sections.process-stages',
+        'sections.contact-block',
+      ]
+    >;
+    seo: Schema.Attribute.Component<'shared.seo', false>;
+    slug: Schema.Attribute.UID<'title'> & Schema.Attribute.Required;
+    title: Schema.Attribute.String & Schema.Attribute.Required;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
 export interface ApiProcessPageProcessPage extends Struct.SingleTypeSchema {
   collectionName: 'process_pages';
   info: {
@@ -1560,6 +1615,7 @@ declare module '@strapi/strapi' {
       'api::home-health-page.home-health-page': ApiHomeHealthPageHomeHealthPage;
       'api::home-page.home-page': ApiHomePageHomePage;
       'api::hospice-page.hospice-page': ApiHospicePageHospicePage;
+      'api::page.page': ApiPagePage;
       'api::process-page.process-page': ApiProcessPageProcessPage;
       'api::services-page.services-page': ApiServicesPageServicesPage;
       'plugin::content-releases.release': PluginContentReleasesRelease;

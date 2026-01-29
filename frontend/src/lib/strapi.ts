@@ -135,3 +135,24 @@ export async function getServicePage() {
     return null;
   }
 }
+
+export async function getPageBySlug(slug: string) {
+  const baseUrl = getPublicStrapiUrl();
+  try {
+    const params = new URLSearchParams();
+    params.set("filters[slug][$eq]", slug);
+    params.set("populate[sections][populate]", "*");
+    const response = await fetch(`${baseUrl}/api/pages?${params.toString()}`, {
+      cache: "no-store",
+    });
+    if (!response.ok) {
+      return null;
+    }
+    const payload = await response.json();
+    const entry = payload?.data?.[0];
+    return entry?.attributes || entry || null;
+  } catch (error) {
+    console.error("Failed to fetch page from Strapi:", error);
+    return null;
+  }
+}

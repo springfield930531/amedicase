@@ -1,10 +1,163 @@
+import type { Metadata } from "next";
 import { Header } from "@/components/sections/Header";
 import { Footer } from "@/components/sections/Footer";
 import { GradientTitle } from "@/components/shared/GradientTitle";
 import { TitleBlock } from "@/components/shared/TitleBlock";
 import { ContactSection } from "@/components/sections/ContactSection";
+import { getPageBySlug } from "@/lib/strapi";
+import { getMediaUrl } from "@/lib/strapi-home";
+import type {
+  BenefitCardsSection,
+  ContactBlockSection,
+  IconStepsSection,
+  ImageOverlaySection,
+  PageEntry,
+  PageHeroSection,
+  StoryBlockSection,
+} from "@/lib/page-types";
 
-export default function HomeHealthPage() {
+export async function generateMetadata(): Promise<Metadata> {
+  const page = (await getPageBySlug("home-health")) as PageEntry | null;
+  const seo = page?.seo;
+  const ogImage = seo?.ogImage ? getMediaUrl(seo.ogImage) : undefined;
+  return {
+    title: seo?.metaTitle,
+    description: seo?.metaDescription,
+    alternates: seo?.canonicalUrl ? { canonical: seo.canonicalUrl } : undefined,
+    robots: seo?.noIndex ? { index: false, follow: false } : undefined,
+    openGraph: seo
+      ? {
+          title: seo.ogTitle || seo.metaTitle,
+          description: seo.ogDescription || seo.metaDescription,
+          images: ogImage ? [ogImage] : undefined,
+        }
+      : undefined,
+  };
+}
+
+export default async function HomeHealthPage() {
+  const page = (await getPageBySlug("home-health")) as PageEntry | null;
+  const sections = page?.sections || [];
+  const hero = sections.find(
+    (section): section is PageHeroSection => section.__component === "sections.page-hero"
+  );
+  const story = sections.find(
+    (section): section is StoryBlockSection => section.__component === "sections.story-block"
+  );
+  const overlays = sections.filter(
+    (section): section is ImageOverlaySection => section.__component === "sections.image-overlay"
+  );
+  const benefits = sections.find(
+    (section): section is BenefitCardsSection => section.__component === "sections.benefit-cards"
+  );
+  const howItWorks = sections.find(
+    (section): section is IconStepsSection => section.__component === "sections.icon-steps"
+  );
+  const contactBlock = sections.find(
+    (section): section is ContactBlockSection => section.__component === "sections.contact-block"
+  );
+
+  const fallback = {
+    hero: {
+      badgeLabel: "Home Health",
+      title: "Home Health Outsourcing",
+      subtitle:
+        "Improve your agency's patient experience, documentation accuracy and operational efficiency by leveraging trained remote specialists for billing, scheduling, intake and administrative support.",
+      cta: { label: "Book a Discovery Call", url: "/#contact" },
+    },
+    story: {
+      label: "Our Story",
+      title: "Outsourcing for Home Health Agencies",
+      body:
+        "In Home Health, accurate documentation, timely scheduling, clean claims and clear communication directly affect both patient outcomes and reimbursement cycles.\n\nStrategic outsourcing allows agencies to maintain clinical excellence while reducing administrative pressure on nurses and office staff.\n\nAmedicase provides dedicated remote teams trained in Home Health workflows,\nEMR updates, patient intake, authorization support and Medicare/Medicaid requirements.\n\nWith reliable specialists handling coordination and documentation, your agency\ncan deliver better patient care while staying compliant and operationally efficient.",
+    },
+    overlays: [
+      {
+        backgroundImage: "/images/creative-development/office-documents-background.jpg",
+        overlayColor: "rgba(30,58,138,0.2)",
+        overlayImage: "/images/creative-development/white-shapes-overlay.svg",
+      },
+      {
+        backgroundImage: "/images/creative-development/office-documents-background.jpg",
+        overlayColor: "rgba(30,58,138,0.2)",
+        overlayImage: "/images/creative-development/white-shapes-overlay.svg",
+      },
+    ],
+    benefits: {
+      label: "What We Can Offer",
+      title: "Outsourcing Benefits for Home Health",
+      cards: [
+        {
+          label: "Agility",
+          description:
+            "Scale your support team up or down depending on census, referrals, authorizations or seasonal volume,\nwithout hiring delays or in-house overhead.",
+        },
+        {
+          label: "Capability",
+          description:
+            "Our specialists are trained in HH workflows: intake, scheduling, documentation, billing support and QA tasks, ensuring accuracy and consistent output.",
+        },
+        {
+          label: "Core Care Focus",
+          description:
+            "Outsourcing allows your clinical team\nto focus on patient care, visit quality and outcomes, while administrative tasks are handled by trained remote staff.",
+        },
+      ],
+    },
+    howItWorks: {
+      label: "How It Works",
+      icon: "/images/home-health/how-it-works-icon.svg",
+      steps: [
+        {
+          title: "Assessment",
+          description:
+            "We begin by understanding your operational challenges and identifying the Home Health tasks best suited for outsourcing.",
+        },
+        {
+          title: "Talent Selection",
+          description:
+            "We assign trained specialists experienced in Home Health intake, scheduling, documentation and billing coordination.",
+        },
+        {
+          title: "Seamless Integration",
+          description:
+            "Your outsourced team integrates into your EMR, communication tools and workflow, working as an extension of your in-house staff.",
+        },
+        {
+          title: "Monitoring & Optimization",
+          description:
+            "We provide ongoing monitoring, reporting and quality checks. Your team can be scaled anytime as your agency grows.",
+        },
+      ],
+      cta: { label: "More Info", url: "/#contact" },
+    },
+  };
+
+  const heroData = hero || fallback.hero;
+  const storyData = story || fallback.story;
+  const overlayFirst = overlays[0] || fallback.overlays[0];
+  const overlaySecond = overlays[1] || fallback.overlays[1];
+  const benefitsData = benefits || fallback.benefits;
+  const howItWorksData = howItWorks || fallback.howItWorks;
+  const heroCta = heroData?.cta || fallback.hero.cta;
+  const benefitCards = benefitsData?.cards?.length ? benefitsData.cards : fallback.benefits.cards;
+  const howItWorksSteps = howItWorksData?.steps?.length ? howItWorksData.steps : fallback.howItWorks.steps;
+  const howItWorksCta = howItWorksData?.cta || fallback.howItWorks.cta;
+  const howItWorksIcon = howItWorksData?.icon || fallback.howItWorks.icon;
+
+  const renderWithBreaks = (value?: string) => {
+    if (!value) return null;
+    const parts = value.split("\n");
+    return parts.map((part, index) => (
+      <span key={`${part}-${index}`}>
+        {part}
+        {index < parts.length - 1 ? <br /> : null}
+      </span>
+    ));
+  };
+  const getUrl = (media: any, fallbackUrl?: string) => getMediaUrl(media) || fallbackUrl || "";
+  const getAlt = (media: any, fallbackAlt?: string) =>
+    media?.alternativeText || media?.data?.attributes?.alternativeText || fallbackAlt || "";
   return (
     <div className="min-h-screen bg-[#f1f5ff] relative overflow-x-hidden">
       <Header />
@@ -23,7 +176,7 @@ export default function HomeHealthPage() {
                       className="font-sans font-medium text-[#d01127] text-[13px] uppercase whitespace-nowrap"
                       style={{ fontVariationSettings: "'wdth' 100" }}
                     >
-                      Home Health
+                      {heroData?.badgeLabel || fallback.hero.badgeLabel}
                     </p>
                   </div>
                 </div>
@@ -32,8 +185,8 @@ export default function HomeHealthPage() {
               {/* Hero Image Background - Full width */}
               <div className="relative h-[562px] w-full -mt-[29px] overflow-hidden">
                 <img
-                  src="/images/services/hero-services.jpg"
-                  alt="Home health professionals"
+                  src={getUrl(heroData?.backgroundImage, "/images/services/hero-services.jpg")}
+                  alt={getAlt(heroData?.backgroundImage, "Home health professionals")}
                   className="w-full h-full object-cover object-center"
                 />
                 <div className="absolute bg-[rgba(240,242,248,0.2)] inset-0 pointer-events-none" />
@@ -46,23 +199,23 @@ export default function HomeHealthPage() {
                     className="font-sans font-semibold text-[clamp(24px,3vw,28px)] leading-[1.1] tracking-[-0.66px] w-full whitespace-pre-wrap"
                     style={{ fontVariationSettings: "'wdth' 100" }}
                   >
-                    Home Health Outsourcing
+                    {renderWithBreaks(heroData?.title || fallback.hero.title)}
                   </h1>
                   <p 
                     className="font-sans font-normal text-[clamp(11px,1.5vw,12px)] leading-[1.4] tracking-[-0.26px] w-full"
                     style={{ fontVariationSettings: "'wdth' 100" }}
                   >
-                    Improve your agency&apos;s patient experience, documentation accuracy and operational efficiency by leveraging trained remote specialists for billing, scheduling, intake and administrative support.
+                    {renderWithBreaks(heroData?.subtitle || fallback.hero.subtitle)}
                   </p>
                 </div>
                 <div className="flex flex-col gap-[20px] items-center">
                   <a 
-                    href="/#contact"
+                    href={heroCta?.url || "/#contact"}
                     className="backdrop-blur-[7px] backdrop-filter bg-gradient-to-b border border-[rgba(50,59,159,0.8)] border-solid from-[rgba(45,78,174,0.64)] items-center justify-center p-[16px] rounded-[8px] shadow-[0px_1px_4px_0px_rgba(191,192,215,0.3)] to-[rgba(34,62,140,0.48)] w-full hover:opacity-90 transition-opacity flex"
                     style={{ fontVariationSettings: "'wdth' 100" }}
                   >
                     <p className="capitalize font-sans font-semibold leading-[1.1] text-[#f1f5ff] text-[18px] text-center tracking-[-0.36px]" style={{ fontVariationSettings: "'wdth' 100" }}>
-                      Book a Discovery Call
+                      {heroCta?.label || "Book a Discovery Call"}
                     </p>
                   </a>
                 </div>
@@ -76,8 +229,8 @@ export default function HomeHealthPage() {
             <div className="absolute inset-0 overflow-hidden">
               <div className="absolute inset-0 overflow-hidden">
                 <img
-                  src="/images/services/hero-services.jpg"
-                  alt="Home health professionals"
+                  src={getUrl(heroData?.backgroundImage, "/images/services/hero-services.jpg")}
+                  alt={getAlt(heroData?.backgroundImage, "Home health professionals")}
                   className="absolute h-[200.03%] left-[-30.99%] max-w-none top-[-42.98%] w-[131.05%] object-cover"
                 />
               </div>
@@ -93,7 +246,7 @@ export default function HomeHealthPage() {
                     className="font-sans font-medium text-[#d01127] text-[33px] uppercase whitespace-nowrap"
                     style={{ fontVariationSettings: "'wdth' 100" }}
                   >
-                    Home Health
+                    {heroData?.badgeLabelDesktop || heroData?.badgeLabel || fallback.hero.badgeLabel}
                   </p>
                 </div>
               </div>
@@ -105,24 +258,24 @@ export default function HomeHealthPage() {
                     className="font-sans font-semibold text-[52px] tracking-[-1.04px] w-full"
                     style={{ fontVariationSettings: "'wdth' 100" }}
                   >
-                    Home Health Outsourcing
+                    {renderWithBreaks(heroData?.titleDesktop || heroData?.title || fallback.hero.title)}
                   </h1>
                   <p 
                     className="font-sans font-normal text-[33px] tracking-[-0.66px] w-full"
                     style={{ fontVariationSettings: "'wdth' 100" }}
                   >
-                    Improve your agency&apos;s patient experience, documentation accuracy and operational efficiency by leveraging trained remote specialists for billing, scheduling, intake and administrative support.
+                    {renderWithBreaks(heroData?.subtitleDesktop || heroData?.subtitle || fallback.hero.subtitle)}
                   </p>
                 </div>
                 
                 <div className="flex flex-col gap-[20px] items-start w-[419px]">
                   <a 
-                    href="/#contact"
+                    href={heroCta?.url || "/#contact"}
                     className="backdrop-blur-[3.777px] backdrop-filter bg-gradient-to-b border border-[rgba(50,59,159,0.8)] border-solid from-[rgba(45,78,174,0.64)] items-center justify-center p-[20px] relative rounded-[8px] to-[rgba(34,62,140,0.48)] w-full hover:opacity-90 transition-opacity flex"
                     style={{ fontVariationSettings: "'wdth' 100" }}
                   >
                     <p className="capitalize font-sans font-semibold leading-[1.1] text-[#f1f5ff] text-[33px] text-center tracking-[-0.66px] whitespace-nowrap" style={{ fontVariationSettings: "'wdth' 100" }}>
-                      Book a Discovery Call
+                      {heroCta?.label || "Book a Discovery Call"}
                     </p>
                   </a>
                 </div>
@@ -134,7 +287,7 @@ export default function HomeHealthPage() {
         {/* Our Story Section */}
         <section className="relative py-8 lg:py-16 overflow-x-hidden">
           <div className="mx-auto px-5 md:px-8 xl:px-0 max-w-[1440px]">
-            <GradientTitle label="Our Story" className="mb-0" />
+            <GradientTitle label={storyData?.label || fallback.story.label} className="mb-0" />
             <div className="flex flex-col gap-1 items-start mb-[40px] md:mb-[60px] w-full">
               <h2 
                 className="font-sans leading-[120%] w-full whitespace-pre-wrap"
@@ -147,7 +300,7 @@ export default function HomeHealthPage() {
                   letterSpacing: '-1.04px',
                 }}
               >
-                Outsourcing for Home Health Agencies
+                {renderWithBreaks(storyData?.title || fallback.story.title)}
               </h2>
               <p 
                 className="font-sans w-full"
@@ -161,13 +314,7 @@ export default function HomeHealthPage() {
                   letterSpacing: '-0.33px',
                 }}
               >
-                In Home Health, accurate documentation, timely scheduling, clean claims and clear communication directly affect both patient outcomes and reimbursement cycles.
-                <br /><br />
-                Strategic outsourcing allows agencies to maintain clinical excellence while reducing administrative pressure on nurses and office staff.
-                <br /><br />
-                Amedicase provides dedicated remote teams trained in Home Health workflows,{'\n'}EMR updates, patient intake, authorization support and Medicare/Medicaid requirements.
-                <br /><br />
-                With reliable specialists handling coordination and documentation, your agency{'\n'}can deliver better patient care while staying compliant and operationally efficient.
+                {renderWithBreaks(storyData?.body || fallback.story.body)}
               </p>
             </div>
           </div>
@@ -179,8 +326,8 @@ export default function HomeHealthPage() {
             <div className="relative w-full rounded-[12px] overflow-hidden" style={{ aspectRatio: '1320/375', minHeight: '375px' }}>
               {/* Background Image */}
               <img
-                src="/images/creative-development/office-documents-background.jpg"
-                alt="Office documents and files"
+                src={getUrl(overlayFirst?.backgroundImage, "/images/creative-development/office-documents-background.jpg")}
+                alt={getAlt(overlayFirst?.backgroundImage, "Office documents and files")}
                 className="w-full h-full object-cover rounded-[8px]"
                 style={{
                   objectPosition: 'center center'
@@ -190,13 +337,16 @@ export default function HomeHealthPage() {
               {/* Overlays Container - Single absolute wrapper for all overlays */}
               <div className="absolute inset-0 rounded-[8px] pointer-events-none">
                 {/* Blue Overlay */}
-                <div className="w-full h-full bg-[rgba(30,58,138,0.2)] mix-blend-hard-light rounded-[8px]" />
+                <div
+                  className="w-full h-full mix-blend-hard-light rounded-[8px]"
+                  style={{ backgroundColor: overlayFirst?.overlayColor || "rgba(30,58,138,0.2)" }}
+                />
                 
                 {/* White Abstract Shapes Overlay */}
                 <div className="absolute inset-0 rounded-[8px] overflow-visible">
                   <img
-                    src="/images/creative-development/white-shapes-overlay.svg"
-                    alt=""
+                    src={getUrl(overlayFirst?.overlayImage, "/images/creative-development/white-shapes-overlay.svg")}
+                    alt={getAlt(overlayFirst?.overlayImage, "")}
                     className="w-full h-full object-cover"
                     style={{
                       transform: 'scale(1.1)',
@@ -212,13 +362,13 @@ export default function HomeHealthPage() {
         {/* What We Can Offer Section */}
         <section className="relative py-8 lg:py-16 overflow-x-hidden">
           <div className="mx-auto px-5 md:px-8 xl:px-0 max-w-[1440px]">
-            <GradientTitle label="What We Can Offer" className="mb-0" />
+            <GradientTitle label={benefitsData?.label || fallback.benefits.label} className="mb-0" />
             <div className="flex flex-col gap-1 items-start justify-start mb-[40px] md:mb-[60px] w-full">
               <h2 
                 className="font-sans font-semibold leading-[1.1] text-[#000618] text-[clamp(28px,4vw,52px)] tracking-[-1.04px] w-full text-left whitespace-pre-wrap"
                 style={{ fontVariationSettings: "'wdth' 100" }}
               >
-                Outsourcing Benefits for Home Health
+                {renderWithBreaks(benefitsData?.title || fallback.benefits.title)}
               </h2>
             </div>
             
@@ -227,30 +377,30 @@ export default function HomeHealthPage() {
               {/* Card 1: Agility */}
               <div className="backdrop-blur-[15px] backdrop-filter bg-gradient-to-b border border-[rgba(99,103,146,0.8)] border-solid flex flex-col from-[rgba(204,211,234,0.25)] items-start px-[20px] py-[40px] relative rounded-[12px] shadow-[0px_2px_4px_0px_rgba(114,116,146,0.3)] to-[rgba(80,86,104,0.125)] w-full min-h-[130px]">
                 <h3 className="font-sans font-medium leading-[1.1] text-[clamp(24px,3vw,33px)] text-blue-900 tracking-[-0.66px] mb-5" style={{ fontVariationSettings: "'wdth' 100" }}>
-                  Agility
+                  {benefitCards[0]?.label || "Agility"}
                 </h3>
                 <p className="font-sans font-normal leading-[1.2] text-[#0b1737] text-[clamp(16px,2vw,20px)] tracking-[-0.4px] whitespace-pre-wrap" style={{ fontVariationSettings: "'wdth' 100" }}>
-                  Scale your support team up or down depending on census, referrals, authorizations or seasonal volume,{'\n'}without hiring delays or in-house overhead.
+                  {renderWithBreaks(benefitCards[0]?.description || fallback.benefits.cards[0].description)}
                 </p>
               </div>
 
               {/* Card 2: Capability */}
               <div className="backdrop-blur-[15px] backdrop-filter bg-gradient-to-b border border-[rgba(99,103,146,0.8)] border-solid flex flex-col from-[rgba(204,211,234,0.25)] items-start px-[20px] py-[40px] relative rounded-[12px] shadow-[0px_2px_4px_0px_rgba(114,116,146,0.3)] to-[rgba(80,86,104,0.125)] w-full min-h-[210px]">
                 <h3 className="font-sans font-medium leading-[1.1] text-[clamp(24px,3vw,33px)] text-blue-900 tracking-[-0.66px] mb-5" style={{ fontVariationSettings: "'wdth' 100" }}>
-                  Capability
+                  {benefitCards[1]?.label || "Capability"}
                 </h3>
                 <p className="font-sans font-normal leading-[1.2] text-[#0b1737] text-[clamp(16px,2vw,20px)] tracking-[-0.4px] whitespace-pre-wrap" style={{ fontVariationSettings: "'wdth' 100" }}>
-                  Our specialists are trained in HH workflows: intake, scheduling, documentation, billing support and QA tasks, ensuring accuracy and consistent output.
+                  {renderWithBreaks(benefitCards[1]?.description || fallback.benefits.cards[1].description)}
                 </p>
               </div>
 
               {/* Card 3: Core Care Focus */}
               <div className="backdrop-blur-[15px] backdrop-filter bg-gradient-to-b border border-[rgba(99,103,146,0.8)] border-solid flex flex-col from-[rgba(204,211,234,0.25)] items-start px-[20px] py-[40px] relative rounded-[12px] shadow-[0px_2px_4px_0px_rgba(114,116,146,0.3)] to-[rgba(80,86,104,0.125)] w-full min-h-[210px]">
                 <h3 className="font-sans font-medium leading-[1.1] text-[clamp(24px,3vw,33px)] text-blue-900 tracking-[-0.66px] mb-5" style={{ fontVariationSettings: "'wdth' 100" }}>
-                  Core Care Focus
+                  {benefitCards[2]?.label || "Core Care Focus"}
                 </h3>
                 <p className="font-sans font-normal leading-[1.2] text-[#0b1737] text-[clamp(16px,2vw,20px)] tracking-[-0.4px] whitespace-pre-wrap" style={{ fontVariationSettings: "'wdth' 100" }}>
-                  Outsourcing allows your clinical team{'\n'}to focus on patient care, visit quality and outcomes, while administrative tasks are handled by trained remote staff.
+                  {renderWithBreaks(benefitCards[2]?.description || fallback.benefits.cards[2].description)}
                 </p>
               </div>
             </div>
@@ -263,8 +413,8 @@ export default function HomeHealthPage() {
             <div className="relative w-full rounded-[12px] overflow-hidden" style={{ aspectRatio: '1320/375', minHeight: '375px' }}>
               {/* Background Image */}
               <img
-                src="/images/creative-development/office-documents-background.jpg"
-                alt="Office documents and files"
+                src={getUrl(overlaySecond?.backgroundImage, "/images/creative-development/office-documents-background.jpg")}
+                alt={getAlt(overlaySecond?.backgroundImage, "Office documents and files")}
                 className="w-full h-full object-cover rounded-[8px]"
                 style={{
                   objectPosition: 'center center'
@@ -274,13 +424,16 @@ export default function HomeHealthPage() {
               {/* Overlays Container - Single absolute wrapper for all overlays */}
               <div className="absolute inset-0 rounded-[8px] pointer-events-none">
                 {/* Blue Overlay */}
-                <div className="w-full h-full bg-[rgba(30,58,138,0.2)] mix-blend-hard-light rounded-[8px]" />
+                <div
+                  className="w-full h-full mix-blend-hard-light rounded-[8px]"
+                  style={{ backgroundColor: overlaySecond?.overlayColor || "rgba(30,58,138,0.2)" }}
+                />
                 
                 {/* White Abstract Shapes Overlay */}
                 <div className="absolute inset-0 rounded-[8px] overflow-visible">
                   <img
-                    src="/images/creative-development/white-shapes-overlay.svg"
-                    alt=""
+                    src={getUrl(overlaySecond?.overlayImage, "/images/creative-development/white-shapes-overlay.svg")}
+                    alt={getAlt(overlaySecond?.overlayImage, "")}
                     className="w-full h-full object-cover"
                     style={{
                       transform: 'scale(1.1)',
@@ -296,7 +449,7 @@ export default function HomeHealthPage() {
         {/* How It Works Section */}
         <section className="relative py-8 lg:py-16 overflow-x-hidden">
           <div className="mx-auto px-5 md:px-8 xl:px-0 max-w-[1440px]">
-            <GradientTitle label="How It Works" className="mb-0" />
+            <GradientTitle label={howItWorksData?.label || fallback.howItWorks.label} className="mb-0" />
             
             {/* Process Steps - Flex wrap layout with icons */}
             <div className="flex flex-col gap-[72px] items-center w-full mt-[60px]">
@@ -305,17 +458,19 @@ export default function HomeHealthPage() {
                 <div className="flex items-start pl-0 pr-[70px] py-0 relative shrink-0">
                   <div className="mr-[-70px] relative shrink-0 size-[118px] mt-[30px]">
                     <img 
-                      src="/images/home-health/how-it-works-icon.svg" 
-                      alt="" 
+                      src={getUrl(howItWorksIcon, "/images/home-health/how-it-works-icon.svg")} 
+                      alt={getAlt(howItWorksIcon, "")} 
                       className="w-full h-full object-contain"
                     />
                   </div>
                   <div className="flex flex-col gap-[20px] items-start mr-[-70px] relative shrink-0 w-[576px] whitespace-pre-wrap">
                     <h3 className="font-sans font-medium leading-[1.2] text-[#0b1737] text-[clamp(24px,3vw,33px)] tracking-[-0.66px] w-full" style={{ fontVariationSettings: "'wdth' 100" }}>
-                      Assessment
+                      {howItWorksSteps[0]?.title || "Assessment"}
                     </h3>
                     <p className="font-sans font-normal leading-[1.4] text-[#2b4691] text-[clamp(16px,2vw,20px)] tracking-[-0.4px] w-full" style={{ fontVariationSettings: "'wdth' 100" }}>
-                      We begin by understanding your operational challenges and identifying the Home Health tasks best suited for outsourcing.
+                      {renderWithBreaks(
+                        howItWorksSteps[0]?.description || fallback.howItWorks.steps[0].description
+                      )}
                     </p>
                   </div>
                 </div>
@@ -324,17 +479,19 @@ export default function HomeHealthPage() {
                 <div className="flex items-start pl-0 pr-[70px] py-0 relative shrink-0">
                   <div className="mr-[-70px] relative shrink-0 size-[118px] mt-[30px]">
                     <img 
-                      src="/images/home-health/how-it-works-icon.svg" 
-                      alt="" 
+                      src={getUrl(howItWorksIcon, "/images/home-health/how-it-works-icon.svg")} 
+                      alt={getAlt(howItWorksIcon, "")} 
                       className="w-full h-full object-contain"
                     />
                   </div>
                   <div className="flex flex-col gap-[20px] items-start mr-[-70px] relative shrink-0 w-[576px] whitespace-pre-wrap">
                     <h3 className="font-sans font-medium leading-[1.2] text-[#0b1737] text-[clamp(24px,3vw,33px)] tracking-[-0.66px] w-full" style={{ fontVariationSettings: "'wdth' 100" }}>
-                      Talent Selection
+                      {howItWorksSteps[1]?.title || "Talent Selection"}
                     </h3>
                     <p className="font-sans font-normal leading-[1.4] text-[#2b4691] text-[clamp(16px,2vw,20px)] tracking-[-0.4px] w-full" style={{ fontVariationSettings: "'wdth' 100" }}>
-                      We assign trained specialists experienced in Home Health intake, scheduling, documentation and billing coordination.
+                      {renderWithBreaks(
+                        howItWorksSteps[1]?.description || fallback.howItWorks.steps[1].description
+                      )}
                     </p>
                   </div>
                 </div>
@@ -343,17 +500,19 @@ export default function HomeHealthPage() {
                 <div className="flex items-start pl-0 pr-[70px] py-0 relative shrink-0">
                   <div className="mr-[-70px] relative shrink-0 size-[118px] mt-[30px]">
                     <img 
-                      src="/images/home-health/how-it-works-icon.svg" 
-                      alt="" 
+                      src={getUrl(howItWorksIcon, "/images/home-health/how-it-works-icon.svg")} 
+                      alt={getAlt(howItWorksIcon, "")} 
                       className="w-full h-full object-contain"
                     />
                   </div>
                   <div className="flex flex-col gap-[20px] items-start mr-[-70px] relative shrink-0 w-[576px] whitespace-pre-wrap">
                     <h3 className="font-sans font-medium leading-[1.2] text-[#0b1737] text-[clamp(24px,3vw,33px)] tracking-[-0.66px] w-full" style={{ fontVariationSettings: "'wdth' 100" }}>
-                      Seamless Integration
+                      {howItWorksSteps[2]?.title || "Seamless Integration"}
                     </h3>
                     <p className="font-sans font-normal leading-[1.4] text-[#2b4691] text-[clamp(16px,2vw,20px)] tracking-[-0.4px] w-full" style={{ fontVariationSettings: "'wdth' 100" }}>
-                      Your outsourced team integrates into your EMR, communication tools and workflow, working as an extension of your in-house staff.
+                      {renderWithBreaks(
+                        howItWorksSteps[2]?.description || fallback.howItWorks.steps[2].description
+                      )}
                     </p>
                   </div>
                 </div>
@@ -362,17 +521,19 @@ export default function HomeHealthPage() {
                 <div className="flex items-start pl-0 pr-[70px] py-0 relative shrink-0">
                   <div className="mr-[-70px] relative shrink-0 size-[118px] mt-[30px]">
                     <img 
-                      src="/images/home-health/how-it-works-icon.svg" 
-                      alt="" 
+                      src={getUrl(howItWorksIcon, "/images/home-health/how-it-works-icon.svg")} 
+                      alt={getAlt(howItWorksIcon, "")} 
                       className="w-full h-full object-contain"
                     />
                   </div>
                   <div className="flex flex-col gap-[20px] items-start mr-[-70px] relative shrink-0 w-[576px] whitespace-pre-wrap">
                     <h3 className="font-sans font-medium leading-[1.2] text-[#0b1737] text-[clamp(24px,3vw,33px)] tracking-[-0.66px] w-full" style={{ fontVariationSettings: "'wdth' 100" }}>
-                      Monitoring & Optimization
+                      {howItWorksSteps[3]?.title || "Monitoring & Optimization"}
                     </h3>
                     <p className="font-sans font-normal leading-[1.4] text-[#2b4691] text-[clamp(16px,2vw,20px)] tracking-[-0.4px] w-full" style={{ fontVariationSettings: "'wdth' 100" }}>
-                      We provide ongoing monitoring, reporting and quality checks. Your team can be scaled anytime as your agency grows.
+                      {renderWithBreaks(
+                        howItWorksSteps[3]?.description || fallback.howItWorks.steps[3].description
+                      )}
                     </p>
                   </div>
                 </div>
@@ -380,11 +541,11 @@ export default function HomeHealthPage() {
 
               {/* More Info Button */}
               <a
-                href="/#contact"
+                href={howItWorksCta?.url || "/#contact"}
                 className="backdrop-blur-[3.777px] backdrop-filter bg-gradient-to-b border border-[rgba(50,59,159,0.8)] border-solid flex from-[rgba(45,78,174,0.64)] items-center justify-center px-[40px] py-[20px] relative rounded-[8px] shadow-[0px_1px_4px_0px_rgba(87,18,23,0.3)] to-[rgba(34,62,140,0.48)] w-full hover:opacity-90 transition-opacity"
               >
                 <p className="font-sans font-semibold leading-[1.1] text-[#f1f5ff] text-[clamp(24px,3vw,33px)] text-center tracking-[-0.66px]" style={{ fontVariationSettings: "'wdth' 100" }}>
-                  More Info
+                  {howItWorksCta?.label || "More Info"}
                 </p>
               </a>
             </div>
@@ -392,11 +553,10 @@ export default function HomeHealthPage() {
         </section>
 
         {/* Contact Section */}
-        <ContactSection />
+        <ContactSection data={contactBlock} />
       </main>
       
       <Footer />
     </div>
   );
 }
-

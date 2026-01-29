@@ -1,10 +1,178 @@
+import type { Metadata } from "next";
 import { Header } from "@/components/sections/Header";
 import { Footer } from "@/components/sections/Footer";
 import { GradientTitle } from "@/components/shared/GradientTitle";
 import { TitleBlock } from "@/components/shared/TitleBlock";
 import { ContactSection } from "@/components/sections/ContactSection";
+import { getPageBySlug } from "@/lib/strapi";
+import { getMediaUrl } from "@/lib/strapi-home";
+import type {
+  CardGridSection,
+  ContactBlockSection,
+  ImageOverlaySection,
+  PageEntry,
+  PageHeroSection,
+  ProcessStagesSection,
+  StoryBlockSection,
+} from "@/lib/page-types";
 
-export default function AccountingFinancePage() {
+export async function generateMetadata(): Promise<Metadata> {
+  const page = (await getPageBySlug("accounting-finance")) as PageEntry | null;
+  const seo = page?.seo;
+  const ogImage = seo?.ogImage ? getMediaUrl(seo.ogImage) : undefined;
+  return {
+    title: seo?.metaTitle,
+    description: seo?.metaDescription,
+    alternates: seo?.canonicalUrl ? { canonical: seo.canonicalUrl } : undefined,
+    robots: seo?.noIndex ? { index: false, follow: false } : undefined,
+    openGraph: seo
+      ? {
+          title: seo.ogTitle || seo.metaTitle,
+          description: seo.ogDescription || seo.metaDescription,
+          images: ogImage ? [ogImage] : undefined,
+        }
+      : undefined,
+  };
+}
+
+export default async function AccountingFinancePage() {
+  const page = (await getPageBySlug("accounting-finance")) as PageEntry | null;
+  const sections = page?.sections || [];
+  const hero = sections.find(
+    (section): section is PageHeroSection => section.__component === "sections.page-hero"
+  );
+  const story = sections.find(
+    (section): section is StoryBlockSection => section.__component === "sections.story-block"
+  );
+  const overlays = sections.filter(
+    (section): section is ImageOverlaySection => section.__component === "sections.image-overlay"
+  );
+  const cardGrid = sections.find(
+    (section): section is CardGridSection => section.__component === "sections.card-grid"
+  );
+  const processStages = sections.find(
+    (section): section is ProcessStagesSection => section.__component === "sections.process-stages"
+  );
+  const contactBlock = sections.find(
+    (section): section is ContactBlockSection => section.__component === "sections.contact-block"
+  );
+
+  const fallback = {
+    hero: {
+      badgeLabel: "Accounting and Finance",
+      title: "Accounting and Finance",
+      subtitle:
+        "Access trained, reliable and detail-oriented digital support specialists dedicated to improving your agency's online presence, documentation flows and patient experience.",
+      subtitleDesktop:
+        "Access trained, reliable and detail-oriented digital support specialists\ndedicated to improving your agency's online presence, documentation flows\nand patient experience.",
+      cta: { label: "Book a Discovery Call", url: "/#contact" },
+    },
+    story: {
+      label: "Our Story",
+      title: "Outsourcing Accounting & Finance Services\nfor Home Health Agencies",
+      body:
+        "Most Home Health and Hospice agencies across the U.S. are now outsourcing billing, payroll prep, AR follow-up and claims reconciliation to specialized remote teams.\n\nThis shift allows agencies to speed up payments, reduce denials, and maintain consistent financial accuracy without the cost of expanding an in-house office team.\n\nAmedicase specialists are trained on the systems commonly used in the U.S. healthcare sector, including WellSky, Axxess, MatrixCare, Brightree, QuickBooks and other\nRCM tools.\n\nBecause we operate in alignment with U.S. financial standards, Medicare guidelines, HIPAA compliance and state-specific requirements, outsourcing your billing and finance functions to Amedicase becomes efficient, accurate, and scalable.",
+    },
+    overlays: [
+      {
+        backgroundImage: "/images/creative-development/office-documents-background.jpg",
+        overlayColor: "rgba(30,58,138,0.2)",
+        overlayImage: "/images/creative-development/white-shapes-overlay.svg",
+      },
+      {
+        backgroundImage: "/images/creative-development/office-documents-background.jpg",
+        overlayColor: "rgba(30,58,138,0.2)",
+        overlayImage: "/images/creative-development/white-shapes-overlay.svg",
+      },
+    ],
+    cardGrid: {
+      label: "What We Can Offer",
+      title:
+        "Digital support designed to strengthen your agency's online presence, documentation accuracy and patient experience.",
+      dotIcon: "/images/creative-development/dot-icon.svg",
+      cards: [
+        {
+          title: "Accounts Receivable Coordinators",
+          description: "Follow-ups, payment posting, AR aging management, weekly and monthly reports.",
+          backgroundImage: "/images/creative-development/card-bg-1.svg",
+        },
+        {
+          title: "Payroll & Timesheet Support",
+          description: "Processing timesheets, preparing payroll reports, verifying visit records and EVV data.",
+          backgroundImage: "/images/creative-development/card-bg-2.svg",
+        },
+        {
+          title: "Billing & Claims Specialists",
+          description:
+            "End-to-end claims submission, denial management, AR tracking and reconciliation\nfor Medicare, Medicaid and private pay.",
+          backgroundImage: "/images/creative-development/card-bg-3.svg",
+        },
+        {
+          title: "Bookkeeping & Financial Assistants",
+          description:
+            "Digital documentation setup, EMR form mapping and patient-flow optimization for smoother operations.",
+          backgroundImage: "/images/creative-development/card-bg-4.svg",
+        },
+      ],
+    },
+    processStages: {
+      label: "The Amedicase Process",
+      arrowImage: "/images/creative-development/arrow-down.svg",
+      arrowFinalImage: "/images/creative-development/arrow-down-final.svg",
+      stages: [
+        {
+          stageLabel: "Stage 1",
+          title: "Understanding Your Needs",
+          description:
+            "We begin by analyzing your billing process, EMR setup, AR aging, payroll structure and reporting needs.\nWe identify the exact tasks to outsource and create a clear, tailored finance solution for your agency.",
+        },
+        {
+          stageLabel: "Stage 2",
+          title: "Assigning the Right Specialists",
+          description:
+            "We select professionals experienced in U.S. home health billing, AR management, payroll prep and financial support.\nEvery specialist is vetted, trained and aligned with HIPAA and Medicare compliance requirements.",
+        },
+        {
+          stageLabel: "Stage 3",
+          title: "Seamless Integration Into Your Agency",
+          description:
+            "Your outsourced team works directly with your EMR, RCM platform, financial tools and internal staff.\nCommunication, workflows and reports remain aligned with your agency's processes for a productive collaboration.",
+        },
+        {
+          stageLabel: "Stage 4",
+          title: "Quality Control & Continuous Support",
+          description:
+            "We provide frequent reporting, quality checks, denial analysis and financial insights. As your volume grows,\nwe adjust team size and workflows, to ensure your billing and finance remain accurate and fast.",
+        },
+      ],
+      cta: { label: "Contact Us", url: "/#contact" },
+    },
+  };
+
+  const heroData = hero || fallback.hero;
+  const storyData = story || fallback.story;
+  const overlayFirst = overlays[0] || fallback.overlays[0];
+  const overlaySecond = overlays[1] || fallback.overlays[1];
+  const cardGridData = cardGrid || fallback.cardGrid;
+  const processData = processStages || fallback.processStages;
+  const heroCta = heroData?.cta || fallback.hero.cta;
+  const gridCards = cardGridData?.cards?.length ? cardGridData.cards : fallback.cardGrid.cards;
+  const stageItems = processData?.stages?.length ? processData.stages : fallback.processStages.stages;
+  const processCta = processData?.cta || fallback.processStages.cta;
+
+  const renderWithBreaks = (value?: string) => {
+    if (!value) return null;
+    const parts = value.split("\n");
+    return parts.map((part, index) => (
+      <span key={`${part}-${index}`}>
+        {part}
+        {index < parts.length - 1 ? <br /> : null}
+      </span>
+    ));
+  };
+  const getUrl = (media: any, fallbackUrl?: string) => getMediaUrl(media) || fallbackUrl || "";
+  const getAlt = (media: any, fallbackAlt?: string) =>
+    media?.alternativeText || media?.data?.attributes?.alternativeText || fallbackAlt || "";
   return (
     <div className="min-h-screen bg-[#f1f5ff] relative overflow-x-hidden">
       <Header />
@@ -23,7 +191,7 @@ export default function AccountingFinancePage() {
                       className="font-sans font-medium text-[#d01127] text-[13px] uppercase whitespace-nowrap"
                       style={{ fontVariationSettings: "'wdth' 100" }}
                     >
-                      Accounting and Finance
+                      {heroData?.badgeLabel || fallback.hero.badgeLabel}
                     </p>
                   </div>
                 </div>
@@ -32,8 +200,8 @@ export default function AccountingFinancePage() {
               {/* Hero Image Background - Full width */}
               <div className="relative h-[562px] w-full -mt-[29px] overflow-hidden">
                 <img
-                  src="/images/services/hero-services.jpg"
-                  alt="Accounting and finance professionals"
+                  src={getUrl(heroData?.backgroundImage, "/images/services/hero-services.jpg")}
+                  alt={getAlt(heroData?.backgroundImage, "Accounting and finance professionals")}
                   className="w-full h-full object-cover object-center"
                 />
                 <div className="absolute bg-[rgba(240,242,248,0.2)] inset-0 pointer-events-none" />
@@ -46,23 +214,23 @@ export default function AccountingFinancePage() {
                     className="font-sans font-semibold text-[clamp(24px,3vw,28px)] leading-[1.1] tracking-[-0.66px] w-full whitespace-pre-wrap"
                     style={{ fontVariationSettings: "'wdth' 100" }}
                   >
-                    Accounting and Finance
+                    {renderWithBreaks(heroData?.title || fallback.hero.title)}
                   </h1>
                   <p 
                     className="font-sans font-normal text-[clamp(11px,1.5vw,12px)] leading-[1.4] tracking-[-0.26px] w-full"
                     style={{ fontVariationSettings: "'wdth' 100" }}
                   >
-                    Access trained, reliable and detail-oriented digital support specialists dedicated to improving your agency&apos;s online presence, documentation flows and patient experience.
+                    {renderWithBreaks(heroData?.subtitle || fallback.hero.subtitle)}
                   </p>
                 </div>
                 <div className="flex flex-col gap-[20px] items-center">
                   <a 
-                    href="/#contact"
+                    href={heroCta?.url || "/#contact"}
                     className="backdrop-blur-[7px] backdrop-filter bg-gradient-to-b border border-[rgba(50,59,159,0.8)] border-solid from-[rgba(45,78,174,0.64)] items-center justify-center p-[16px] rounded-[8px] shadow-[0px_1px_4px_0px_rgba(191,192,215,0.3)] to-[rgba(34,62,140,0.48)] w-full hover:opacity-90 transition-opacity flex"
                     style={{ fontVariationSettings: "'wdth' 100" }}
                   >
                     <p className="capitalize font-sans font-semibold leading-[1.1] text-[#f1f5ff] text-[18px] text-center tracking-[-0.36px]" style={{ fontVariationSettings: "'wdth' 100" }}>
-                      Book a Discovery Call
+                      {heroCta?.label || "Book a Discovery Call"}
                     </p>
                   </a>
                 </div>
@@ -76,8 +244,8 @@ export default function AccountingFinancePage() {
             <div className="absolute inset-0 overflow-hidden">
               <div className="absolute inset-0 overflow-hidden">
                 <img
-                  src="/images/services/hero-services.jpg"
-                  alt="Accounting and finance professionals"
+                  src={getUrl(heroData?.backgroundImage, "/images/services/hero-services.jpg")}
+                  alt={getAlt(heroData?.backgroundImage, "Accounting and finance professionals")}
                   className="absolute h-[200.03%] left-[-30.99%] max-w-none top-[-42.98%] w-[131.05%] object-cover"
                 />
               </div>
@@ -93,7 +261,7 @@ export default function AccountingFinancePage() {
                     className="font-sans font-medium text-[#d01127] text-[33px] uppercase whitespace-nowrap"
                     style={{ fontVariationSettings: "'wdth' 100" }}
                   >
-                    Accounting and Finance
+                    {heroData?.badgeLabelDesktop || heroData?.badgeLabel || fallback.hero.badgeLabel}
                   </p>
                 </div>
               </div>
@@ -105,24 +273,26 @@ export default function AccountingFinancePage() {
                     className="font-sans font-semibold text-[52px] tracking-[-1.04px] w-full"
                     style={{ fontVariationSettings: "'wdth' 100" }}
                   >
-                    Accounting and Finance
+                    {renderWithBreaks(heroData?.titleDesktop || heroData?.title || fallback.hero.title)}
                   </h1>
                   <p 
                     className="font-sans font-normal text-[33px] tracking-[-0.66px] w-full"
                     style={{ fontVariationSettings: "'wdth' 100" }}
                   >
-                    Access trained, reliable and detail-oriented digital support specialists{'\n'}dedicated to improving your agency&apos;s online presence, documentation flows{'\n'}and patient experience.
+                    {renderWithBreaks(
+                      heroData?.subtitleDesktop || heroData?.subtitle || fallback.hero.subtitle
+                    )}
                   </p>
                 </div>
                 
                 <div className="flex flex-col gap-[20px] items-start w-[419px]">
                   <a 
-                    href="/#contact"
+                    href={heroCta?.url || "/#contact"}
                     className="backdrop-blur-[3.777px] backdrop-filter bg-gradient-to-b border border-[rgba(50,59,159,0.8)] border-solid from-[rgba(45,78,174,0.64)] items-center justify-center p-[20px] relative rounded-[8px] to-[rgba(34,62,140,0.48)] w-full hover:opacity-90 transition-opacity flex"
                     style={{ fontVariationSettings: "'wdth' 100" }}
                   >
                     <p className="capitalize font-sans font-semibold leading-[1.1] text-[#f1f5ff] text-[33px] text-center tracking-[-0.66px] whitespace-nowrap" style={{ fontVariationSettings: "'wdth' 100" }}>
-                      Book a Discovery Call
+                      {heroCta?.label || "Book a Discovery Call"}
                     </p>
                   </a>
                 </div>
@@ -135,7 +305,7 @@ export default function AccountingFinancePage() {
         <section className="relative py-8 lg:py-16 overflow-x-hidden">
           <div className="mx-auto px-5 md:px-8 xl:px-0 max-w-[1440px]">
             <div className="flex flex-col gap-1 items-start mb-[40px] md:mb-[60px] w-full">
-              <GradientTitle label="Our Story" className="mb-0" />
+              <GradientTitle label={storyData?.label || fallback.story.label} className="mb-0" />
               <h2 
                 className="font-sans leading-[120%] w-full whitespace-pre-wrap -mt-[30px]"
                 style={{ 
@@ -147,7 +317,7 @@ export default function AccountingFinancePage() {
                   letterSpacing: '-0.52px',
                 }}
               >
-                Outsourcing Accounting & Finance Services{'\n'}for Home Health Agencies
+                {renderWithBreaks(storyData?.title || fallback.story.title)}
               </h2>
               <p 
                 className="font-sans w-full mt-4"
@@ -161,13 +331,7 @@ export default function AccountingFinancePage() {
                   letterSpacing: '-0.33px',
                 }}
               >
-                Most Home Health and Hospice agencies across the U.S. are now outsourcing billing, payroll prep, AR follow-up and claims reconciliation to specialized remote teams.
-                <br /><br />
-                This shift allows agencies to speed up payments, reduce denials, and maintain consistent financial accuracy without the cost of expanding an in-house office team.
-                <br /><br />
-                Amedicase specialists are trained on the systems commonly used in the U.S. healthcare sector, including WellSky, Axxess, MatrixCare, Brightree, QuickBooks and other{'\n'}RCM tools.
-                <br /><br />
-                Because we operate in alignment with U.S. financial standards, Medicare guidelines, HIPAA compliance and state-specific requirements, outsourcing your billing and finance functions to Amedicase becomes efficient, accurate, and scalable.
+                {renderWithBreaks(storyData?.body || fallback.story.body)}
               </p>
             </div>
           </div>
@@ -179,8 +343,8 @@ export default function AccountingFinancePage() {
             <div className="relative w-full rounded-[12px] overflow-hidden" style={{ aspectRatio: '1320/375', minHeight: '375px' }}>
               {/* Background Image */}
               <img
-                src="/images/creative-development/office-documents-background.jpg"
-                alt="Office documents and files"
+                src={getUrl(overlayFirst?.backgroundImage, "/images/creative-development/office-documents-background.jpg")}
+                alt={getAlt(overlayFirst?.backgroundImage, "Office documents and files")}
                 className="w-full h-full object-cover rounded-[8px]"
                 style={{
                   objectPosition: 'center center'
@@ -190,13 +354,16 @@ export default function AccountingFinancePage() {
               {/* Overlays Container - Single absolute wrapper for all overlays */}
               <div className="absolute inset-0 rounded-[8px] pointer-events-none">
                 {/* Blue Overlay */}
-                <div className="w-full h-full bg-[rgba(30,58,138,0.2)] mix-blend-hard-light rounded-[8px]" />
+                <div
+                  className="w-full h-full mix-blend-hard-light rounded-[8px]"
+                  style={{ backgroundColor: overlayFirst?.overlayColor || "rgba(30,58,138,0.2)" }}
+                />
                 
                 {/* White Abstract Shapes Overlay */}
                 <div className="absolute inset-0 rounded-[8px] overflow-visible">
                   <img
-                    src="/images/creative-development/white-shapes-overlay.svg"
-                    alt=""
+                    src={getUrl(overlayFirst?.overlayImage, "/images/creative-development/white-shapes-overlay.svg")}
+                    alt={getAlt(overlayFirst?.overlayImage, "")}
                     className="w-full h-full object-cover"
                     style={{
                       transform: 'scale(1.1)',
@@ -213,8 +380,8 @@ export default function AccountingFinancePage() {
         <section className="relative py-8 lg:py-16 overflow-x-hidden">
           <div className="mx-auto px-5 md:px-8 xl:px-0 max-w-[1440px]">
             <TitleBlock
-              label="What We Can Offer"
-              title="Digital support designed to strengthen your agency&apos;s online presence, documentation accuracy and patient experience."
+              label={cardGridData?.label || fallback.cardGrid.label}
+              title={cardGridData?.title || fallback.cardGrid.title}
             />
             
             {/* Services Grid - Responsive 2x2 on desktop, 1 column on mobile */}
@@ -223,25 +390,27 @@ export default function AccountingFinancePage() {
                   <div className="relative w-full min-h-[117px]">
                     <div className="absolute inset-0">
                       <img
-                        src="/images/creative-development/card-bg-1.svg"
-                        alt=""
+                        src={getUrl(gridCards[0]?.backgroundImage, "/images/creative-development/card-bg-1.svg")}
+                        alt={getAlt(gridCards[0]?.backgroundImage, "")}
                         className="w-full h-full object-cover"
                       />
                     </div>
                     <div className="relative flex flex-col gap-[10px] p-[20px]">
                       <div className="flex items-start gap-[20px]">
                         <img
-                          src="/images/creative-development/dot-icon.svg"
-                          alt=""
+                          src={getUrl(cardGridData?.dotIcon, "/images/creative-development/dot-icon.svg")}
+                          alt={getAlt(cardGridData?.dotIcon, "")}
                           className="w-4 h-4 flex-shrink-0 mt-[2px] -ml-[5px]"
                           style={{ filter: 'blur(0.3px)' }}
                         />
                         <h3 className="font-sans font-bold leading-[1.2] text-[clamp(16px,2vw,18px)] text-blue-900 -mt-[5px]" style={{ fontVariationSettings: "'wdth' 100" }}>
-                          Accounts Receivable Coordinators
+                          {gridCards[0]?.title || "Accounts Receivable Coordinators"}
                         </h3>
                       </div>
                       <p className="font-sans font-normal leading-[1.4] text-[#000618] text-[clamp(14px,1.8vw,16px)] tracking-[-0.2px] pl-[36px] whitespace-pre-wrap" style={{ fontVariationSettings: "'wdth' 100" }}>
-                        Follow-ups, payment posting, AR aging management, weekly and monthly reports.
+                        {renderWithBreaks(
+                          gridCards[0]?.description || fallback.cardGrid.cards[0].description
+                        )}
                       </p>
                     </div>
                   </div>
@@ -250,25 +419,27 @@ export default function AccountingFinancePage() {
                   <div className="relative w-full min-h-[117px]">
                     <div className="absolute inset-0">
                       <img
-                        src="/images/creative-development/card-bg-2.svg"
-                        alt=""
+                        src={getUrl(gridCards[1]?.backgroundImage, "/images/creative-development/card-bg-2.svg")}
+                        alt={getAlt(gridCards[1]?.backgroundImage, "")}
                         className="w-full h-full object-cover"
                       />
                     </div>
                     <div className="relative flex flex-col gap-[10px] p-[20px]">
                       <div className="flex items-start gap-[20px]">
                         <img
-                          src="/images/creative-development/dot-icon.svg"
-                          alt=""
+                          src={getUrl(cardGridData?.dotIcon, "/images/creative-development/dot-icon.svg")}
+                          alt={getAlt(cardGridData?.dotIcon, "")}
                           className="w-4 h-4 flex-shrink-0 mt-[2px] -ml-[5px]"
                           style={{ filter: 'blur(0.3px)' }}
                         />
                         <h3 className="font-sans font-bold leading-[1.2] text-[clamp(16px,2vw,18px)] text-blue-900 -mt-[5px]" style={{ fontVariationSettings: "'wdth' 100" }}>
-                          Payroll & Timesheet Support
+                          {gridCards[1]?.title || "Payroll & Timesheet Support"}
                         </h3>
                       </div>
                       <p className="font-sans font-normal leading-[1.4] text-[#000618] text-[clamp(14px,1.8vw,16px)] tracking-[-0.2px] pl-[36px] whitespace-pre-wrap" style={{ fontVariationSettings: "'wdth' 100" }}>
-                        Processing timesheets, preparing payroll reports, verifying visit records and EVV data.
+                        {renderWithBreaks(
+                          gridCards[1]?.description || fallback.cardGrid.cards[1].description
+                        )}
                       </p>
                     </div>
                   </div>
@@ -277,25 +448,27 @@ export default function AccountingFinancePage() {
                   <div className="relative w-full min-h-[145px]">
                     <div className="absolute inset-0">
                       <img
-                        src="/images/creative-development/card-bg-3.svg"
-                        alt=""
+                        src={getUrl(gridCards[2]?.backgroundImage, "/images/creative-development/card-bg-3.svg")}
+                        alt={getAlt(gridCards[2]?.backgroundImage, "")}
                         className="w-full h-full object-cover"
                       />
                     </div>
                     <div className="relative flex flex-col gap-[10px] p-[20px]">
                       <div className="flex items-start gap-[20px]">
                         <img
-                          src="/images/creative-development/dot-icon.svg"
-                          alt=""
+                          src={getUrl(cardGridData?.dotIcon, "/images/creative-development/dot-icon.svg")}
+                          alt={getAlt(cardGridData?.dotIcon, "")}
                           className="w-4 h-4 flex-shrink-0 mt-[2px] -ml-[5px]"
                           style={{ filter: 'blur(0.3px)' }}
                         />
                         <h3 className="font-sans font-bold leading-[1.2] text-[clamp(16px,2vw,18px)] text-blue-900 -mt-[5px]" style={{ fontVariationSettings: "'wdth' 100" }}>
-                          Billing & Claims Specialists
+                          {gridCards[2]?.title || "Billing & Claims Specialists"}
                         </h3>
                       </div>
                       <p className="font-sans font-normal leading-[1.4] text-[#000618] text-[clamp(14px,1.8vw,16px)] tracking-[-0.2px] pl-[36px] whitespace-pre-wrap" style={{ fontVariationSettings: "'wdth' 100" }}>
-                        End-to-end claims submission, denial management, AR tracking and reconciliation{'\n'}for Medicare, Medicaid and private pay.
+                        {renderWithBreaks(
+                          gridCards[2]?.description || fallback.cardGrid.cards[2].description
+                        )}
                       </p>
                     </div>
                   </div>
@@ -304,25 +477,27 @@ export default function AccountingFinancePage() {
                   <div className="relative w-full min-h-[145px]">
                     <div className="absolute inset-0">
                       <img
-                        src="/images/creative-development/card-bg-4.svg"
-                        alt=""
+                        src={getUrl(gridCards[3]?.backgroundImage, "/images/creative-development/card-bg-4.svg")}
+                        alt={getAlt(gridCards[3]?.backgroundImage, "")}
                         className="w-full h-full object-cover"
                       />
                     </div>
                     <div className="relative flex flex-col gap-[10px] p-[20px]">
                       <div className="flex items-start gap-[20px]">
                         <img
-                          src="/images/creative-development/dot-icon.svg"
-                          alt=""
+                          src={getUrl(cardGridData?.dotIcon, "/images/creative-development/dot-icon.svg")}
+                          alt={getAlt(cardGridData?.dotIcon, "")}
                           className="w-4 h-4 flex-shrink-0 mt-[2px] -ml-[5px]"
                           style={{ filter: 'blur(0.3px)' }}
                         />
                         <h3 className="font-sans font-bold leading-[1.2] text-[clamp(16px,2vw,18px)] text-blue-900 -mt-[5px]" style={{ fontVariationSettings: "'wdth' 100" }}>
-                          Bookkeeping & Financial Assistants
+                          {gridCards[3]?.title || "Bookkeeping & Financial Assistants"}
                         </h3>
                       </div>
                       <p className="font-sans font-normal leading-[1.4] text-[#000618] text-[clamp(14px,1.8vw,16px)] tracking-[-0.2px] pl-[36px] whitespace-pre-wrap" style={{ fontVariationSettings: "'wdth' 100" }}>
-                        Digital documentation setup, EMR form mapping and patient-flow optimization for smoother operations.
+                        {renderWithBreaks(
+                          gridCards[3]?.description || fallback.cardGrid.cards[3].description
+                        )}
                       </p>
                     </div>
                   </div>
@@ -336,8 +511,8 @@ export default function AccountingFinancePage() {
             <div className="relative w-full rounded-[12px] overflow-hidden" style={{ aspectRatio: '1320/375', minHeight: '375px' }}>
               {/* Background Image */}
               <img
-                src="/images/creative-development/office-documents-background.jpg"
-                alt="Office documents and files"
+                src={getUrl(overlaySecond?.backgroundImage, "/images/creative-development/office-documents-background.jpg")}
+                alt={getAlt(overlaySecond?.backgroundImage, "Office documents and files")}
                 className="w-full h-full object-cover rounded-[8px]"
                 style={{
                   objectPosition: 'center center'
@@ -347,13 +522,16 @@ export default function AccountingFinancePage() {
               {/* Overlays Container - Single absolute wrapper for all overlays */}
               <div className="absolute inset-0 rounded-[8px] pointer-events-none">
                 {/* Blue Overlay */}
-                <div className="w-full h-full bg-[rgba(30,58,138,0.2)] mix-blend-hard-light rounded-[8px]" />
+                <div
+                  className="w-full h-full mix-blend-hard-light rounded-[8px]"
+                  style={{ backgroundColor: overlaySecond?.overlayColor || "rgba(30,58,138,0.2)" }}
+                />
                 
                 {/* White Abstract Shapes Overlay */}
                 <div className="absolute inset-0 rounded-[8px] overflow-visible">
                   <img
-                    src="/images/creative-development/white-shapes-overlay.svg"
-                    alt=""
+                    src={getUrl(overlaySecond?.overlayImage, "/images/creative-development/white-shapes-overlay.svg")}
+                    alt={getAlt(overlaySecond?.overlayImage, "")}
                     className="w-full h-full object-cover"
                     style={{
                       transform: 'scale(1.1)',
@@ -369,7 +547,7 @@ export default function AccountingFinancePage() {
         {/* The Amedicase Process Section */}
         <section className="relative py-8 lg:py-16 overflow-x-hidden">
           <div className="mx-auto px-5 md:px-8 xl:px-0 max-w-[1440px]">
-            <GradientTitle label="The Amedicase Process" className="mb-0" />
+            <GradientTitle label={processData?.label || fallback.processStages.label} className="mb-0" />
             
             {/* Process Steps - Vertical Stack */}
             <div className="flex flex-col gap-[20px] items-center w-full max-w-[1002px] mx-auto mt-[40px] md:mt-[60px]">
@@ -378,14 +556,16 @@ export default function AccountingFinancePage() {
                 <div className="flex flex-col gap-[40px] items-center justify-center text-center w-full">
                   <div className="flex flex-col font-sans font-medium gap-[20px] items-center leading-[1.2] text-[clamp(24px,3vw,33px)] tracking-[-0.66px]" style={{ fontVariationSettings: "'wdth' 100" }}>
                     <p className="text-[#d01127]">
-                      Stage 1
+                      {stageItems[0]?.stageLabel || "Stage 1"}
                     </p>
                     <p className="text-[#0b1737]">
-                      Understanding Your Needs
+                      {stageItems[0]?.title || "Understanding Your Needs"}
                     </p>
                   </div>
                   <p className="font-sans font-normal leading-[1.1] text-[#0b1737] text-[clamp(16px,2vw,20px)] tracking-[-0.4px] whitespace-pre-wrap" style={{ fontVariationSettings: "'wdth' 100" }}>
-                    We begin by analyzing your billing process, EMR setup, AR aging, payroll structure and reporting needs.{'\n'}We identify the exact tasks to outsource and create a clear, tailored finance solution for your agency.
+                    {renderWithBreaks(
+                      stageItems[0]?.description || fallback.processStages.stages[0].description
+                    )}
                   </p>
                 </div>
               </div>
@@ -394,8 +574,8 @@ export default function AccountingFinancePage() {
               <div className="flex h-[20px] items-center justify-center w-[44px]">
                 <div className="flex-none rotate-90">
                   <img 
-                    src="/images/creative-development/arrow-down.svg" 
-                    alt="" 
+                    src={getUrl(processData?.arrowImage, "/images/creative-development/arrow-down.svg")} 
+                    alt={getAlt(processData?.arrowImage, "")} 
                     className="h-[44px] w-[20px]"
                   />
                 </div>
@@ -406,14 +586,16 @@ export default function AccountingFinancePage() {
                 <div className="flex flex-col gap-[40px] items-center justify-center text-center w-full">
                   <div className="flex flex-col font-sans font-medium gap-[20px] items-center leading-[1.2] text-[clamp(24px,3vw,33px)] tracking-[-0.66px]" style={{ fontVariationSettings: "'wdth' 100" }}>
                     <p className="text-[#d01127]">
-                      Stage 2
+                      {stageItems[1]?.stageLabel || "Stage 2"}
                     </p>
                     <p className="text-[#0b1737]">
-                      Assigning the Right Specialists
+                      {stageItems[1]?.title || "Assigning the Right Specialists"}
                     </p>
                   </div>
                   <p className="font-sans font-normal leading-[1.1] text-[#0b1737] text-[clamp(16px,2vw,20px)] tracking-[-0.4px] whitespace-pre-wrap" style={{ fontVariationSettings: "'wdth' 100" }}>
-                    We select professionals experienced in U.S. home health billing, AR management, payroll prep and financial support.{'\n'}Every specialist is vetted, trained and aligned with HIPAA and Medicare compliance requirements.
+                    {renderWithBreaks(
+                      stageItems[1]?.description || fallback.processStages.stages[1].description
+                    )}
                   </p>
                 </div>
               </div>
@@ -422,8 +604,8 @@ export default function AccountingFinancePage() {
               <div className="flex h-[20px] items-center justify-center w-[44px]">
                 <div className="flex-none rotate-90">
                   <img 
-                    src="/images/creative-development/arrow-down.svg" 
-                    alt="" 
+                    src={getUrl(processData?.arrowImage, "/images/creative-development/arrow-down.svg")} 
+                    alt={getAlt(processData?.arrowImage, "")} 
                     className="h-[44px] w-[20px]"
                   />
                 </div>
@@ -434,14 +616,16 @@ export default function AccountingFinancePage() {
                 <div className="flex flex-col gap-[40px] items-center justify-center text-center w-full">
                   <div className="flex flex-col font-sans font-medium gap-[20px] items-center leading-[1.2] text-[clamp(24px,3vw,33px)] tracking-[-0.66px]" style={{ fontVariationSettings: "'wdth' 100" }}>
                     <p className="text-[#d01127]">
-                      Stage 3
+                      {stageItems[2]?.stageLabel || "Stage 3"}
                     </p>
                     <p className="text-[#0b1737]">
-                      Seamless Integration Into Your Agency
+                      {stageItems[2]?.title || "Seamless Integration Into Your Agency"}
                     </p>
                   </div>
                   <p className="font-sans font-normal leading-[1.1] text-[#0b1737] text-[clamp(16px,2vw,20px)] tracking-[-0.4px] whitespace-pre-wrap" style={{ fontVariationSettings: "'wdth' 100" }}>
-                    Your outsourced team works directly with your EMR, RCM platform, financial tools and internal staff.{'\n'}Communication, workflows and reports remain aligned with your agency&apos;s processes for a productive collaboration.
+                    {renderWithBreaks(
+                      stageItems[2]?.description || fallback.processStages.stages[2].description
+                    )}
                   </p>
                 </div>
               </div>
@@ -450,8 +634,8 @@ export default function AccountingFinancePage() {
               <div className="flex h-[20px] items-center justify-center w-[44px]">
                 <div className="flex-none rotate-90">
                   <img 
-                    src="/images/creative-development/arrow-down.svg" 
-                    alt="" 
+                    src={getUrl(processData?.arrowImage, "/images/creative-development/arrow-down.svg")} 
+                    alt={getAlt(processData?.arrowImage, "")} 
                     className="h-[44px] w-[20px]"
                   />
                 </div>
@@ -462,14 +646,16 @@ export default function AccountingFinancePage() {
                 <div className="flex flex-col gap-[40px] items-center justify-center text-center w-full">
                   <div className="flex flex-col font-sans font-medium gap-[20px] items-center leading-[1.2] text-[clamp(24px,3vw,33px)] tracking-[-0.66px]" style={{ fontVariationSettings: "'wdth' 100" }}>
                     <p className="text-[#d01127]">
-                      Stage 4
+                      {stageItems[3]?.stageLabel || "Stage 4"}
                     </p>
                     <p className="text-[#0b1737]">
-                      Quality Control & Continuous Support
+                      {stageItems[3]?.title || "Quality Control & Continuous Support"}
                     </p>
                   </div>
                   <p className="font-sans font-normal leading-[1.1] text-[#0b1737] text-[clamp(16px,2vw,20px)] tracking-[-0.4px] whitespace-pre-wrap" style={{ fontVariationSettings: "'wdth' 100" }}>
-                    We provide frequent reporting, quality checks, denial analysis and financial insights. As your volume grows,{'\n'}we adjust team size and workflows, to ensure your billing and finance remain accurate and fast.
+                    {renderWithBreaks(
+                      stageItems[3]?.description || fallback.processStages.stages[3].description
+                    )}
                   </p>
                 </div>
               </div>
@@ -478,8 +664,8 @@ export default function AccountingFinancePage() {
               <div className="flex h-[20px] items-center justify-center w-[44px]">
                 <div className="flex-none rotate-90">
                   <img 
-                    src="/images/creative-development/arrow-down-final.svg" 
-                    alt="" 
+                    src={getUrl(processData?.arrowFinalImage, "/images/creative-development/arrow-down-final.svg")} 
+                    alt={getAlt(processData?.arrowFinalImage, "")} 
                     className="h-[44px] w-[20px]"
                   />
                 </div>
@@ -487,11 +673,11 @@ export default function AccountingFinancePage() {
 
               {/* Contact Us Button */}
               <a
-                href="/#contact"
+                href={processCta?.url || "/#contact"}
                 className="backdrop-blur-[3.777px] backdrop-filter bg-gradient-to-b border border-[rgba(209,51,69,0.8)] border-solid flex from-[rgba(205,27,48,0.24)] items-center justify-center px-[60px] py-[20px] relative rounded-[12px] shadow-[0px_1px_4px_0px_rgba(87,18,23,0.3)] to-[rgba(215,45,64,0.16)] hover:opacity-90 transition-opacity"
               >
                 <p className="font-sans font-semibold leading-[1.1] text-[#d4283c] text-[clamp(24px,3vw,33px)] text-center tracking-[-0.66px]" style={{ fontVariationSettings: "'wdth' 100" }}>
-                  Contact Us
+                  {processCta?.label || "Contact Us"}
                 </p>
               </a>
             </div>
@@ -499,11 +685,10 @@ export default function AccountingFinancePage() {
         </section>
 
         {/* Contact Section */}
-        <ContactSection />
+        <ContactSection data={contactBlock} />
       </main>
       
       <Footer />
     </div>
   );
 }
-

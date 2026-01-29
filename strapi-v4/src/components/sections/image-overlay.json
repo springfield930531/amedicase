@@ -1,0 +1,27 @@
+{
+  "collectionName": "components_sections_image_overlays",
+  "info": {
+    "displayName": "Image overlay",
+    "icon": "images"
+  },
+  "attributes": {
+    "backgroundImage": {
+      "type": "media",
+      "allowedTypes": [
+        "images"
+      ],
+      "multiple": false
+    },
+    "overlayColor": {
+      "type": "string"
+    },
+    "overlayImage": {
+      "type": "media",
+      "allowedTypes": [
+        "images",
+        "files"
+      ],
+      "multiple": false
+    }
+  }
+}

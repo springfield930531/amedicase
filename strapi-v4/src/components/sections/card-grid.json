@@ -1,0 +1,28 @@
+{
+  "collectionName": "components_sections_card_grids",
+  "info": {
+    "displayName": "Card grid",
+    "icon": "border-all"
+  },
+  "attributes": {
+    "label": {
+      "type": "string"
+    },
+    "title": {
+      "type": "text"
+    },
+    "dotIcon": {
+      "type": "media",
+      "allowedTypes": [
+        "images",
+        "files"
+      ],
+      "multiple": false
+    },
+    "cards": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.card-grid-item"
+    }
+  }
+}

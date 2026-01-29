@@ -5,12 +5,22 @@ import { Footer } from "@/components/sections/Footer";
 import { ContactSection } from "@/components/sections/ContactSection";
 import svgPaths from "@/lib/imports/svg-ie2km5jka3";
 import Image from "next/image";
-import { getServicePage } from "@/lib/strapi";
-import { fetchHomePage, getMediaUrl } from "@/lib/strapi-home";
-import type { ServicePageData } from "@/lib/service-page-types";
+import { getPageBySlug } from "@/lib/strapi";
+import { getMediaUrl } from "@/lib/strapi-home";
+import type {
+  BackgroundPatternSection,
+  ContactBlockSection,
+  PageEntry,
+  ServicesHeroSection,
+  ServicesHowItWorksSection,
+  ServicesHowWeHelpSection,
+  ServicesPillarsSection,
+  ServicesQualitySection,
+  ServicesWhyChooseSection,
+} from "@/lib/page-types";
 
 export async function generateMetadata(): Promise<Metadata> {
-  const servicePage = (await getServicePage()) as ServicePageData | null;
+  const servicePage = (await getPageBySlug("services")) as PageEntry | null;
   const seo = servicePage?.seo;
   const ogImage = seo?.ogImage ? getMediaUrl(seo.ogImage) : undefined;
   return {
@@ -34,11 +44,12 @@ type ExtendedCSSProperties = CSSProperties & {
 };
 
 export default async function ServicesPage() {
-  const servicePage = (await getServicePage()) as ServicePageData | null;
-  const homePage = await fetchHomePage();
-  const homeSections = homePage?.contentSections || [];
-  const contactBlock = homeSections.find((section: any) => section.__component === "sections.contact-block");
-  const fallback: ServicePageData = {
+  const page = (await getPageBySlug("services")) as PageEntry | null;
+  const sections = page?.sections || [];
+  const contactBlock = sections.find(
+    (section: any) => section.__component === "sections.contact-block"
+  ) as ContactBlockSection | undefined;
+  const fallback = {
     backgroundPattern: {
       enabled: true,
       svgPath: svgPaths.p2ff94480,
@@ -153,14 +164,34 @@ export default async function ServicesPage() {
     },
   };
 
-  const page = servicePage || fallback;
-  const backgroundPattern = page.backgroundPattern || fallback.backgroundPattern;
-  const hero = page.hero || fallback.hero;
-  const servicePillars = page.servicePillars || fallback.servicePillars;
-  const howWeHelp = page.howWeHelp || fallback.howWeHelp;
-  const weDeliverQuality = page.weDeliverQuality || fallback.weDeliverQuality;
-  const howItWorks = page.howItWorks || fallback.howItWorks;
-  const whyChoose = page.whyChoose || fallback.whyChoose;
+  const backgroundPattern =
+    (sections.find((section: any) => section.__component === "shared.background-pattern") as
+      | BackgroundPatternSection
+      | undefined) || fallback.backgroundPattern;
+  const hero =
+    (sections.find((section: any) => section.__component === "sections.services-page-hero") as
+      | ServicesHeroSection
+      | undefined) || fallback.hero;
+  const servicePillars =
+    (sections.find((section: any) => section.__component === "sections.services-page-pillars") as
+      | ServicesPillarsSection
+      | undefined) || fallback.servicePillars;
+  const howWeHelp =
+    (sections.find((section: any) => section.__component === "sections.services-page-how-we-help") as
+      | ServicesHowWeHelpSection
+      | undefined) || fallback.howWeHelp;
+  const weDeliverQuality =
+    (sections.find((section: any) => section.__component === "sections.services-page-quality") as
+      | ServicesQualitySection
+      | undefined) || fallback.weDeliverQuality;
+  const howItWorks =
+    (sections.find((section: any) => section.__component === "sections.services-page-how-it-works") as
+      | ServicesHowItWorksSection
+      | undefined) || fallback.howItWorks;
+  const whyChoose =
+    (sections.find((section: any) => section.__component === "sections.services-page-why-choose") as
+      | ServicesWhyChooseSection
+      | undefined) || fallback.whyChoose;
 
   const getUrl = (media: any, fallbackUrl?: string) => getMediaUrl(media) || fallbackUrl || "";
   const getAlt = (media: any, fallbackAlt?: string) =>

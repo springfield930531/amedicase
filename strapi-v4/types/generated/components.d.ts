@@ -1,5 +1,32 @@
 import type { Schema, Struct } from '@strapi/strapi';
 
+export interface SectionsBenefitCards extends Struct.ComponentSchema {
+  collectionName: 'components_sections_benefit_cards';
+  info: {
+    displayName: 'Benefit cards';
+    icon: 'th-large';
+  };
+  attributes: {
+    cards: Schema.Attribute.Component<'shared.benefit', true>;
+    label: Schema.Attribute.String;
+    title: Schema.Attribute.Text;
+  };
+}
+
+export interface SectionsCardGrid extends Struct.ComponentSchema {
+  collectionName: 'components_sections_card_grids';
+  info: {
+    displayName: 'Card grid';
+    icon: 'border-all';
+  };
+  attributes: {
+    cards: Schema.Attribute.Component<'shared.card-grid-item', true>;
+    dotIcon: Schema.Attribute.Media<'images' | 'files'>;
+    label: Schema.Attribute.String;
+    title: Schema.Attribute.Text;
+  };
+}
+
 export interface SectionsContactBlock extends Struct.ComponentSchema {
   collectionName: 'components_sections_contact_blocks';
   info: {
@@ -54,6 +81,20 @@ export interface SectionsHeroSection extends Struct.ComponentSchema {
   };
 }
 
+export interface SectionsIconSteps extends Struct.ComponentSchema {
+  collectionName: 'components_sections_icon_steps';
+  info: {
+    displayName: 'Icon steps';
+    icon: 'list';
+  };
+  attributes: {
+    cta: Schema.Attribute.Component<'shared.cta', false>;
+    icon: Schema.Attribute.Media<'images' | 'files'>;
+    label: Schema.Attribute.String;
+    steps: Schema.Attribute.Component<'shared.icon-step', true>;
+  };
+}
+
 export interface SectionsImageHighlight extends Struct.ComponentSchema {
   collectionName: 'components_sections_image_highlights';
   info: {
@@ -70,6 +111,53 @@ export interface SectionsImageHighlight extends Struct.ComponentSchema {
     subtitle: Schema.Attribute.Text;
     title: Schema.Attribute.String & Schema.Attribute.Required;
     topIcon: Schema.Attribute.Media<'images' | 'files'>;
+  };
+}
+
+export interface SectionsImageOverlay extends Struct.ComponentSchema {
+  collectionName: 'components_sections_image_overlays';
+  info: {
+    displayName: 'Image overlay';
+    icon: 'images';
+  };
+  attributes: {
+    backgroundImage: Schema.Attribute.Media<'images'>;
+    overlayColor: Schema.Attribute.String;
+    overlayImage: Schema.Attribute.Media<'images' | 'files'>;
+  };
+}
+
+export interface SectionsPageHero extends Struct.ComponentSchema {
+  collectionName: 'components_sections_page_heroes';
+  info: {
+    displayName: 'Page hero';
+    icon: 'image';
+  };
+  attributes: {
+    backgroundImage: Schema.Attribute.Media<'images'>;
+    badgeLabel: Schema.Attribute.String;
+    badgeLabelDesktop: Schema.Attribute.String;
+    cta: Schema.Attribute.Component<'shared.cta', false>;
+    ctaDesktop: Schema.Attribute.Component<'shared.cta', false>;
+    subtitle: Schema.Attribute.Text;
+    subtitleDesktop: Schema.Attribute.Text;
+    title: Schema.Attribute.Text & Schema.Attribute.Required;
+    titleDesktop: Schema.Attribute.Text;
+  };
+}
+
+export interface SectionsProcessStages extends Struct.ComponentSchema {
+  collectionName: 'components_sections_process_stages';
+  info: {
+    displayName: 'Process stages';
+    icon: 'tasks';
+  };
+  attributes: {
+    arrowFinalImage: Schema.Attribute.Media<'images' | 'files'>;
+    arrowImage: Schema.Attribute.Media<'images' | 'files'>;
+    cta: Schema.Attribute.Component<'shared.cta', false>;
+    label: Schema.Attribute.String;
+    stages: Schema.Attribute.Component<'shared.process-stage', true>;
   };
 }
 
@@ -217,6 +305,19 @@ export interface SectionsServicesPageWhyChoose extends Struct.ComponentSchema {
   };
 }
 
+export interface SectionsStoryBlock extends Struct.ComponentSchema {
+  collectionName: 'components_sections_story_blocks';
+  info: {
+    displayName: 'Story block';
+    icon: 'align-left';
+  };
+  attributes: {
+    body: Schema.Attribute.Text;
+    label: Schema.Attribute.String;
+    title: Schema.Attribute.Text;
+  };
+}
+
 export interface SectionsTeamShowcase extends Struct.ComponentSchema {
   collectionName: 'components_sections_team_showcases';
   info: {
@@ -313,6 +414,19 @@ export interface SharedBenefit extends Struct.ComponentSchema {
   };
 }
 
+export interface SharedCardGridItem extends Struct.ComponentSchema {
+  collectionName: 'components_shared_card_grid_items';
+  info: {
+    displayName: 'Card grid item';
+    icon: 'clone';
+  };
+  attributes: {
+    backgroundImage: Schema.Attribute.Media<'images' | 'files'>;
+    description: Schema.Attribute.Text;
+    title: Schema.Attribute.String & Schema.Attribute.Required;
+  };
+}
+
 export interface SharedCta extends Struct.ComponentSchema {
   collectionName: 'components_shared_ctas';
   info: {
@@ -324,6 +438,19 @@ export interface SharedCta extends Struct.ComponentSchema {
     isExternal: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
     label: Schema.Attribute.String & Schema.Attribute.Required;
     url: Schema.Attribute.String & Schema.Attribute.Required;
+  };
+}
+
+export interface SharedIconStep extends Struct.ComponentSchema {
+  collectionName: 'components_shared_icon_steps';
+  info: {
+    displayName: 'Icon step';
+    icon: 'list-ol';
+  };
+  attributes: {
+    description: Schema.Attribute.Text;
+    icon: Schema.Attribute.Media<'images' | 'files'>;
+    title: Schema.Attribute.String & Schema.Attribute.Required;
   };
 }
 
@@ -351,6 +478,19 @@ export interface SharedNavigationLink extends Struct.ComponentSchema {
     isExternal: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
     label: Schema.Attribute.String & Schema.Attribute.Required;
     url: Schema.Attribute.String & Schema.Attribute.Required;
+  };
+}
+
+export interface SharedProcessStage extends Struct.ComponentSchema {
+  collectionName: 'components_shared_process_stages';
+  info: {
+    displayName: 'Process stage';
+    icon: 'stream';
+  };
+  attributes: {
+    description: Schema.Attribute.Text;
+    stageLabel: Schema.Attribute.String & Schema.Attribute.Required;
+    title: Schema.Attribute.String & Schema.Attribute.Required;
   };
 }
 
@@ -466,10 +606,16 @@ export interface SharedTestimonial extends Struct.ComponentSchema {
 declare module '@strapi/strapi' {
   export module Public {
     export interface ComponentSchemas {
+      'sections.benefit-cards': SectionsBenefitCards;
+      'sections.card-grid': SectionsCardGrid;
       'sections.contact-block': SectionsContactBlock;
       'sections.coordinating-banner': SectionsCoordinatingBanner;
       'sections.hero-section': SectionsHeroSection;
+      'sections.icon-steps': SectionsIconSteps;
       'sections.image-highlight': SectionsImageHighlight;
+      'sections.image-overlay': SectionsImageOverlay;
+      'sections.page-hero': SectionsPageHero;
+      'sections.process-stages': SectionsProcessStages;
       'sections.process-steps': SectionsProcessSteps;
       'sections.service-grid': SectionsServiceGrid;
       'sections.services-page-hero': SectionsServicesPageHero;
@@ -478,14 +624,18 @@ declare module '@strapi/strapi' {
       'sections.services-page-pillars': SectionsServicesPagePillars;
       'sections.services-page-quality': SectionsServicesPageQuality;
       'sections.services-page-why-choose': SectionsServicesPageWhyChoose;
+      'sections.story-block': SectionsStoryBlock;
       'sections.team-showcase': SectionsTeamShowcase;
       'sections.testimonials': SectionsTestimonials;
       'sections.why-choose': SectionsWhyChoose;
       'shared.background-pattern': SharedBackgroundPattern;
       'shared.benefit': SharedBenefit;
+      'shared.card-grid-item': SharedCardGridItem;
       'shared.cta': SharedCta;
+      'shared.icon-step': SharedIconStep;
       'shared.image-style': SharedImageStyle;
       'shared.navigation-link': SharedNavigationLink;
+      'shared.process-stage': SharedProcessStage;
       'shared.process-step': SharedProcessStep;
       'shared.seo': SharedSeo;
       'shared.service-card': SharedServiceCard;
