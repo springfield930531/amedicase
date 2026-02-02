@@ -1,9 +1,11 @@
-FROM node:20-alpine
+FROM node:20-bullseye-slim
 
 WORKDIR /srv/app
 
 # Install build deps for better-sqlite3 and Strapi
-RUN apk add --no-cache python3 make g++ libc6-compat
+RUN apt-get update \
+  && apt-get install -y --no-install-recommends python3 make g++ \
+  && rm -rf /var/lib/apt/lists/*
 
 COPY package*.json ./
 # Install all dependencies for build (including dev deps needed for admin panel build)
