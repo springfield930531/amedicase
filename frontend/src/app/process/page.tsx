@@ -5,6 +5,7 @@ import { Footer } from "@/components/sections/Footer";
 import { GradientTitle } from "@/components/shared/GradientTitle";
 import { TitleBlock } from "@/components/shared/TitleBlock";
 import { ContactSection } from "@/components/sections/ContactSection";
+import Image from "next/image";
 import { getPageBySlug } from "@/lib/strapi";
 import { getMediaUrl } from "@/lib/strapi-home";
 import type {
@@ -142,6 +143,7 @@ export default async function ProcessPage() {
         overlayImage: getMediaUrl(overlay.overlayImage) || fallback.overlays[index]?.overlayImage,
       }))
     : fallback.overlays;
+  const isRemoteUrl = (url: string) => /^https?:\/\//i.test(url);
 
   const stageData = {
     label: stages?.label || fallback.stages.label,
@@ -200,9 +202,11 @@ export default async function ProcessPage() {
               {/* Hero Image Background */}
               <div className="absolute inset-0 overflow-hidden rounded-xl">
                 <div className="absolute inset-0 overflow-hidden">
-                  <img
+                  <Image
                     src={heroData.backgroundImage}
                     alt="Business people working"
+                    fill
+                    sizes="100vw"
                     className="absolute inset-0 w-full h-full object-cover"
                     style={{
                       height: '113.88%',
@@ -213,6 +217,7 @@ export default async function ProcessPage() {
                       objectFit: 'cover',
                       objectPosition: 'center center'
                     }}
+                    unoptimized={isRemoteUrl(heroData.backgroundImage)}
                   />
                 </div>
                 <div className="absolute bg-[rgba(240,242,248,0.2)] inset-0" />
@@ -254,10 +259,13 @@ export default async function ProcessPage() {
             {/* Hero Image Background */}
             <div className="absolute inset-0 overflow-hidden">
               <div className="absolute inset-0 overflow-hidden">
-                <img
+                <Image
                   src={heroData.backgroundImage}
                   alt="Business people working"
+                  fill
+                  sizes="100vw"
                   className="absolute h-[200.03%] left-[-30.99%] max-w-none top-[-42.98%] w-[131.05%] object-cover"
+                  unoptimized={isRemoteUrl(heroData.backgroundImage)}
                 />
               </div>
               <div className="absolute bg-[rgba(240,242,248,0.2)] inset-0" />
@@ -328,13 +336,16 @@ export default async function ProcessPage() {
           <div className="mx-auto px-5 md:px-8 xl:px-0 max-w-[1440px]">
             <div className="relative w-full rounded-[12px] overflow-hidden" style={{ aspectRatio: '1320/375', minHeight: '375px' }}>
               {/* Background Image */}
-              <img
+              <Image
                 src={overlayData[0]?.backgroundImage}
                 alt="Office documents and files"
+                fill
+                sizes="(max-width: 1024px) 100vw, 1320px"
                 className="w-full h-full object-cover rounded-[8px]"
                 style={{
                   objectPosition: 'center center'
                 }}
+                unoptimized={isRemoteUrl(overlayData[0]?.backgroundImage)}
               />
               
               {/* Overlays Container - Single absolute wrapper for all overlays */}
@@ -347,14 +358,17 @@ export default async function ProcessPage() {
                 
                 {/* White Abstract Shapes Overlay */}
                 <div className="absolute inset-0 rounded-[8px] overflow-visible">
-                  <img
+                  <Image
                     src={overlayData[0]?.overlayImage}
                     alt=""
+                    fill
+                    sizes="(max-width: 1024px) 100vw, 1320px"
                     className="w-full h-full object-cover"
                     style={{
                       transform: 'scale(1.1)',
                       transformOrigin: 'left center'
                     }}
+                    unoptimized={isRemoteUrl(overlayData[0]?.overlayImage)}
                   />
                 </div>
               </div>
@@ -410,13 +424,16 @@ export default async function ProcessPage() {
           <div className="mx-auto px-5 md:px-8 xl:px-0 max-w-[1440px]">
             <div className="relative w-full rounded-[12px] overflow-hidden" style={{ aspectRatio: '1320/375', minHeight: '375px' }}>
               {/* Background Image */}
-              <img
+              <Image
                 src={overlayData[1]?.backgroundImage}
                 alt="Office documents and files"
+                fill
+                sizes="(max-width: 1024px) 100vw, 1320px"
                 className="w-full h-full object-cover rounded-[8px]"
                 style={{
                   objectPosition: 'center center'
                 }}
+                unoptimized={isRemoteUrl(overlayData[1]?.backgroundImage)}
               />
               
               {/* Overlays Container - Single absolute wrapper for all overlays */}
@@ -429,14 +446,17 @@ export default async function ProcessPage() {
                 
                 {/* White Abstract Shapes Overlay */}
                 <div className="absolute inset-0 rounded-[8px] overflow-visible">
-                  <img
+                  <Image
                     src={overlayData[1]?.overlayImage}
                     alt=""
+                    fill
+                    sizes="(max-width: 1024px) 100vw, 1320px"
                     className="w-full h-full object-cover"
                     style={{
                       transform: 'scale(1.1)',
                       transformOrigin: 'left center'
                     }}
+                    unoptimized={isRemoteUrl(overlayData[1]?.overlayImage)}
                   />
                 </div>
               </div>

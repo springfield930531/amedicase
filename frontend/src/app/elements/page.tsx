@@ -10,9 +10,7 @@ import { ImageSections } from "@/components/sections/ImageSections";
 import { CoordinatingSection } from "@/components/sections/CoordinatingSection";
 import { GradientTitle } from "@/components/shared/GradientTitle";
 import { TitleBlock } from "@/components/shared/TitleBlock";
-import Link from "next/link";
 import Image from "next/image";
-import svgPaths from "@/lib/imports/svg-ie2km5jka3";
 
 export default function ElementsPage() {
   return (
@@ -178,7 +176,7 @@ export default function ElementsPage() {
           <section className="mb-20 pb-20 border-b-2 border-[#0b1737]">
             <div className="bg-green-100 p-4 rounded-t-lg">
               <h2 className="text-3xl font-bold text-[#0b1737]">12. ServicesPageHeroSection</h2>
-              <p className="text-sm text-gray-700 mt-2">Secțiunea hero de pe pagina Services, cu badge "SeRvices", imagine de fundal și card de conținut</p>
+              <p className="text-sm text-gray-700 mt-2">Secțiunea hero de pe pagina Services, cu badge &quot;SeRvices&quot;, imagine de fundal și card de conținut</p>
             </div>
             <div className="bg-white p-8 rounded-b-lg shadow-lg border-2 border-t-0 border-green-100">
               <div className="relative bg-[#f1f5ff] pt-[100px] pb-8 lg:pb-16 overflow-x-hidden">
@@ -194,9 +192,11 @@ export default function ElementsPage() {
                     </div>
                     <div className="relative h-[562px] w-full overflow-hidden rounded-xl -mt-[29px]">
                       <div className="absolute inset-0 overflow-hidden">
-                        <img
+                        <Image
                           src="/images/services/hero-services.jpg"
                           alt="Healthcare professionals working"
+                          fill
+                          sizes="100vw"
                           className="absolute inset-0 w-full h-full object-cover"
                         />
                       </div>
@@ -228,9 +228,11 @@ export default function ElementsPage() {
                 <div className="hidden lg:block relative h-[750px] w-full overflow-hidden">
                   <div className="absolute inset-0 overflow-hidden">
                     <div className="absolute inset-0 overflow-hidden">
-                      <img
+                      <Image
                         src="/images/services/hero-services.jpg"
                         alt="Healthcare professionals working"
+                        fill
+                        sizes="100vw"
                         className="absolute h-[200.03%] left-[-30.99%] max-w-none top-[-42.98%] w-[131.05%] object-cover"
                       />
                     </div>
@@ -274,7 +276,7 @@ export default function ElementsPage() {
           <section className="mb-20 pb-20 border-b-2 border-[#0b1737]">
             <div className="bg-green-100 p-4 rounded-t-lg">
               <h2 className="text-3xl font-bold text-[#0b1737]">13. ServicesPageServicePillarsSection</h2>
-              <p className="text-sm text-gray-700 mt-2">Secțiunea "Our Service Pillars" de pe pagina Services, cu carduri pentru fiecare pilon de serviciu</p>
+              <p className="text-sm text-gray-700 mt-2">Secțiunea &quot;Our Service Pillars&quot; de pe pagina Services, cu carduri pentru fiecare pilon de serviciu</p>
             </div>
             <div className="bg-white p-8 rounded-b-lg shadow-lg border-2 border-t-0 border-green-100">
               <div className="relative py-8 lg:py-16 overflow-x-hidden bg-[#f1f5ff]">
@@ -285,9 +287,11 @@ export default function ElementsPage() {
                     <div className="backdrop-blur-[7px] bg-gradient-to-b from-[rgba(204,211,234,0.25)] to-[rgba(80,86,104,0.125)] rounded-[12px] border border-[rgba(99,103,146,0.8)]">
                       <div className="flex gap-[20px] items-start pl-[20px] pr-[37px] py-[20px] overflow-hidden">
                         <div className="h-[150px] w-[121.5px] flex-shrink-0 overflow-hidden rounded-[12px] relative">
-                          <img
+                          <Image
                             src="/images/services/billing-finance-new.jpg"
                             alt="Billing & Finance"
+                            fill
+                            sizes="122px"
                             className="absolute inset-0 w-full h-full object-cover"
                             style={{ height: '121.49%', left: 0, top: '-17.42%', width: '100%' }}
                           />
@@ -308,7 +312,7 @@ export default function ElementsPage() {
                               Learn More
                             </p>
                             <div className="w-[20px] h-[20px] lg:w-[26px] lg:h-[26px] flex-shrink-0">
-                              <img src="/images/services/arrow-icon.svg" alt="Arrow" className="w-full h-full" />
+                              <Image src="/images/services/arrow-icon.svg" alt="Arrow" width={26} height={26} className="w-full h-full" />
                             </div>
                           </div>
                         </div>
@@ -324,7 +328,7 @@ export default function ElementsPage() {
           <section className="mb-20 pb-20 border-b-2 border-[#0b1737]">
             <div className="bg-green-100 p-4 rounded-t-lg">
               <h2 className="text-3xl font-bold text-[#0b1737]">14. ServicesPageHowWeHelpSection</h2>
-              <p className="text-sm text-gray-700 mt-2">Secțiunea "How We Help Home Health Agencies" de pe pagina Services, cu elemente decorative și beneficii</p>
+              <p className="text-sm text-gray-700 mt-2">Secțiunea &quot;How We Help Home Health Agencies&quot; de pe pagina Services, cu elemente decorative și beneficii</p>
             </div>
             <div className="bg-white p-8 rounded-b-lg shadow-lg border-2 border-t-0 border-green-100">
               <div className="relative py-8 lg:py-16 overflow-x-hidden bg-[#f1f5ff]">
@@ -340,7 +344,7 @@ export default function ElementsPage() {
                         <div className="bg-gradient-to-b from-[rgba(204,211,234,0.02)] to-[rgba(80,86,104,0.01)] rounded-[10.667px] border-[0.667px] border-[rgba(99,103,146,0.5)] border-solid w-[30px] h-[86px] shadow-[0px_2.667px_5.333px_0px_rgba(114,116,146,0.3)] flex-shrink-0" />
                         <div className="absolute left-[11px] top-[20px] w-[10px] h-[10px] z-10">
                           <div className="absolute inset-[-30%]">
-                            <img alt="" className="block max-w-none size-full" src="/images/services/icon-dot.svg" style={{ filter: 'blur(3px)' }} />
+                            <Image alt="" className="block max-w-none size-full" src="/images/services/icon-dot.svg" width={10} height={10} style={{ filter: 'blur(3px)' }} />
                           </div>
                         </div>
                         <p className="font-sans font-medium leading-[1.2] ml-[-32px] mt-[41px] mb-[3px] text-[clamp(19px,2.5vw,23px)] lg:text-[33px] text-blue-900 tracking-[-0.4px] lg:tracking-[-0.66px] flex-1" style={{ fontVariationSettings: "'wdth' 100", textRendering: 'optimizeLegibility', WebkitFontSmoothing: 'antialiased' }}>
@@ -358,7 +362,7 @@ export default function ElementsPage() {
           <section className="mb-20 pb-20 border-b-2 border-[#0b1737]">
             <div className="bg-green-100 p-4 rounded-t-lg">
               <h2 className="text-3xl font-bold text-[#0b1737]">15. ServicesPageWeDeliverQualitySection</h2>
-              <p className="text-sm text-gray-700 mt-2">Secțiunea "We Deliver Quality" de pe pagina Services, cu imagine full-width și text centrat</p>
+              <p className="text-sm text-gray-700 mt-2">Secțiunea &quot;We Deliver Quality&quot; de pe pagina Services, cu imagine full-width și text centrat</p>
             </div>
             <div className="bg-white p-8 rounded-b-lg shadow-lg border-2 border-t-0 border-green-100">
               <div className="relative py-8 lg:py-16 overflow-x-hidden bg-[#f1f5ff]">
@@ -366,19 +370,25 @@ export default function ElementsPage() {
                   <div className="hidden lg:flex items-center justify-center h-[630px] w-full max-w-[1320px] mx-auto relative">
                     <div className="absolute inset-0 rounded-[12px] overflow-hidden">
                       <div className="absolute inset-0 overflow-hidden rounded-[12px]">
-                        <img alt="We deliver quality" className="absolute h-[139.7%] left-0 max-w-none top-[-18.25%] w-full rounded-[12px]" src="/images/services/we-deliver-quality.jpg" />
+                        <Image
+                          alt="We deliver quality"
+                          src="/images/services/we-deliver-quality.jpg"
+                          fill
+                          sizes="(max-width: 1280px) 100vw, 1320px"
+                          className="absolute h-[139.7%] left-0 max-w-none top-[-18.25%] w-full rounded-[12px]"
+                        />
                       </div>
                       <div className="absolute bg-[rgba(30,58,138,0.6)] inset-0 mix-blend-hard-light rounded-[12px]" />
                     </div>
                     <div className="relative z-10 flex flex-col gap-[60px] items-center">
                       <div className="h-[82.786px] w-[210.904px]">
-                        <img alt="Arrow" className="block max-w-none size-full" src="/images/services/arrow-vector-1.svg" />
+                        <Image alt="Arrow" className="block max-w-none size-full" src="/images/services/arrow-vector-1.svg" width={211} height={83} />
                       </div>
                       <p className="font-sans font-medium leading-[1.1] text-[#f1f5ff] text-[52px] text-center tracking-[-1.04px]" style={{ fontVariationSettings: "'wdth' 100" }}>
                         We deliver quality.
                       </p>
                       <div className="h-[82.786px] w-[210.904px]">
-                        <img alt="Arrow" className="block max-w-none size-full" src="/images/services/arrow-vector-2.svg" />
+                        <Image alt="Arrow" className="block max-w-none size-full" src="/images/services/arrow-vector-2.svg" width={211} height={83} />
                       </div>
                     </div>
                   </div>
@@ -391,7 +401,7 @@ export default function ElementsPage() {
           <section className="mb-20 pb-20 border-b-2 border-[#0b1737]">
             <div className="bg-green-100 p-4 rounded-t-lg">
               <h2 className="text-3xl font-bold text-[#0b1737]">16. ServicesPageHowItWorksSection</h2>
-              <p className="text-sm text-gray-700 mt-2">Secțiunea "How It Works" de pe pagina Services, cu pași și imagine laterală</p>
+              <p className="text-sm text-gray-700 mt-2">Secțiunea &quot;How It Works&quot; de pe pagina Services, cu pași și imagine laterală</p>
             </div>
             <div className="bg-white p-8 rounded-b-lg shadow-lg border-2 border-t-0 border-green-100">
               <div className="relative py-8 lg:py-16 overflow-x-hidden bg-[#f1f5ff]">
@@ -399,7 +409,7 @@ export default function ElementsPage() {
                   <GradientTitle label="How It Works" className="mb-8" />
                   <div className="flex flex-col lg:flex-row gap-[40px] lg:gap-[116px] items-center lg:items-start">
                     <div className="relative w-full max-w-[320px] lg:max-w-none lg:size-[456px] aspect-square lg:aspect-auto">
-                      <img alt="How It Works" className="block max-w-none size-full" src="/images/services/how-it-works-vector.svg" />
+                      <Image alt="How It Works" className="block max-w-none size-full" src="/images/services/how-it-works-vector.svg" fill sizes="(max-width: 1024px) 100vw, 456px" />
                     </div>
                     <div className="flex flex-col gap-[30px] lg:gap-[40px] items-start w-full lg:w-[693px]">
                       <div className="flex flex-col gap-[5px] items-start w-full">
@@ -421,7 +431,7 @@ export default function ElementsPage() {
           <section className="mb-20 pb-20 border-b-2 border-[#0b1737]">
             <div className="bg-green-100 p-4 rounded-t-lg">
               <h2 className="text-3xl font-bold text-[#0b1737]">17. ServicesPageWhyChooseSection</h2>
-              <p className="text-sm text-gray-700 mt-2">Secțiunea "Why Choose Amedicase" de pe pagina Services (varianta de pe Services page)</p>
+              <p className="text-sm text-gray-700 mt-2">Secțiunea &quot;Why Choose Amedicase&quot; de pe pagina Services (varianta de pe Services page)</p>
             </div>
             <div className="bg-white p-8 rounded-b-lg shadow-lg border-2 border-t-0 border-green-100">
               <div className="relative py-8 lg:py-16 overflow-x-hidden bg-[#f1f5ff]">
@@ -441,7 +451,7 @@ export default function ElementsPage() {
                           </p>
                           <div className="h-0 relative shrink-0 w-full max-w-[455px]">
                             <div className="absolute bottom-[-1.5px] left-0 right-0 top-[-1.5px]">
-                              <img alt="Separator" className="block max-w-none size-full" src="/images/services/separator-vector.svg" />
+                              <Image alt="Separator" className="block max-w-none size-full" src="/images/services/separator-vector.svg" fill sizes="100vw" />
                             </div>
                           </div>
                           <div className="font-sans font-medium leading-[1.4] text-[#0b1737] text-[20px] md:text-[33px] text-center tracking-[-0.4px] md:tracking-[-0.66px]" style={{ fontVariationSettings: "'wdth' 100" }}>
@@ -450,7 +460,7 @@ export default function ElementsPage() {
                           </div>
                           <div className="h-0 relative shrink-0 w-full max-w-[455px]">
                             <div className="absolute bottom-[-1.5px] left-0 right-0 top-[-1.5px]">
-                              <img alt="Separator" className="block max-w-none size-full" src="/images/services/separator-vector.svg" />
+                              <Image alt="Separator" className="block max-w-none size-full" src="/images/services/separator-vector.svg" fill sizes="100vw" />
                             </div>
                           </div>
                           <p className="font-sans font-medium leading-[1.4] text-[#0b1737] text-[20px] md:text-[33px] text-center tracking-[-0.4px] md:tracking-[-0.66px]" style={{ fontVariationSettings: "'wdth' 100" }}>
@@ -458,7 +468,7 @@ export default function ElementsPage() {
                           </p>
                           <div className="h-0 relative shrink-0 w-full max-w-[455px]">
                             <div className="absolute bottom-[-1.5px] left-0 right-0 top-[-1.5px]">
-                              <img alt="Separator" className="block max-w-none size-full" src="/images/services/separator-vector.svg" />
+                              <Image alt="Separator" className="block max-w-none size-full" src="/images/services/separator-vector.svg" fill sizes="100vw" />
                             </div>
                           </div>
                           <p className="font-sans font-medium leading-[1.4] text-[#0b1737] text-[20px] md:text-[33px] text-center tracking-[-0.4px] md:tracking-[-0.66px]" style={{ fontVariationSettings: "'wdth' 100" }}>
@@ -466,7 +476,7 @@ export default function ElementsPage() {
                           </p>
                           <div className="h-0 relative shrink-0 w-full max-w-[455px]">
                             <div className="absolute bottom-[-1.5px] left-0 right-0 top-[-1.5px]">
-                              <img alt="Separator" className="block max-w-none size-full" src="/images/services/separator-vector.svg" />
+                              <Image alt="Separator" className="block max-w-none size-full" src="/images/services/separator-vector.svg" fill sizes="100vw" />
                             </div>
                           </div>
                           <p className="font-sans font-medium leading-[1.4] text-[#0b1737] text-[20px] md:text-[33px] text-center tracking-[-0.4px] md:tracking-[-0.66px]" style={{ fontVariationSettings: "'wdth' 100" }}>
@@ -478,13 +488,19 @@ export default function ElementsPage() {
                       <div className="hidden md:block relative shrink-0 w-full md:w-[765px] aspect-[4/3] md:aspect-auto" style={{ minHeight: 'auto' }}>
                         <div className="absolute inset-0 rounded-[12px] overflow-hidden">
                           <div className="absolute inset-0 overflow-hidden rounded-[12px]">
-                            <img alt="Why Choose Amedicase" className="absolute h-full left-[-21.18%] max-w-none top-0 w-[147.36%]" src="/images/services/office-documents-filing-cabinet.jpg" />
+                            <Image
+                              alt="Why Choose Amedicase"
+                              className="absolute h-full left-[-21.18%] max-w-none top-0 w-[147.36%]"
+                              src="/images/services/office-documents-filing-cabinet.jpg"
+                              fill
+                              sizes="(max-width: 1024px) 100vw, 765px"
+                            />
                           </div>
                           <div className="absolute bg-[rgba(30,58,138,0.2)] inset-0 mix-blend-hard-light rounded-[12px]" />
                         </div>
                         <div className="absolute inset-0 pointer-events-none">
                           <div className="absolute inset-[-0.27%_-0.52%_-0.8%_-0.52%]">
-                            <img alt="Subtract" className="block max-w-none size-full" src="/images/services/subtract-overlay.svg" />
+                            <Image alt="Subtract" className="block max-w-none size-full" src="/images/services/subtract-overlay.svg" fill sizes="100vw" />
                           </div>
                         </div>
                       </div>
@@ -523,7 +539,7 @@ export default function ElementsPage() {
                           </p>
                           <div className="h-0 relative shrink-0 w-[455px]">
                             <div className="absolute bottom-[-1.5px] left-0 right-0 top-[-1.5px]">
-                              <img alt="Separator" className="block max-w-none size-full" src="/images/services/separator-vector.svg" />
+                              <Image alt="Separator" className="block max-w-none size-full" src="/images/services/separator-vector.svg" fill sizes="455px" />
                             </div>
                           </div>
                           <div className="font-sans font-medium leading-[1.4] text-[#0b1737] text-[33px] text-center tracking-[-0.66px] whitespace-nowrap" style={{ fontVariationSettings: "'wdth' 100" }}>
@@ -532,7 +548,7 @@ export default function ElementsPage() {
                           </div>
                           <div className="h-0 relative shrink-0 w-[455px]">
                             <div className="absolute bottom-[-1.5px] left-0 right-0 top-[-1.5px]">
-                              <img alt="Separator" className="block max-w-none size-full" src="/images/services/separator-vector.svg" />
+                              <Image alt="Separator" className="block max-w-none size-full" src="/images/services/separator-vector.svg" fill sizes="455px" />
                             </div>
                           </div>
                           <p className="font-sans font-medium leading-[1.4] text-[#0b1737] text-[33px] text-center tracking-[-0.66px]" style={{ fontVariationSettings: "'wdth' 100" }}>
@@ -540,7 +556,7 @@ export default function ElementsPage() {
                           </p>
                           <div className="h-0 relative shrink-0 w-[455px]">
                             <div className="absolute bottom-[-1.5px] left-0 right-0 top-[-1.5px]">
-                              <img alt="Separator" className="block max-w-none size-full" src="/images/services/separator-vector.svg" />
+                              <Image alt="Separator" className="block max-w-none size-full" src="/images/services/separator-vector.svg" fill sizes="455px" />
                             </div>
                           </div>
                           <p className="font-sans font-medium leading-[1.4] text-[#0b1737] text-[33px] text-center tracking-[-0.66px]" style={{ fontVariationSettings: "'wdth' 100" }}>
@@ -548,7 +564,7 @@ export default function ElementsPage() {
                           </p>
                           <div className="h-0 relative shrink-0 w-[455px]">
                             <div className="absolute bottom-[-1.5px] left-0 right-0 top-[-1.5px]">
-                              <img alt="Separator" className="block max-w-none size-full" src="/images/services/separator-vector.svg" />
+                              <Image alt="Separator" className="block max-w-none size-full" src="/images/services/separator-vector.svg" fill sizes="455px" />
                             </div>
                           </div>
                           <p className="font-sans font-medium leading-[1.4] text-[#0b1737] text-[33px] text-center tracking-[-0.66px]" style={{ fontVariationSettings: "'wdth' 100" }}>
@@ -560,13 +576,19 @@ export default function ElementsPage() {
                       <div className="relative shrink-0 w-[765px]" style={{ minHeight: '624px' }}>
                         <div className="absolute inset-0 rounded-[12px] overflow-hidden">
                           <div className="absolute inset-0 overflow-hidden rounded-[12px]">
-                            <img alt="Why Choose Amedicase" className="absolute h-full left-[-21.18%] max-w-none top-0 w-[147.36%]" src="/images/services/office-documents-filing-cabinet.jpg" />
+                            <Image
+                              alt="Why Choose Amedicase"
+                              className="absolute h-full left-[-21.18%] max-w-none top-0 w-[147.36%]"
+                              src="/images/services/office-documents-filing-cabinet.jpg"
+                              fill
+                              sizes="765px"
+                            />
                           </div>
                           <div className="absolute bg-[rgba(30,58,138,0.2)] inset-0 mix-blend-hard-light rounded-[12px]" />
                         </div>
                         <div className="absolute inset-0 pointer-events-none">
                           <div className="absolute inset-[-0.27%_-0.52%_-0.8%_-0.52%]">
-                            <img alt="Subtract" className="block max-w-none size-full" src="/images/services/subtract-overlay.svg" />
+                            <Image alt="Subtract" className="block max-w-none size-full" src="/images/services/subtract-overlay.svg" fill sizes="765px" />
                           </div>
                         </div>
                       </div>

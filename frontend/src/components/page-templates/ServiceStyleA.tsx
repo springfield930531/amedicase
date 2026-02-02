@@ -9,12 +9,14 @@ import type {
   BackgroundPatternSection,
   ContactBlockSection,
   PageEntry,
+  PageSection,
   ServicesHeroSection,
   ServicesHowItWorksSection,
   ServicesHowWeHelpSection,
   ServicesPillarsSection,
   ServicesQualitySection,
   ServicesWhyChooseSection,
+  StrapiMedia,
 } from "@/lib/page-types";
 
 type ExtendedCSSProperties = CSSProperties & {
@@ -29,8 +31,8 @@ type ServiceStyleAProps = {
 export function ServiceStyleA({ page }: ServiceStyleAProps) {
   const sections = page?.sections || [];
   const contactBlock = sections.find(
-    (section: any) => section.__component === "sections.contact-block"
-  ) as ContactBlockSection | undefined;
+    (section: PageSection): section is ContactBlockSection => section.__component === "sections.contact-block"
+  );
   const fallback = {
     backgroundPattern: {
       enabled: true,
@@ -147,37 +149,45 @@ export function ServiceStyleA({ page }: ServiceStyleAProps) {
   };
 
   const backgroundPattern =
-    (sections.find((section: any) => section.__component === "shared.background-pattern") as
-      | BackgroundPatternSection
-      | undefined) || fallback.backgroundPattern;
+    (sections.find((section: PageSection): section is BackgroundPatternSection => section.__component === "shared.background-pattern")) || fallback.backgroundPattern;
   const hero =
-    (sections.find((section: any) => section.__component === "sections.services-page-hero") as
-      | ServicesHeroSection
-      | undefined) || fallback.hero;
+    (sections.find((section: PageSection): section is ServicesHeroSection => section.__component === "sections.services-page-hero"));
   const servicePillars =
-    (sections.find((section: any) => section.__component === "sections.services-page-pillars") as
-      | ServicesPillarsSection
-      | undefined) || fallback.servicePillars;
+    (sections.find((section: PageSection): section is ServicesPillarsSection => section.__component === "sections.services-page-pillars")) || fallback.servicePillars;
   const howWeHelp =
-    (sections.find((section: any) => section.__component === "sections.services-page-how-we-help") as
-      | ServicesHowWeHelpSection
-      | undefined) || fallback.howWeHelp;
+    (sections.find((section: PageSection): section is ServicesHowWeHelpSection => section.__component === "sections.services-page-how-we-help"));
+  const howWeHelpData: ServicesHowWeHelpSection | typeof fallback.howWeHelp = howWeHelp || fallback.howWeHelp;
   const weDeliverQuality =
-    (sections.find((section: any) => section.__component === "sections.services-page-quality") as
-      | ServicesQualitySection
-      | undefined) || fallback.weDeliverQuality;
+    (sections.find((section: PageSection): section is ServicesQualitySection => section.__component === "sections.services-page-quality")) || fallback.weDeliverQuality;
   const howItWorks =
-    (sections.find((section: any) => section.__component === "sections.services-page-how-it-works") as
-      | ServicesHowItWorksSection
-      | undefined) || fallback.howItWorks;
+    (sections.find((section: PageSection): section is ServicesHowItWorksSection => section.__component === "sections.services-page-how-it-works")) || fallback.howItWorks;
   const whyChoose =
-    (sections.find((section: any) => section.__component === "sections.services-page-why-choose") as
-      | ServicesWhyChooseSection
-      | undefined) || fallback.whyChoose;
+    (sections.find((section: PageSection): section is ServicesWhyChooseSection => section.__component === "sections.services-page-why-choose")) || fallback.whyChoose;
+  const weDeliverQualityBackgroundImage =
+    weDeliverQuality && "backgroundImage" in weDeliverQuality
+      ? weDeliverQuality.backgroundImage
+      : undefined;
+  const weDeliverQualityDesktopTopIcon =
+    weDeliverQuality && "desktopTopIcon" in weDeliverQuality
+      ? weDeliverQuality.desktopTopIcon
+      : undefined;
+  const weDeliverQualityDesktopBottomIcon =
+    weDeliverQuality && "desktopBottomIcon" in weDeliverQuality
+      ? weDeliverQuality.desktopBottomIcon
+      : undefined;
+  const howItWorksIllustration =
+    howItWorks && "illustration" in howItWorks ? howItWorks.illustration : undefined;
+  const whyChooseSeparatorImage =
+    whyChoose && "separatorImage" in whyChoose ? whyChoose.separatorImage : undefined;
+  const whyChooseRightImage =
+    whyChoose && "rightImage" in whyChoose ? whyChoose.rightImage : undefined;
+  const whyChooseRightOverlay =
+    whyChoose && "rightOverlay" in whyChoose ? whyChoose.rightOverlay : undefined;
 
-  const getUrl = (media: any, fallbackUrl?: string) => getMediaUrl(media) || fallbackUrl || "";
-  const getAlt = (media: any, fallbackAlt?: string) =>
+  const getUrl = (media: StrapiMedia | null | undefined, fallbackUrl?: string) => getMediaUrl(media) || fallbackUrl || "";
+  const getAlt = (media: StrapiMedia | null | undefined, fallbackAlt?: string) =>
     media?.alternativeText || media?.data?.attributes?.alternativeText || fallbackAlt || "";
+  const isRemoteUrl = (url: string) => /^https?:\/\//i.test(url);
   const toPercent = (value?: number | string) => (value !== undefined && value !== null ? `${value}%` : undefined);
   const splitLines = (value?: string) => (value ? value.split("\n") : []);
   const renderWithBreaks = (value?: string) => {
@@ -190,24 +200,25 @@ export function ServiceStyleA({ page }: ServiceStyleAProps) {
       </span>
     ));
   };
-  const normalizeDesktop = (value?: string) => value?.replace(/\n/g, " ");
 
   const pillarCards = servicePillars?.cards?.length ? servicePillars.cards : fallback.servicePillars?.cards || [];
-  const pillarCard1 = pillarCards[0] || {};
-  const pillarCard2 = pillarCards[1] || {};
-  const pillarCard3 = pillarCards[2] || {};
-  const pillarCard4 = pillarCards[3] || {};
+  type PillarCardType = NonNullable<ServicesPillarsSection['cards']>[number];
+  const pillarCard1: PillarCardType | typeof fallback.servicePillars.cards[0] = pillarCards[0] || fallback.servicePillars.cards[0];
+  const pillarCard2: PillarCardType | typeof fallback.servicePillars.cards[1] = pillarCards[1] || fallback.servicePillars.cards[1];
+  const pillarCard3: PillarCardType | typeof fallback.servicePillars.cards[2] = pillarCards[2] || fallback.servicePillars.cards[2];
+  const pillarCard4: PillarCardType | typeof fallback.servicePillars.cards[3] = pillarCards[3] || fallback.servicePillars.cards[3];
   const extraPillarCards = pillarCards.slice(4);
   const howItWorksSteps = howItWorks?.steps?.length ? howItWorks.steps : fallback.howItWorks?.steps || [];
   const whyChooseBenefits = whyChoose?.benefits?.length ? whyChoose.benefits : fallback.whyChoose?.benefits || [];
   const whyChooseLine1 = splitLines(whyChooseBenefits[1]?.label || "Up to 60% Cost Savings\nvs. U.S. Operations");
 
-  const heroPrimaryUrl = hero?.primaryCta?.url || "#";
-  const heroSecondaryUrl = hero?.secondaryCta?.url || "#";
-  const heroPrimaryExternal = hero?.primaryCta?.isExternal;
-  const heroSecondaryExternal = hero?.secondaryCta?.isExternal;
-  const howItWorksCtaUrl = howItWorks?.cta?.url || "#";
-  const howItWorksCtaExternal = howItWorks?.cta?.isExternal;
+  const heroData: ServicesHeroSection | typeof fallback.hero = hero || fallback.hero;
+  const heroPrimaryUrl = ('primaryCta' in heroData && heroData.primaryCta ? heroData.primaryCta.url : undefined) || fallback.hero.primaryCta?.url || "#";
+  const heroSecondaryUrl = ('secondaryCta' in heroData && heroData.secondaryCta ? heroData.secondaryCta.url : undefined) || fallback.hero.secondaryCta?.url || "#";
+  const heroPrimaryExternal = ('primaryCta' in heroData && heroData.primaryCta && 'isExternal' in heroData.primaryCta ? heroData.primaryCta.isExternal : undefined);
+  const heroSecondaryExternal = ('secondaryCta' in heroData && heroData.secondaryCta && 'isExternal' in heroData.secondaryCta ? heroData.secondaryCta.isExternal : undefined);
+  const howItWorksCtaUrl = howItWorks?.cta?.url || fallback.howItWorks?.cta?.url || "#";
+  const howItWorksCtaExternal = (howItWorks?.cta && 'isExternal' in howItWorks.cta ? howItWorks.cta.isExternal : undefined);
 
   const card1Lines = splitLines(pillarCard1.descriptionMobile || pillarCard1.description);
   const card2Lines = splitLines(pillarCard2.descriptionMobile || pillarCard2.description);
@@ -259,9 +270,11 @@ export function ServiceStyleA({ page }: ServiceStyleAProps) {
               {/* Hero Image Background */}
               <div className="absolute inset-0 overflow-hidden rounded-xl">
                 <div className="absolute inset-0 overflow-hidden">
-                  <img
-                    src={getUrl(hero?.backgroundImage, "/images/services/hero-services.jpg")}
-                    alt={getAlt(hero?.backgroundImage, "Healthcare professionals working")}
+                  <Image
+                    src={getUrl(('backgroundImage' in heroData ? heroData.backgroundImage : undefined), "/images/services/hero-services.jpg")}
+                    alt={getAlt(('backgroundImage' in heroData ? heroData.backgroundImage : undefined), "Healthcare professionals working")}
+                    fill
+                    sizes="100vw"
                     className="absolute inset-0 w-full h-full object-cover"
                     style={{
                       height: '113.88%',
@@ -272,6 +285,9 @@ export function ServiceStyleA({ page }: ServiceStyleAProps) {
                       objectFit: 'cover',
                       objectPosition: 'center center'
                     }}
+                    unoptimized={isRemoteUrl(
+                      getUrl(('backgroundImage' in heroData ? heroData.backgroundImage : undefined), "/images/services/hero-services.jpg")
+                    )}
                   />
                 </div>
                 <div className="absolute bg-[rgba(240,242,248,0.2)] inset-0" />
@@ -328,10 +344,15 @@ export function ServiceStyleA({ page }: ServiceStyleAProps) {
             {/* Hero Image Background */}
             <div className="absolute inset-0 overflow-hidden">
               <div className="absolute inset-0 overflow-hidden">
-                <img
-                  src={getUrl(hero?.backgroundImage, "/images/services/hero-services.jpg")}
-                  alt={getAlt(hero?.backgroundImage, "Healthcare professionals working")}
+                <Image
+                  src={getUrl(('backgroundImage' in heroData ? heroData.backgroundImage : undefined), "/images/services/hero-services.jpg")}
+                  alt={getAlt(('backgroundImage' in heroData ? heroData.backgroundImage : undefined), "Healthcare professionals working")}
+                  fill
+                  sizes="100vw"
                   className="absolute h-[200.03%] left-[-30.99%] max-w-none top-[-42.98%] w-[131.05%] object-cover"
+                  unoptimized={isRemoteUrl(
+                    getUrl(('backgroundImage' in heroData ? heroData.backgroundImage : undefined), "/images/services/hero-services.jpg")
+                  )}
                 />
               </div>
               <div className="absolute bg-[rgba(240,242,248,0.2)] inset-0" />
@@ -418,9 +439,11 @@ export function ServiceStyleA({ page }: ServiceStyleAProps) {
               <div className="backdrop-blur-[7px] bg-gradient-to-b from-[rgba(204,211,234,0.25)] to-[rgba(80,86,104,0.125)] rounded-[12px] border border-[rgba(99,103,146,0.8)]">
                 <div className="flex gap-[20px] items-start pl-[20px] pr-[37px] py-[20px] overflow-hidden">
                   <div className="h-[150px] w-[121.5px] flex-shrink-0 overflow-hidden rounded-[12px] relative">
-                    <img
-                      src={getUrl(pillarCard1.image, "/images/services/billing-finance-new.jpg")}
-                      alt={getAlt(pillarCard1.image, "Billing & Finance")}
+                    <Image
+                      src={getUrl(('image' in pillarCard1 ? pillarCard1.image : undefined), "/images/services/billing-finance-new.jpg")}
+                      alt={getAlt(('image' in pillarCard1 ? pillarCard1.image : undefined), "Billing & Finance")}
+                      fill
+                      sizes="122px"
                       className="absolute inset-0 w-full h-full object-cover"
                       style={{
                         height: toPercent(pillarCard1.imageStyle?.heightPercent) || "121.49%",
@@ -428,6 +451,7 @@ export function ServiceStyleA({ page }: ServiceStyleAProps) {
                         top: toPercent(pillarCard1.imageStyle?.topPercent) || "-17.42%",
                         width: toPercent(pillarCard1.imageStyle?.widthPercent) || "100%",
                       }}
+                      unoptimized={isRemoteUrl(getUrl(('image' in pillarCard1 ? pillarCard1.image : undefined), "/images/services/billing-finance-new.jpg"))}
                     />
                   </div>
                   
@@ -456,10 +480,13 @@ export function ServiceStyleA({ page }: ServiceStyleAProps) {
                         {pillarCard1.learnMoreLabel || "Learn More"}
                       </p>
                       <div className="w-[20px] h-[20px] lg:w-[26px] lg:h-[26px] flex-shrink-0">
-                        <img
-                          src={getUrl(pillarCard1.learnMoreIcon, "/images/services/arrow-icon.svg")}
-                          alt={getAlt(pillarCard1.learnMoreIcon, "Arrow")}
+                        <Image
+                          src={getUrl(('learnMoreIcon' in pillarCard1 ? pillarCard1.learnMoreIcon : undefined), "/images/services/arrow-icon.svg")}
+                          alt={getAlt(('learnMoreIcon' in pillarCard1 ? pillarCard1.learnMoreIcon : undefined), "Arrow")}
+                          width={26}
+                          height={26}
                           className="w-full h-full"
+                          unoptimized={isRemoteUrl(getUrl(('learnMoreIcon' in pillarCard1 ? pillarCard1.learnMoreIcon : undefined), "/images/services/arrow-icon.svg"))}
                         />
                       </div>
                     </a>
@@ -472,9 +499,11 @@ export function ServiceStyleA({ page }: ServiceStyleAProps) {
                 <div className="flex gap-[20px] items-start pl-[20px] pr-[33px] py-[20px] overflow-hidden">
                   <div className="h-[150px] w-[120px] flex-shrink-0 overflow-hidden rounded-[12px] relative">
                     <div className="absolute inset-0 overflow-hidden pointer-events-none rounded-[12px]">
-                      <img
-                        src={getUrl(pillarCard2.image, "/images/services/patient-intake-correct.jpg")}
-                        alt={getAlt(pillarCard2.image, "Patient Intake & Support")}
+                      <Image
+                        src={getUrl(('image' in pillarCard2 ? pillarCard2.image : undefined), "/images/services/patient-intake-correct.jpg")}
+                        alt={getAlt(('image' in pillarCard2 ? pillarCard2.image : undefined), "Patient Intake & Support")}
+                        fill
+                        sizes="120px"
                         className="absolute h-full max-w-none"
                         style={{
                           left: toPercent(pillarCard2.imageStyle?.leftPercent) || "-71.67%",
@@ -482,6 +511,7 @@ export function ServiceStyleA({ page }: ServiceStyleAProps) {
                           top: toPercent(pillarCard2.imageStyle?.topPercent) || "0%",
                           height: toPercent(pillarCard2.imageStyle?.heightPercent) || "100%",
                         }}
+                        unoptimized={isRemoteUrl(getUrl(('image' in pillarCard2 ? pillarCard2.image : undefined), "/images/services/patient-intake-correct.jpg"))}
                       />
                     </div>
                   </div>
@@ -511,10 +541,15 @@ export function ServiceStyleA({ page }: ServiceStyleAProps) {
                         {pillarCard2.learnMoreLabel || "Learn More"}
                       </p>
                       <div className="w-[20px] h-[20px] lg:w-[26px] lg:h-[26px] flex-shrink-0">
-                        <img
-                          src={getUrl(pillarCard2.learnMoreIcon, "/images/services/arrow-icon.svg")}
-                          alt={getAlt(pillarCard2.learnMoreIcon, "Arrow")}
+                        <Image
+                          src={getUrl(('learnMoreIcon' in pillarCard2 ? pillarCard2.learnMoreIcon : undefined), "/images/services/arrow-icon.svg")}
+                          alt={getAlt(('learnMoreIcon' in pillarCard2 ? pillarCard2.learnMoreIcon : undefined), "Arrow")}
+                          width={26}
+                          height={26}
                           className="w-full h-full"
+                          unoptimized={isRemoteUrl(
+                            getUrl(('learnMoreIcon' in pillarCard2 ? pillarCard2.learnMoreIcon : undefined), "/images/services/arrow-icon.svg")
+                          )}
                         />
                       </div>
                     </a>
@@ -527,9 +562,11 @@ export function ServiceStyleA({ page }: ServiceStyleAProps) {
                 <div className="flex gap-[20px] items-start pl-[20px] pr-[22px] py-[20px] overflow-hidden">
                   <div className="h-[150px] w-[120px] flex-shrink-0 overflow-hidden rounded-[12px] relative">
                     <div className="absolute inset-0 overflow-hidden pointer-events-none rounded-[12px]">
-                      <img
-                        src={getUrl(pillarCard3.image, "/images/services/operations-admin-correct.jpg")}
-                        alt={getAlt(pillarCard3.image, "Operations & Admin Support")}
+                      <Image
+                        src={getUrl(('image' in pillarCard3 ? pillarCard3.image : undefined), "/images/services/operations-admin-correct.jpg")}
+                        alt={getAlt(('image' in pillarCard3 ? pillarCard3.image : undefined), "Operations & Admin Support")}
+                        fill
+                        sizes="120px"
                         className="absolute h-full max-w-none"
                         style={{
                           left: toPercent(pillarCard3.imageStyle?.leftPercent) || "-26.67%",
@@ -537,6 +574,9 @@ export function ServiceStyleA({ page }: ServiceStyleAProps) {
                           top: toPercent(pillarCard3.imageStyle?.topPercent) || "0%",
                           height: toPercent(pillarCard3.imageStyle?.heightPercent) || "100%",
                         }}
+                        unoptimized={isRemoteUrl(
+                          getUrl(('image' in pillarCard3 ? pillarCard3.image : undefined), "/images/services/operations-admin-correct.jpg")
+                        )}
                       />
                     </div>
                   </div>
@@ -568,10 +608,15 @@ export function ServiceStyleA({ page }: ServiceStyleAProps) {
                         {pillarCard3.learnMoreLabel || "Learn More"}
                       </p>
                       <div className="w-[20px] h-[20px] lg:w-[26px] lg:h-[26px] flex-shrink-0">
-                        <img
-                          src={getUrl(pillarCard3.learnMoreIcon, "/images/services/arrow-icon.svg")}
-                          alt={getAlt(pillarCard3.learnMoreIcon, "Arrow")}
+                        <Image
+                          src={getUrl(('learnMoreIcon' in pillarCard3 ? pillarCard3.learnMoreIcon : undefined), "/images/services/arrow-icon.svg")}
+                          alt={getAlt(('learnMoreIcon' in pillarCard3 ? pillarCard3.learnMoreIcon : undefined), "Arrow")}
+                          width={26}
+                          height={26}
                           className="w-full h-full"
+                          unoptimized={isRemoteUrl(
+                            getUrl(('learnMoreIcon' in pillarCard3 ? pillarCard3.learnMoreIcon : undefined), "/images/services/arrow-icon.svg")
+                          )}
                         />
                       </div>
                     </a>
@@ -583,9 +628,11 @@ export function ServiceStyleA({ page }: ServiceStyleAProps) {
               <div className="backdrop-blur-[7px] bg-gradient-to-b from-[rgba(204,211,234,0.25)] to-[rgba(80,86,104,0.125)] rounded-[12px] border border-[rgba(99,103,146,0.8)]">
                 <div className="flex gap-[20px] items-start pl-[20px] pr-[10px] py-[20px] overflow-hidden">
                   <div className="h-[150px] w-[120px] flex-shrink-0 overflow-hidden rounded-[12px] relative">
-                    <img
-                      src={getUrl(pillarCard4.image, "/images/services/digital-growth-new.jpg")}
-                      alt={getAlt(pillarCard4.image, "Digital Presence & Growth")}
+                    <Image
+                      src={getUrl(('image' in pillarCard4 ? pillarCard4.image : undefined), "/images/services/digital-growth-new.jpg")}
+                      alt={getAlt(('image' in pillarCard4 ? pillarCard4.image : undefined), "Digital Presence & Growth")}
+                      fill
+                      sizes="120px"
                       className="absolute inset-0 w-full h-full object-cover"
                       style={{
                         height: toPercent(pillarCard4.imageStyle?.heightPercent) || "119.99%",
@@ -593,6 +640,9 @@ export function ServiceStyleA({ page }: ServiceStyleAProps) {
                         top: toPercent(pillarCard4.imageStyle?.topPercent) || "-6%",
                         width: toPercent(pillarCard4.imageStyle?.widthPercent) || "100%",
                       }}
+                      unoptimized={isRemoteUrl(
+                        getUrl(('image' in pillarCard4 ? pillarCard4.image : undefined), "/images/services/digital-growth-new.jpg")
+                      )}
                     />
                   </div>
                   
@@ -623,10 +673,15 @@ export function ServiceStyleA({ page }: ServiceStyleAProps) {
                         {pillarCard4.learnMoreLabel || "Learn More"}
                       </p>
                       <div className="w-[20px] h-[20px] lg:w-[26px] lg:h-[26px] flex-shrink-0">
-                        <img
-                          src={getUrl(pillarCard4.learnMoreIcon, "/images/services/arrow-icon.svg")}
-                          alt={getAlt(pillarCard4.learnMoreIcon, "Arrow")}
+                        <Image
+                          src={getUrl(('learnMoreIcon' in pillarCard4 ? pillarCard4.learnMoreIcon : undefined), "/images/services/arrow-icon.svg")}
+                          alt={getAlt(('learnMoreIcon' in pillarCard4 ? pillarCard4.learnMoreIcon : undefined), "Arrow")}
+                          width={26}
+                          height={26}
                           className="w-full h-full"
+                          unoptimized={isRemoteUrl(
+                            getUrl(('learnMoreIcon' in pillarCard4 ? pillarCard4.learnMoreIcon : undefined), "/images/services/arrow-icon.svg")
+                          )}
                         />
                       </div>
                     </a>
@@ -643,9 +698,11 @@ export function ServiceStyleA({ page }: ServiceStyleAProps) {
                   >
                     <div className="flex gap-[20px] items-start pl-[20px] pr-[37px] py-[20px] overflow-hidden">
                       <div className="h-[150px] w-[121.5px] flex-shrink-0 overflow-hidden rounded-[12px] relative">
-                        <img
-                          src={getUrl(card.image)}
-                          alt={getAlt(card.image, card.title || "Service")}
+                        <Image
+                          src={getUrl(('image' in card ? card.image : undefined))}
+                          alt={getAlt(('image' in card ? card.image : undefined), card.title || "Service")}
+                          fill
+                          sizes="122px"
                           className="absolute inset-0 w-full h-full object-cover"
                           style={{
                             height: toPercent(card.imageStyle?.heightPercent),
@@ -653,6 +710,7 @@ export function ServiceStyleA({ page }: ServiceStyleAProps) {
                             top: toPercent(card.imageStyle?.topPercent),
                             width: toPercent(card.imageStyle?.widthPercent),
                           }}
+                          unoptimized={isRemoteUrl(getUrl(('image' in card ? card.image : undefined)))}
                         />
                       </div>
 
@@ -678,10 +736,15 @@ export function ServiceStyleA({ page }: ServiceStyleAProps) {
                             {card.learnMoreLabel || "Learn More"}
                           </p>
                           <div className="w-[20px] h-[20px] lg:w-[26px] lg:h-[26px] flex-shrink-0">
-                            <img
-                              src={getUrl(card.learnMoreIcon, "/images/services/arrow-icon.svg")}
-                              alt={getAlt(card.learnMoreIcon, "Arrow")}
+                            <Image
+                              src={getUrl(('learnMoreIcon' in card ? card.learnMoreIcon : undefined), "/images/services/arrow-icon.svg")}
+                              alt={getAlt(('learnMoreIcon' in card ? card.learnMoreIcon : undefined), "Arrow")}
+                              width={26}
+                              height={26}
                               className="w-full h-full"
+                              unoptimized={isRemoteUrl(
+                                getUrl(('learnMoreIcon' in card ? card.learnMoreIcon : undefined), "/images/services/arrow-icon.svg")
+                              )}
                             />
                           </div>
                         </a>
@@ -705,10 +768,10 @@ export function ServiceStyleA({ page }: ServiceStyleAProps) {
               color: 'transparent',
               fontVariationSettings: "'wdth' 100",
             } as ExtendedCSSProperties}>
-              {howWeHelp?.label || "How We Help Home Health Agencies"}
+              {('label' in howWeHelpData ? howWeHelpData.label : undefined) || "How We Help Home Health Agencies"}
             </p>
             <h2 className="font-sans font-semibold text-[33px] lg:text-[52px] text-[#000618] leading-[1.1] tracking-[-0.66px] lg:tracking-[-1.04px] mb-8 lg:mb-0 lg:w-[952px] whitespace-pre-wrap" style={{ fontVariationSettings: "'wdth' 100" }}>
-              {howWeHelp?.title || "Designed to Help You Operate Efficiently and Scale with Confidence."}
+              {('title' in howWeHelpData ? howWeHelpData.title : undefined) || "Designed to Help You Operate Efficiently and Scale with Confidence."}
             </h2>
             
             {/* Benefit Items - Refactored with flexbox structure */}
@@ -721,11 +784,16 @@ export function ServiceStyleA({ page }: ServiceStyleAProps) {
                   {/* Icon dot - absolute positioning for precise placement */}
                   <div className="absolute left-[20px] top-[20px] w-[10px] h-[10px] z-10">
                     <div className="absolute inset-[-40%]">
-                      <img
+                      <Image
                         alt=""
                         className="block max-w-none size-full"
-                        src={getUrl(howWeHelp?.bulletIcon, "/images/services/icon-dot.svg")}
-                        style={{ filter: `blur(${howWeHelp?.bulletIconBlur ?? 2}px)` }}
+                        src={getUrl(('bulletIcon' in howWeHelpData ? howWeHelpData.bulletIcon : undefined), "/images/services/icon-dot.svg")}
+                        width={10}
+                        height={10}
+                        style={{ filter: `blur(${('bulletIconBlur' in howWeHelpData ? howWeHelpData.bulletIconBlur : undefined) ?? 2}px)` }}
+                        unoptimized={isRemoteUrl(
+                          getUrl(('bulletIcon' in howWeHelpData ? howWeHelpData.bulletIcon : undefined), "/images/services/icon-dot.svg")
+                        )}
                       />
                     </div>
                   </div>
@@ -738,7 +806,7 @@ export function ServiceStyleA({ page }: ServiceStyleAProps) {
                       WebkitFontSmoothing: 'antialiased'
                     }}
                   >
-                    {howWeHelp?.benefits?.[0]?.label || "Reduce Costs up to 60% without compromising HIPAA compliance."}
+                    {('benefits' in howWeHelpData && howWeHelpData.benefits?.[0] ? howWeHelpData.benefits[0].label : undefined) || "Reduce Costs up to 60% without compromising HIPAA compliance."}
                   </p>
                 </div>
               </div>
@@ -749,11 +817,16 @@ export function ServiceStyleA({ page }: ServiceStyleAProps) {
                   <div className="backdrop-blur-[2.667px] backdrop-filter bg-gradient-to-b from-[rgba(204,211,234,0.02)] to-[rgba(80,86,104,0.01)] rounded-[10.667px] border-[0.667px] border-[rgba(99,103,146,0.5)] border-solid w-[30px] h-full min-h-[60px] shadow-[0px_2.667px_5.333px_0px_rgba(114,116,146,0.3)] flex-shrink-0" />
                   <div className="absolute left-[20px] top-[20px] w-[10px] h-[10px] z-10">
                     <div className="absolute inset-[-40%]">
-                      <img
+                      <Image
                         alt=""
                         className="block max-w-none size-full"
-                        src={getUrl(howWeHelp?.bulletIcon, "/images/services/icon-dot.svg")}
-                        style={{ filter: `blur(${howWeHelp?.bulletIconBlur ?? 2}px)` }}
+                        src={getUrl(('bulletIcon' in howWeHelpData ? howWeHelpData.bulletIcon : undefined), "/images/services/icon-dot.svg")}
+                        width={10}
+                        height={10}
+                        style={{ filter: `blur(${('bulletIconBlur' in howWeHelpData ? howWeHelpData.bulletIconBlur : undefined) ?? 2}px)` }}
+                        unoptimized={isRemoteUrl(
+                          getUrl(('bulletIcon' in howWeHelpData ? howWeHelpData.bulletIcon : undefined), "/images/services/icon-dot.svg")
+                        )}
                       />
                     </div>
                   </div>
@@ -765,7 +838,7 @@ export function ServiceStyleA({ page }: ServiceStyleAProps) {
                       WebkitFontSmoothing: 'antialiased'
                     }}
                   >
-                    {howWeHelp?.benefits?.[1]?.label || "Focus on Patient Care. Let us handle admin load."}
+                    {('benefits' in howWeHelpData && howWeHelpData.benefits?.[1] ? howWeHelpData.benefits[1].label : undefined) || "Focus on Patient Care. Let us handle admin load."}
                   </p>
                 </div>
               </div>
@@ -776,11 +849,16 @@ export function ServiceStyleA({ page }: ServiceStyleAProps) {
                   <div className="backdrop-blur-[2.667px] backdrop-filter bg-gradient-to-b from-[rgba(204,211,234,0.02)] to-[rgba(80,86,104,0.01)] rounded-[10.667px] border-[0.667px] border-[rgba(99,103,146,0.5)] border-solid w-[30px] h-full min-h-[60px] shadow-[0px_2.667px_5.333px_0px_rgba(114,116,146,0.3)] flex-shrink-0" />
                   <div className="absolute left-[20px] top-[20px] w-[10px] h-[10px] z-10">
                     <div className="absolute inset-[-40%]">
-                      <img
+                      <Image
                         alt=""
                         className="block max-w-none size-full"
-                        src={getUrl(howWeHelp?.bulletIcon, "/images/services/icon-dot.svg")}
-                        style={{ filter: `blur(${howWeHelp?.bulletIconBlur ?? 2}px)` }}
+                        src={getUrl(('bulletIcon' in howWeHelpData ? howWeHelpData.bulletIcon : undefined), "/images/services/icon-dot.svg")}
+                        width={10}
+                        height={10}
+                        style={{ filter: `blur(${('bulletIconBlur' in howWeHelpData ? howWeHelpData.bulletIconBlur : undefined) ?? 2}px)` }}
+                        unoptimized={isRemoteUrl(
+                          getUrl(('bulletIcon' in howWeHelpData ? howWeHelpData.bulletIcon : undefined), "/images/services/icon-dot.svg")
+                        )}
                       />
                     </div>
                   </div>
@@ -792,7 +870,7 @@ export function ServiceStyleA({ page }: ServiceStyleAProps) {
                       WebkitFontSmoothing: 'antialiased'
                     }}
                   >
-                    {howWeHelp?.benefits?.[2]?.label || "Scale Seamlessly. Expand your team as your caseload grows."}
+                    {('benefits' in howWeHelpData && howWeHelpData.benefits?.[2] ? howWeHelpData.benefits[2].label : undefined) || "Scale Seamlessly. Expand your team as your caseload grows."}
                   </p>
                 </div>
               </div>
@@ -807,8 +885,8 @@ export function ServiceStyleA({ page }: ServiceStyleAProps) {
             <div className="lg:hidden">
               <div className="relative rounded-[12px] overflow-hidden aspect-[320/213] max-w-2xl mx-auto">
                 <Image
-                  src={getUrl(weDeliverQuality?.backgroundImage, "/images/services/we-deliver-quality.jpg")}
-                  alt={getAlt(weDeliverQuality?.backgroundImage, "We deliver quality")}
+                  src={getUrl(weDeliverQualityBackgroundImage, "/images/services/we-deliver-quality.jpg")}
+                  alt={getAlt(weDeliverQualityBackgroundImage, "We deliver quality")}
                   fill
                   className="object-cover rounded-[12px]"
                 />
@@ -861,10 +939,15 @@ export function ServiceStyleA({ page }: ServiceStyleAProps) {
               {/* Background Image - absolute positioning for background is appropriate */}
               <div className="absolute inset-0 rounded-[12px] overflow-hidden">
                 <div className="absolute inset-0 overflow-hidden rounded-[12px]">
-                  <img
-                    alt={getAlt(weDeliverQuality?.backgroundImage, "We deliver quality")}
+                  <Image
+                    alt={getAlt(weDeliverQualityBackgroundImage, "We deliver quality")}
                     className="absolute h-[139.7%] left-0 max-w-none top-[-18.25%] w-full rounded-[12px]"
-                    src={getUrl(weDeliverQuality?.backgroundImage, "/images/services/we-deliver-quality.jpg")}
+                    src={getUrl(weDeliverQualityBackgroundImage, "/images/services/we-deliver-quality.jpg")}
+                    fill
+                    sizes="(max-width: 1280px) 100vw, 1320px"
+                    unoptimized={isRemoteUrl(
+                      getUrl(weDeliverQualityBackgroundImage, "/images/services/we-deliver-quality.jpg")
+                    )}
                   />
                 </div>
                 <div
@@ -876,20 +959,30 @@ export function ServiceStyleA({ page }: ServiceStyleAProps) {
               {/* Content - Using flexbox for centering */}
               <div className="relative z-10 flex flex-col gap-[60px] items-center">
                 <div className="h-[82.786px] w-[210.904px]">
-                  <img
-                    alt={getAlt(weDeliverQuality?.desktopTopIcon, "Arrow")}
+                  <Image
+                    alt={getAlt(weDeliverQualityDesktopTopIcon, "Arrow")}
                     className="block max-w-none size-full"
-                    src={getUrl(weDeliverQuality?.desktopTopIcon, "/images/services/arrow-vector-1.svg")}
+                    src={getUrl(weDeliverQualityDesktopTopIcon, "/images/services/arrow-vector-1.svg")}
+                    width={211}
+                    height={83}
+                    unoptimized={isRemoteUrl(
+                      getUrl(weDeliverQualityDesktopTopIcon, "/images/services/arrow-vector-1.svg")
+                    )}
                   />
                 </div>
                 <p className="font-sans font-medium leading-[1.1] text-[#f1f5ff] text-[52px] text-center tracking-[-1.04px]" style={{ fontVariationSettings: "'wdth' 100" }}>
                   {weDeliverQuality?.title || "We deliver quality."}
                 </p>
                 <div className="h-[82.786px] w-[210.904px]">
-                  <img
-                    alt={getAlt(weDeliverQuality?.desktopBottomIcon, "Arrow")}
+                  <Image
+                    alt={getAlt(weDeliverQualityDesktopBottomIcon, "Arrow")}
                     className="block max-w-none size-full"
-                    src={getUrl(weDeliverQuality?.desktopBottomIcon, "/images/services/arrow-vector-2.svg")}
+                    src={getUrl(weDeliverQualityDesktopBottomIcon, "/images/services/arrow-vector-2.svg")}
+                    width={211}
+                    height={83}
+                    unoptimized={isRemoteUrl(
+                      getUrl(weDeliverQualityDesktopBottomIcon, "/images/services/arrow-vector-2.svg")
+                    )}
                   />
                 </div>
               </div>
@@ -997,10 +1090,15 @@ export function ServiceStyleA({ page }: ServiceStyleAProps) {
               <div className="flex gap-[116px] items-center pl-[55px]">
                 {/* Image */}
                 <div className="relative shrink-0 size-[456px]">
-                  <img
-                    alt={getAlt(howItWorks?.illustration, "How It Works")}
+                  <Image
+                    alt={getAlt(howItWorksIllustration, "How It Works")}
                     className="block max-w-none size-full"
-                    src={getUrl(howItWorks?.illustration, "/images/services/how-it-works-vector.svg")}
+                    src={getUrl(howItWorksIllustration, "/images/services/how-it-works-vector.svg")}
+                    fill
+                    sizes="456px"
+                    unoptimized={isRemoteUrl(
+                      getUrl(howItWorksIllustration, "/images/services/how-it-works-vector.svg")
+                    )}
                   />
                 </div>
                 
@@ -1220,10 +1318,15 @@ export function ServiceStyleA({ page }: ServiceStyleAProps) {
                     </p>
                     <div className="h-0 relative shrink-0 w-[455px]">
                       <div className="absolute bottom-[-1.5px] left-0 right-0 top-[-1.5px]">
-                        <img
-                          alt={getAlt(whyChoose?.separatorImage, "Separator")}
+                        <Image
+                          alt={getAlt(whyChooseSeparatorImage, "Separator")}
                           className="block max-w-none size-full"
-                          src={getUrl(whyChoose?.separatorImage, "/images/services/separator-vector.svg")}
+                          src={getUrl(whyChooseSeparatorImage, "/images/services/separator-vector.svg")}
+                          fill
+                          sizes="455px"
+                          unoptimized={isRemoteUrl(
+                            getUrl(whyChooseSeparatorImage, "/images/services/separator-vector.svg")
+                          )}
                         />
                       </div>
                     </div>
@@ -1234,10 +1337,15 @@ export function ServiceStyleA({ page }: ServiceStyleAProps) {
                     </div>
                     <div className="h-0 relative shrink-0 w-[455px]">
                       <div className="absolute bottom-[-1.5px] left-0 right-0 top-[-1.5px]">
-                        <img
-                          alt={getAlt(whyChoose?.separatorImage, "Separator")}
+                        <Image
+                          alt={getAlt(whyChooseSeparatorImage, "Separator")}
                           className="block max-w-none size-full"
-                          src={getUrl(whyChoose?.separatorImage, "/images/services/separator-vector.svg")}
+                          src={getUrl(whyChooseSeparatorImage, "/images/services/separator-vector.svg")}
+                          fill
+                          sizes="455px"
+                          unoptimized={isRemoteUrl(
+                            getUrl(whyChooseSeparatorImage, "/images/services/separator-vector.svg")
+                          )}
                         />
                       </div>
                     </div>
@@ -1247,10 +1355,15 @@ export function ServiceStyleA({ page }: ServiceStyleAProps) {
                     </p>
                     <div className="h-0 relative shrink-0 w-[455px]">
                       <div className="absolute bottom-[-1.5px] left-0 right-0 top-[-1.5px]">
-                        <img
-                          alt={getAlt(whyChoose?.separatorImage, "Separator")}
+                        <Image
+                          alt={getAlt(whyChooseSeparatorImage, "Separator")}
                           className="block max-w-none size-full"
-                          src={getUrl(whyChoose?.separatorImage, "/images/services/separator-vector.svg")}
+                          src={getUrl(whyChooseSeparatorImage, "/images/services/separator-vector.svg")}
+                          fill
+                          sizes="455px"
+                          unoptimized={isRemoteUrl(
+                            getUrl(whyChooseSeparatorImage, "/images/services/separator-vector.svg")
+                          )}
                         />
                       </div>
                     </div>
@@ -1260,10 +1373,15 @@ export function ServiceStyleA({ page }: ServiceStyleAProps) {
                     </p>
                     <div className="h-0 relative shrink-0 w-[455px]">
                       <div className="absolute bottom-[-1.5px] left-0 right-0 top-[-1.5px]">
-                        <img
-                          alt={getAlt(whyChoose?.separatorImage, "Separator")}
+                        <Image
+                          alt={getAlt(whyChooseSeparatorImage, "Separator")}
                           className="block max-w-none size-full"
-                          src={getUrl(whyChoose?.separatorImage, "/images/services/separator-vector.svg")}
+                          src={getUrl(whyChooseSeparatorImage, "/images/services/separator-vector.svg")}
+                          fill
+                          sizes="455px"
+                          unoptimized={isRemoteUrl(
+                            getUrl(whyChooseSeparatorImage, "/images/services/separator-vector.svg")
+                          )}
                         />
                       </div>
                     </div>
@@ -1278,10 +1396,18 @@ export function ServiceStyleA({ page }: ServiceStyleAProps) {
                 <div className="relative shrink-0 w-[765px]" style={{ minHeight: '624px' }}>
                   <div className="absolute inset-0 rounded-[12px] overflow-hidden">
                     <div className="absolute inset-0 overflow-hidden rounded-[12px]">
-                      <img
-                        alt={getAlt(whyChoose?.rightImage, "Why Choose Amedicase")}
+                      <Image
+                        alt={getAlt(whyChooseRightImage, "Why Choose Amedicase")}
                         className="absolute h-full left-[-21.18%] max-w-none top-0 w-[147.36%]"
-                        src={getUrl(whyChoose?.rightImage, "/images/services/office-documents-filing-cabinet.jpg")}
+                        src={getUrl(
+                          whyChooseRightImage,
+                          "/images/services/office-documents-filing-cabinet.jpg"
+                        )}
+                        fill
+                        sizes="765px"
+                        unoptimized={isRemoteUrl(
+                          getUrl(whyChooseRightImage, "/images/services/office-documents-filing-cabinet.jpg")
+                        )}
                       />
                     </div>
                     <div className="absolute bg-[rgba(30,58,138,0.2)] inset-0 mix-blend-hard-light rounded-[12px]" />
@@ -1289,10 +1415,15 @@ export function ServiceStyleA({ page }: ServiceStyleAProps) {
                   {/* Subtract Overlay - absolute positioning for decorative overlay */}
                   <div className="absolute inset-0 pointer-events-none">
                     <div className="absolute inset-[-0.27%_-0.52%_-0.8%_-0.52%]">
-                      <img
-                        alt={getAlt(whyChoose?.rightOverlay, "Subtract")}
+                      <Image
+                        alt={getAlt(whyChooseRightOverlay, "Subtract")}
                         className="block max-w-none size-full"
-                        src={getUrl(whyChoose?.rightOverlay, "/images/services/subtract-overlay.svg")}
+                        src={getUrl(whyChooseRightOverlay, "/images/services/subtract-overlay.svg")}
+                        fill
+                        sizes="765px"
+                        unoptimized={isRemoteUrl(
+                          getUrl(whyChooseRightOverlay, "/images/services/subtract-overlay.svg")
+                        )}
                       />
                     </div>
                   </div>

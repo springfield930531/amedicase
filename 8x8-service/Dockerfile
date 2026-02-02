@@ -6,7 +6,7 @@ WORKDIR /app
 COPY package.json package-lock.json* ./
 
 # Install dependencies
-RUN npm install --production
+RUN --mount=type=cache,target=/root/.npm npm ci --omit=dev
 
 # Copy application files
 COPY . .

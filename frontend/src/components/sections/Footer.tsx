@@ -1,5 +1,6 @@
 import svgPaths from "@/lib/imports/svg-v80ao031r3";
 import Link from "next/link";
+import Image from "next/image";
 import { getSiteSettings } from "@/lib/strapi";
 import { getMediaUrl } from "@/lib/strapi-home";
 import type { NavItem, SocialLink } from "@/lib/site-settings-types";
@@ -58,6 +59,7 @@ export async function Footer() {
   const socialLinks = resolveSocialLinks(footer?.socialLinks);
   const copyrightText = footer?.copyrightText || fallbackCopyright;
   const logoAlt = footer?.footerLogoAlt || "Amedicase";
+  const logoIsRemote = footerLogoUrl ? /^https?:\/\//i.test(footerLogoUrl) : false;
 
   return (
     <footer className="relative bg-[#f1f5ff] py-0 md:py-20 xl:pt-[7rem] xl:pb-[2rem] w-full">
@@ -96,7 +98,14 @@ export async function Footer() {
                 {/* Logo - Same as Header */}
                 <Link href="/" className="w-[180px] h-auto cursor-pointer">
                   {footerLogoUrl ? (
-                    <img alt={logoAlt} className="w-full h-auto" src={footerLogoUrl} />
+                    <Image
+                      alt={logoAlt}
+                      className="w-full h-auto"
+                      src={footerLogoUrl}
+                      width={261}
+                      height={60}
+                      unoptimized={logoIsRemote}
+                    />
                   ) : (
                     <svg className="w-full h-auto" fill="none" preserveAspectRatio="xMidYMid meet" viewBox="0 0 261 60">
                       <g>
@@ -116,6 +125,7 @@ export async function Footer() {
                     const href = link.url || "#";
                     const iconUrl = getMediaUrl(link.icon) || getFallbackSocialIcon(link.platform);
                     const external = isExternal(href);
+                    const iconIsRemote = /^https?:\/\//i.test(iconUrl);
                     return (
                       <a
                         key={`${link.platform || "social"}-${index}`}
@@ -124,7 +134,14 @@ export async function Footer() {
                         rel={external ? "noreferrer" : undefined}
                         className="w-[24px] h-[24px] hover:opacity-70 transition-opacity"
                       >
-                        <img alt={link.platform || "Social"} className="w-full h-full object-contain" src={iconUrl} />
+                        <Image
+                          alt={link.platform || "Social"}
+                          className="w-full h-full object-contain"
+                          src={iconUrl}
+                          width={24}
+                          height={24}
+                          unoptimized={iconIsRemote}
+                        />
                       </a>
                     );
                   })}
@@ -228,7 +245,14 @@ export async function Footer() {
             {/* Logo */}
             <div className="h-[40px] w-[176px] relative shrink-0 flex items-center justify-center">
               {footerLogoUrl ? (
-                <img alt={logoAlt} className="w-full h-full object-contain" src={footerLogoUrl} />
+                <Image
+                  alt={logoAlt}
+                  className="w-full h-full object-contain"
+                  src={footerLogoUrl}
+                  width={261}
+                  height={60}
+                  unoptimized={logoIsRemote}
+                />
               ) : (
                 <svg className="w-full h-full" fill="none" preserveAspectRatio="xMidYMid meet" viewBox="0 0 261 60">
                   <g>

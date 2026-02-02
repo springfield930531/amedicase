@@ -44,7 +44,11 @@ const defaultServices = [
 ];
 
 type ServicesSectionProps = {
-  data?: any;
+  data?: {
+    label?: string;
+    services?: Array<{ title?: string; description?: string }>;
+    cta?: { label?: string; url?: string; isExternal?: boolean };
+  };
 };
 
 export function ServicesSection({ data }: ServicesSectionProps) {

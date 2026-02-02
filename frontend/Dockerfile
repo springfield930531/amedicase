@@ -3,7 +3,7 @@ FROM node:20-alpine AS builder
 WORKDIR /app
 # Copy deps manifests and install
 COPY package.json package-lock.json ./
-RUN npm ci
+RUN --mount=type=cache,target=/root/.npm npm ci
 # Copy source and build
 COPY . .
 RUN npm run build

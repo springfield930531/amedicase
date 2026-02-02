@@ -1,9 +1,14 @@
 import svgPaths from "@/lib/imports/svg-ie2km5jka3";
 import Image from "next/image";
 import { getMediaUrl } from "@/lib/strapi-home";
+import type { StrapiMedia } from "@/lib/page-types";
 
 type ImageSectionsProps = {
-  data?: any;
+  data?: {
+    title?: string;
+    backgroundImage?: StrapiMedia | null;
+    logoImage?: StrapiMedia | null;
+  };
 };
 
 export function ImageSections({ data }: ImageSectionsProps) {
@@ -12,6 +17,7 @@ export function ImageSections({ data }: ImageSectionsProps) {
     "Redefining patient management\nthrough clarity and trust.";
   const background = getMediaUrl(data?.backgroundImage) || "/images/Photo section3.jpg";
   const logoImage = getMediaUrl(data?.logoImage) || "/images/amedicase-logo-desktop.svg";
+  const isRemoteUrl = (url: string) => /^https?:\/\//i.test(url);
 
   return (
     <section className="relative bg-[#f1f5ff] w-full pb-[40px] md:pb-16 xl:pb-20">
@@ -25,7 +31,9 @@ export function ImageSections({ data }: ImageSectionsProps) {
           src={background}
           alt="Patient management"
           fill
+          sizes="100vw"
           className="object-cover rounded-xl"
+          unoptimized={isRemoteUrl(background)}
         />
 
         {/* Overlay with blend mode */}
@@ -72,10 +80,13 @@ export function ImageSections({ data }: ImageSectionsProps) {
             <div className="absolute inset-0 flex flex-col items-center justify-center gap-[60px] text-center z-10 px-[282px] py-[112px]">
               {/* Logo - Exact Figma: 174.023px x 174.023px */}
               <div className="relative shrink-0 w-[174.023px] h-[174.023px]">
-                <img 
-                  alt="Amedicase sign" 
+                <Image
+                  alt="Amedicase sign"
                   src={logoImage}
-                  className="block w-full h-full" 
+                  fill
+                  sizes="174px"
+                  className="block w-full h-full"
+                  unoptimized={isRemoteUrl(logoImage)}
                 />
               </div>
 

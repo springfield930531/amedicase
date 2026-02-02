@@ -1,7 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { submitContactForm, type ContactFormData } from "@/lib/strapi";
+import Image from "next/image";
+import { submitContactForm } from "@/lib/strapi";
+import type { ContactBlockSection } from "@/lib/page-types";
 
 // Testimonial videos data (YouTube)
 const defaultTestimonialVideos = [
@@ -26,13 +28,13 @@ const defaultTestimonialVideos = [
 ];
 
 type ContactSectionProps = {
-  data?: any;
+  data?: ContactBlockSection;
 };
 
 export function ContactSection({ data }: ContactSectionProps) {
   const testimonialVideos =
     data?.videoTestimonials?.length
-      ? data.videoTestimonials.map((video: any, index: number) => ({
+      ? data.videoTestimonials.map((video, index: number) => ({
           id: index + 1,
           clientName: video?.name || "Client Name",
           position: video?.position || "Client Position",
@@ -43,8 +45,8 @@ export function ContactSection({ data }: ContactSectionProps) {
   const title = data?.title || "Ready to Build Your Outsource Team?";
   const contactEmail = data?.contactEmail;
   const socialLinks = Array.isArray(data?.socialLinks) ? data.socialLinks : [];
-  const facebookLink = socialLinks.find((link: any) => link?.platform?.toLowerCase?.().includes("facebook"));
-  const instagramLink = socialLinks.find((link: any) => link?.platform?.toLowerCase?.().includes("instagram"));
+  const facebookLink = socialLinks.find((link) => link?.platform?.toLowerCase?.().includes("facebook"));
+  const instagramLink = socialLinks.find((link) => link?.platform?.toLowerCase?.().includes("instagram"));
   const emailHref = contactEmail ? `mailto:${contactEmail}` : "#";
   const facebookHref = facebookLink?.url || "#";
   const instagramHref = instagramLink?.url || "#";
@@ -115,7 +117,7 @@ export function ContactSection({ data }: ContactSectionProps) {
       } else {
         setSubmitStatus({ type: 'error', message: result.error || 'Failed to send message. Please try again.' });
       }
-    } catch (error) {
+    } catch {
       setSubmitStatus({ type: 'error', message: 'An error occurred. Please try again later.' });
     } finally {
       setIsSubmitting(false);
@@ -190,7 +192,7 @@ export function ContactSection({ data }: ContactSectionProps) {
                         aria-label="Previous testimonial"
                       >
                         <div className="rotate-180 scale-y-[-1]">
-                          <img alt="Previous" src="/images/arrow-left.svg" className="w-[40px] h-[40px]" />
+                          <Image alt="Previous" src="/images/arrow-left.svg" width={40} height={40} className="w-[40px] h-[40px]" />
                         </div>
                       </button>
                       <button 
@@ -198,7 +200,7 @@ export function ContactSection({ data }: ContactSectionProps) {
                         className="flex items-center justify-center hover:opacity-80 transition-opacity"
                         aria-label="Next testimonial"
                       >
-                        <img alt="Next" src="/images/arrow-right.svg" className="w-[40px] h-[40px]" />
+                        <Image alt="Next" src="/images/arrow-right.svg" width={40} height={40} className="w-[40px] h-[40px]" />
                       </button>
                     </div>
                   </div>
@@ -210,7 +212,7 @@ export function ContactSection({ data }: ContactSectionProps) {
                     className="flex gap-[20px] items-center"
                     href={emailHref}
                   >
-                    <img alt="Mail" src="/images/mail-icon.svg" className="w-[24px] h-[24px]" />
+                    <Image alt="Mail" src="/images/mail-icon.svg" width={24} height={24} className="w-[24px] h-[24px]" />
                     <p className="font-sans font-medium leading-none text-[20px] text-blue-900 tracking-[-0.4px]" style={{ fontVariationSettings: "'wdth' 100" }}>
                       Our Email
                     </p>
@@ -221,7 +223,7 @@ export function ContactSection({ data }: ContactSectionProps) {
                     target={isExternal(facebookHref) ? "_blank" : undefined}
                     rel={isExternal(facebookHref) ? "noreferrer" : undefined}
                   >
-                    <img alt="Facebook" src="/images/facebook-icon.svg" className="w-[24px] h-[24px]" />
+                    <Image alt="Facebook" src="/images/facebook-icon.svg" width={24} height={24} className="w-[24px] h-[24px]" />
                     <p className="font-sans font-medium leading-none text-[20px] text-blue-900 tracking-[-0.4px]" style={{ fontVariationSettings: "'wdth' 100" }}>
                       Facebook Page
                     </p>
@@ -232,7 +234,7 @@ export function ContactSection({ data }: ContactSectionProps) {
                     target={isExternal(instagramHref) ? "_blank" : undefined}
                     rel={isExternal(instagramHref) ? "noreferrer" : undefined}
                   >
-                    <img alt="Instagram" src="/images/instagram-icon.svg" className="w-[24px] h-[24px]" />
+                    <Image alt="Instagram" src="/images/instagram-icon.svg" width={24} height={24} className="w-[24px] h-[24px]" />
                     <p className="font-sans font-medium leading-none text-[20px] text-blue-900 tracking-[-0.4px]" style={{ fontVariationSettings: "'wdth' 100" }}>
                       Instagram Page
                     </p>

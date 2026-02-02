@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import { Header } from "@/components/sections/Header";
 import { Footer } from "@/components/sections/Footer";
 import { GradientTitle } from "@/components/shared/GradientTitle";
-import { TitleBlock } from "@/components/shared/TitleBlock";
 import { ContactSection } from "@/components/sections/ContactSection";
+import Image from "next/image";
 import { getPageBySlug } from "@/lib/strapi";
 import { getMediaUrl } from "@/lib/strapi-home";
 import type {
@@ -14,6 +14,7 @@ import type {
   PageEntry,
   PageHeroSection,
   StoryBlockSection,
+  StrapiMedia,
 } from "@/lib/page-types";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -133,13 +134,12 @@ export default async function HomeHealthPage() {
     },
   };
 
-  const heroData = hero || fallback.hero;
   const storyData = story || fallback.story;
   const overlayFirst = overlays[0] || fallback.overlays[0];
   const overlaySecond = overlays[1] || fallback.overlays[1];
   const benefitsData = benefits || fallback.benefits;
   const howItWorksData = howItWorks || fallback.howItWorks;
-  const heroCta = heroData?.cta || fallback.hero.cta;
+  const heroCta = (hero && 'cta' in hero ? hero.cta : undefined) || fallback.hero.cta;
   const benefitCards = benefitsData?.cards?.length ? benefitsData.cards : fallback.benefits.cards;
   const howItWorksSteps = howItWorksData?.steps?.length ? howItWorksData.steps : fallback.howItWorks.steps;
   const howItWorksCta = howItWorksData?.cta || fallback.howItWorks.cta;
@@ -155,9 +155,15 @@ export default async function HomeHealthPage() {
       </span>
     ));
   };
-  const getUrl = (media: any, fallbackUrl?: string) => getMediaUrl(media) || fallbackUrl || "";
-  const getAlt = (media: any, fallbackAlt?: string) =>
-    media?.alternativeText || media?.data?.attributes?.alternativeText || fallbackAlt || "";
+  const getUrl = (media: StrapiMedia | string | null | undefined, fallbackUrl?: string) => {
+    if (typeof media === 'string') return media;
+    return getMediaUrl(media) || fallbackUrl || "";
+  };
+  const getAlt = (media: StrapiMedia | string | null | undefined, fallbackAlt?: string) => {
+    if (typeof media === 'string') return fallbackAlt || "";
+    return media?.alternativeText || media?.data?.attributes?.alternativeText || fallbackAlt || "";
+  };
+  const isRemoteUrl = (url: string) => /^https?:\/\//i.test(url);
   return (
     <div className="min-h-screen bg-[#f1f5ff] relative overflow-x-hidden">
       <Header />
@@ -176,7 +182,7 @@ export default async function HomeHealthPage() {
                       className="font-sans font-medium text-[#d01127] text-[13px] uppercase whitespace-nowrap"
                       style={{ fontVariationSettings: "'wdth' 100" }}
                     >
-                      {heroData?.badgeLabel || fallback.hero.badgeLabel}
+                      {(hero && 'badgeLabel' in hero ? hero.badgeLabel : undefined) || fallback.hero.badgeLabel}
                     </p>
                   </div>
                 </div>
@@ -184,10 +190,15 @@ export default async function HomeHealthPage() {
 
               {/* Hero Image Background - Full width */}
               <div className="relative h-[562px] w-full -mt-[29px] overflow-hidden">
-                <img
-                  src={getUrl(heroData?.backgroundImage, "/images/services/hero-services.jpg")}
-                  alt={getAlt(heroData?.backgroundImage, "Home health professionals")}
+                <Image
+                  src={getUrl((hero && 'backgroundImage' in hero ? hero.backgroundImage : undefined), "/images/services/hero-services.jpg")}
+                  alt={getAlt((hero && 'backgroundImage' in hero ? hero.backgroundImage : undefined), "Home health professionals")}
+                  fill
+                  sizes="100vw"
                   className="w-full h-full object-cover object-center"
+                  unoptimized={isRemoteUrl(
+                    getUrl((hero && 'backgroundImage' in hero ? hero.backgroundImage : undefined), "/images/services/hero-services.jpg")
+                  )}
                 />
                 <div className="absolute bg-[rgba(240,242,248,0.2)] inset-0 pointer-events-none" />
               </div>
@@ -199,13 +210,13 @@ export default async function HomeHealthPage() {
                     className="font-sans font-semibold text-[clamp(24px,3vw,28px)] leading-[1.1] tracking-[-0.66px] w-full whitespace-pre-wrap"
                     style={{ fontVariationSettings: "'wdth' 100" }}
                   >
-                    {renderWithBreaks(heroData?.title || fallback.hero.title)}
+                    {renderWithBreaks((hero && 'title' in hero ? hero.title : undefined) || fallback.hero.title)}
                   </h1>
                   <p 
                     className="font-sans font-normal text-[clamp(11px,1.5vw,12px)] leading-[1.4] tracking-[-0.26px] w-full"
                     style={{ fontVariationSettings: "'wdth' 100" }}
                   >
-                    {renderWithBreaks(heroData?.subtitle || fallback.hero.subtitle)}
+                    {renderWithBreaks((hero && 'subtitle' in hero ? hero.subtitle : undefined) || fallback.hero.subtitle)}
                   </p>
                 </div>
                 <div className="flex flex-col gap-[20px] items-center">
@@ -228,10 +239,15 @@ export default async function HomeHealthPage() {
             {/* Hero Image Background */}
             <div className="absolute inset-0 overflow-hidden">
               <div className="absolute inset-0 overflow-hidden">
-                <img
-                  src={getUrl(heroData?.backgroundImage, "/images/services/hero-services.jpg")}
-                  alt={getAlt(heroData?.backgroundImage, "Home health professionals")}
+                <Image
+                  src={getUrl((hero && 'backgroundImage' in hero ? hero.backgroundImage : undefined), "/images/services/hero-services.jpg")}
+                  alt={getAlt((hero && 'backgroundImage' in hero ? hero.backgroundImage : undefined), "Home health professionals")}
+                  fill
+                  sizes="100vw"
                   className="absolute h-[200.03%] left-[-30.99%] max-w-none top-[-42.98%] w-[131.05%] object-cover"
+                  unoptimized={isRemoteUrl(
+                    getUrl((hero && 'backgroundImage' in hero ? hero.backgroundImage : undefined), "/images/services/hero-services.jpg")
+                  )}
                 />
               </div>
               <div className="absolute bg-[rgba(240,242,248,0.2)] inset-0" />
@@ -246,7 +262,7 @@ export default async function HomeHealthPage() {
                     className="font-sans font-medium text-[#d01127] text-[33px] uppercase whitespace-nowrap"
                     style={{ fontVariationSettings: "'wdth' 100" }}
                   >
-                    {heroData?.badgeLabelDesktop || heroData?.badgeLabel || fallback.hero.badgeLabel}
+                    {(hero && 'badgeLabelDesktop' in hero ? hero.badgeLabelDesktop : undefined) || (hero && 'badgeLabel' in hero ? hero.badgeLabel : undefined) || fallback.hero.badgeLabel}
                   </p>
                 </div>
               </div>
@@ -258,13 +274,13 @@ export default async function HomeHealthPage() {
                     className="font-sans font-semibold text-[52px] tracking-[-1.04px] w-full"
                     style={{ fontVariationSettings: "'wdth' 100" }}
                   >
-                    {renderWithBreaks(heroData?.titleDesktop || heroData?.title || fallback.hero.title)}
+                    {renderWithBreaks((hero && 'titleDesktop' in hero ? hero.titleDesktop : undefined) || (hero && 'title' in hero ? hero.title : undefined) || fallback.hero.title)}
                   </h1>
                   <p 
                     className="font-sans font-normal text-[33px] tracking-[-0.66px] w-full"
                     style={{ fontVariationSettings: "'wdth' 100" }}
                   >
-                    {renderWithBreaks(heroData?.subtitleDesktop || heroData?.subtitle || fallback.hero.subtitle)}
+                    {renderWithBreaks((hero && 'subtitleDesktop' in hero ? hero.subtitleDesktop : undefined) || (hero && 'subtitle' in hero ? hero.subtitle : undefined) || fallback.hero.subtitle)}
                   </p>
                 </div>
                 
@@ -325,13 +341,18 @@ export default async function HomeHealthPage() {
           <div className="mx-auto px-5 md:px-8 xl:px-0 max-w-[1440px]">
             <div className="relative w-full rounded-[12px] overflow-hidden" style={{ aspectRatio: '1320/375', minHeight: '375px' }}>
               {/* Background Image */}
-              <img
+              <Image
                 src={getUrl(overlayFirst?.backgroundImage, "/images/creative-development/office-documents-background.jpg")}
                 alt={getAlt(overlayFirst?.backgroundImage, "Office documents and files")}
+                fill
+                sizes="(max-width: 1024px) 100vw, 1320px"
                 className="w-full h-full object-cover rounded-[8px]"
                 style={{
                   objectPosition: 'center center'
                 }}
+                unoptimized={isRemoteUrl(
+                  getUrl(overlayFirst?.backgroundImage, "/images/creative-development/office-documents-background.jpg")
+                )}
               />
               
               {/* Overlays Container - Single absolute wrapper for all overlays */}
@@ -344,14 +365,19 @@ export default async function HomeHealthPage() {
                 
                 {/* White Abstract Shapes Overlay */}
                 <div className="absolute inset-0 rounded-[8px] overflow-visible">
-                  <img
+                  <Image
                     src={getUrl(overlayFirst?.overlayImage, "/images/creative-development/white-shapes-overlay.svg")}
                     alt={getAlt(overlayFirst?.overlayImage, "")}
+                    fill
+                    sizes="(max-width: 1024px) 100vw, 1320px"
                     className="w-full h-full object-cover"
                     style={{
                       transform: 'scale(1.1)',
                       transformOrigin: 'left center'
                     }}
+                    unoptimized={isRemoteUrl(
+                      getUrl(overlayFirst?.overlayImage, "/images/creative-development/white-shapes-overlay.svg")
+                    )}
                   />
                 </div>
               </div>
@@ -412,13 +438,18 @@ export default async function HomeHealthPage() {
           <div className="mx-auto px-5 md:px-8 xl:px-0 max-w-[1440px]">
             <div className="relative w-full rounded-[12px] overflow-hidden" style={{ aspectRatio: '1320/375', minHeight: '375px' }}>
               {/* Background Image */}
-              <img
+              <Image
                 src={getUrl(overlaySecond?.backgroundImage, "/images/creative-development/office-documents-background.jpg")}
                 alt={getAlt(overlaySecond?.backgroundImage, "Office documents and files")}
+                fill
+                sizes="(max-width: 1024px) 100vw, 1320px"
                 className="w-full h-full object-cover rounded-[8px]"
                 style={{
                   objectPosition: 'center center'
                 }}
+                unoptimized={isRemoteUrl(
+                  getUrl(overlaySecond?.backgroundImage, "/images/creative-development/office-documents-background.jpg")
+                )}
               />
               
               {/* Overlays Container - Single absolute wrapper for all overlays */}
@@ -431,14 +462,19 @@ export default async function HomeHealthPage() {
                 
                 {/* White Abstract Shapes Overlay */}
                 <div className="absolute inset-0 rounded-[8px] overflow-visible">
-                  <img
+                  <Image
                     src={getUrl(overlaySecond?.overlayImage, "/images/creative-development/white-shapes-overlay.svg")}
                     alt={getAlt(overlaySecond?.overlayImage, "")}
+                    fill
+                    sizes="(max-width: 1024px) 100vw, 1320px"
                     className="w-full h-full object-cover"
                     style={{
                       transform: 'scale(1.1)',
                       transformOrigin: 'left center'
                     }}
+                    unoptimized={isRemoteUrl(
+                      getUrl(overlaySecond?.overlayImage, "/images/creative-development/white-shapes-overlay.svg")
+                    )}
                   />
                 </div>
               </div>
@@ -457,10 +493,15 @@ export default async function HomeHealthPage() {
                 {/* Step 1: Assessment */}
                 <div className="flex items-start pl-0 pr-[70px] py-0 relative shrink-0">
                   <div className="mr-[-70px] relative shrink-0 size-[118px] mt-[30px]">
-                    <img 
-                      src={getUrl(howItWorksIcon, "/images/home-health/how-it-works-icon.svg")} 
-                      alt={getAlt(howItWorksIcon, "")} 
+                    <Image
+                      src={getUrl(howItWorksIcon, "/images/home-health/how-it-works-icon.svg")}
+                      alt={getAlt(howItWorksIcon, "")}
+                      width={118}
+                      height={118}
                       className="w-full h-full object-contain"
+                      unoptimized={isRemoteUrl(
+                        getUrl(howItWorksIcon, "/images/home-health/how-it-works-icon.svg")
+                      )}
                     />
                   </div>
                   <div className="flex flex-col gap-[20px] items-start mr-[-70px] relative shrink-0 w-[576px] whitespace-pre-wrap">
@@ -478,10 +519,15 @@ export default async function HomeHealthPage() {
                 {/* Step 2: Talent Selection */}
                 <div className="flex items-start pl-0 pr-[70px] py-0 relative shrink-0">
                   <div className="mr-[-70px] relative shrink-0 size-[118px] mt-[30px]">
-                    <img 
-                      src={getUrl(howItWorksIcon, "/images/home-health/how-it-works-icon.svg")} 
-                      alt={getAlt(howItWorksIcon, "")} 
+                    <Image
+                      src={getUrl(howItWorksIcon, "/images/home-health/how-it-works-icon.svg")}
+                      alt={getAlt(howItWorksIcon, "")}
+                      width={118}
+                      height={118}
                       className="w-full h-full object-contain"
+                      unoptimized={isRemoteUrl(
+                        getUrl(howItWorksIcon, "/images/home-health/how-it-works-icon.svg")
+                      )}
                     />
                   </div>
                   <div className="flex flex-col gap-[20px] items-start mr-[-70px] relative shrink-0 w-[576px] whitespace-pre-wrap">
@@ -499,10 +545,15 @@ export default async function HomeHealthPage() {
                 {/* Step 3: Seamless Integration */}
                 <div className="flex items-start pl-0 pr-[70px] py-0 relative shrink-0">
                   <div className="mr-[-70px] relative shrink-0 size-[118px] mt-[30px]">
-                    <img 
-                      src={getUrl(howItWorksIcon, "/images/home-health/how-it-works-icon.svg")} 
-                      alt={getAlt(howItWorksIcon, "")} 
+                    <Image
+                      src={getUrl(howItWorksIcon, "/images/home-health/how-it-works-icon.svg")}
+                      alt={getAlt(howItWorksIcon, "")}
+                      width={118}
+                      height={118}
                       className="w-full h-full object-contain"
+                      unoptimized={isRemoteUrl(
+                        getUrl(howItWorksIcon, "/images/home-health/how-it-works-icon.svg")
+                      )}
                     />
                   </div>
                   <div className="flex flex-col gap-[20px] items-start mr-[-70px] relative shrink-0 w-[576px] whitespace-pre-wrap">
@@ -520,10 +571,15 @@ export default async function HomeHealthPage() {
                 {/* Step 4: Monitoring & Optimization */}
                 <div className="flex items-start pl-0 pr-[70px] py-0 relative shrink-0">
                   <div className="mr-[-70px] relative shrink-0 size-[118px] mt-[30px]">
-                    <img 
-                      src={getUrl(howItWorksIcon, "/images/home-health/how-it-works-icon.svg")} 
-                      alt={getAlt(howItWorksIcon, "")} 
+                    <Image
+                      src={getUrl(howItWorksIcon, "/images/home-health/how-it-works-icon.svg")}
+                      alt={getAlt(howItWorksIcon, "")}
+                      width={118}
+                      height={118}
                       className="w-full h-full object-contain"
+                      unoptimized={isRemoteUrl(
+                        getUrl(howItWorksIcon, "/images/home-health/how-it-works-icon.svg")
+                      )}
                     />
                   </div>
                   <div className="flex flex-col gap-[20px] items-start mr-[-70px] relative shrink-0 w-[576px] whitespace-pre-wrap">

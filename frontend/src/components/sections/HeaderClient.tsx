@@ -3,6 +3,7 @@
 import svgPaths from "@/lib/imports/svg-v80ao031r3";
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import type { NavItem } from "@/lib/site-settings-types";
 
 type HeaderClientProps = {
@@ -34,6 +35,7 @@ export function HeaderClient({ logoUrl, logoAlt, navigation, cta }: HeaderClient
   const ctaHref = ctaData?.url || fallbackCta.url;
   const ctaExternal = ctaData?.isExternal || isExternal(ctaHref);
   const logoAltText = logoAlt || "Amedicase";
+  const logoIsRemote = logoUrl ? /^https?:\/\//i.test(logoUrl) : false;
 
   return (
     <>
@@ -44,7 +46,15 @@ export function HeaderClient({ logoUrl, logoAlt, navigation, cta }: HeaderClient
             {/* Logo - Mobile */}
             <Link href="/" className="w-[180px] h-auto cursor-pointer">
               {logoUrl ? (
-                <img alt={logoAltText} src={logoUrl} className="w-full h-auto" />
+                <Image
+                  alt={logoAltText}
+                  src={logoUrl}
+                  width={261}
+                  height={60}
+                  className="w-full h-auto"
+                  unoptimized={logoIsRemote}
+                  priority
+                />
               ) : (
                 <svg className="w-full h-auto" fill="none" preserveAspectRatio="xMidYMid meet" viewBox="0 0 261 60">
                   <g>
@@ -83,7 +93,14 @@ export function HeaderClient({ logoUrl, logoAlt, navigation, cta }: HeaderClient
             {/* Logo - Tablet */}
             <Link href="/" className="w-[261px] h-auto cursor-pointer">
               {logoUrl ? (
-                <img alt={logoAltText} src={logoUrl} className="w-full h-auto" />
+                <Image
+                  alt={logoAltText}
+                  src={logoUrl}
+                  width={261}
+                  height={60}
+                  className="w-full h-auto"
+                  unoptimized={logoIsRemote}
+                />
               ) : (
                 <svg className="w-full h-auto" fill="none" preserveAspectRatio="xMidYMid meet" viewBox="0 0 261 60">
                   <g>
@@ -134,7 +151,14 @@ export function HeaderClient({ logoUrl, logoAlt, navigation, cta }: HeaderClient
             {/* Logo - Desktop - Exact Figma: 260.98px width, 60px height */}
             <Link href="/" className="w-[260.98px] h-[60px] cursor-pointer shrink-0">
               {logoUrl ? (
-                <img alt={logoAltText} src={logoUrl} className="w-full h-full" />
+                <Image
+                  alt={logoAltText}
+                  src={logoUrl}
+                  width={261}
+                  height={60}
+                  className="w-full h-full"
+                  unoptimized={logoIsRemote}
+                />
               ) : (
                 <svg className="w-full h-full" fill="none" preserveAspectRatio="xMidYMid meet" viewBox="0 0 261 60">
                   <g>

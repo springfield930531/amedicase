@@ -9,17 +9,18 @@ import { TeamSection } from "@/components/sections/TeamSection";
 import { ContactSection } from "@/components/sections/ContactSection";
 import { Footer } from "@/components/sections/Footer";
 import { fetchHomePage } from "@/lib/strapi-home";
+import type { PageSection } from "@/lib/page-types";
 
 export default async function Home() {
   const homePage = await fetchHomePage();
   const sections = homePage?.contentSections || [];
-  const hero = sections.find((section: any) => section.__component === "sections.hero-section");
-  const services = sections.find((section: any) => section.__component === "sections.service-grid");
-  const imageHighlight = sections.find((section: any) => section.__component === "sections.image-highlight");
-  const whyChoose = sections.find((section: any) => section.__component === "sections.why-choose");
-  const processSteps = sections.find((section: any) => section.__component === "sections.process-steps");
-  const teamShowcase = sections.find((section: any) => section.__component === "sections.team-showcase");
-  const contactBlock = sections.find((section: any) => section.__component === "sections.contact-block");
+  const hero = sections.find((section: PageSection) => (section as any).__component === "sections.hero-section");
+  const services = sections.find((section: PageSection) => (section as any).__component === "sections.service-grid");
+  const imageHighlight = sections.find((section: PageSection) => (section as any).__component === "sections.image-highlight");
+  const whyChoose = sections.find((section: PageSection) => (section as any).__component === "sections.why-choose");
+  const processSteps = sections.find((section: PageSection) => (section as any).__component === "sections.process-steps");
+  const teamShowcase = sections.find((section: PageSection) => (section as any).__component === "sections.team-showcase");
+  const contactBlock = sections.find((section: PageSection) => (section as any).__component === "sections.contact-block");
 
   return (
     <div className="min-h-screen bg-[#f1f5ff] relative overflow-x-hidden">

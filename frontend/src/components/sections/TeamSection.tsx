@@ -4,6 +4,7 @@ import { useState } from "react";
 import Image from "next/image";
 import { SectionTitleWithSubtitle } from "@/components/shared/SectionTitleWithSubtitle";
 import { getMediaUrl } from "@/lib/strapi-home";
+import type { AboutTeamSection, CtaData, StrapiMedia } from "@/lib/page-types";
 
 const defaultTeamMembers = [
   {
@@ -30,13 +31,16 @@ const defaultTeamMembers = [
 ];
 
 type TeamSectionProps = {
-  data?: any;
+  data?: AboutTeamSection & {
+    supportGraphic?: StrapiMedia | null;
+    cta?: CtaData | null;
+  };
 };
 
 export function TeamSection({ data }: TeamSectionProps) {
   const members =
-    data?.members?.length
-      ? data.members.map((member: any) => ({
+    data?.teamMembers?.length
+      ? data.teamMembers.map((member) => ({
           name: member?.firstName || "",
           surname: member?.lastName || "",
           position: member?.role || "",
@@ -51,6 +55,7 @@ export function TeamSection({ data }: TeamSectionProps) {
   const supportGraphic =
     getMediaUrl(data?.supportGraphic) || "/images/team-vector-logo.svg";
   const ctaLabel = data?.cta?.label || "Learn More About Us";
+  const isRemoteUrl = (url: string) => /^https?:\/\//i.test(url);
 
   const [currentIndex, setCurrentIndex] = useState(0);
 
@@ -155,13 +160,31 @@ export function TeamSection({ data }: TeamSectionProps) {
                 {/* Pagination Dots - Responsive positioning */}
                 <div className="absolute flex gap-[clamp(10px,3vw,15px)] items-center left-1/2 -translate-x-1/2" style={{ top: 'clamp(250px,73vw,293px)' }}>
                   <div className="size-[clamp(8px,2.5vw,10px)]">
-                    <img alt="" className="block max-w-none size-full" src="/images/team-member-1.png" />
+                    <Image
+                      alt=""
+                      src="/images/team-member-1.png"
+                      width={10}
+                      height={10}
+                      className="block max-w-none size-full"
+                    />
                   </div>
                   <div className="size-[clamp(8px,2.5vw,10px)]">
-                    <img alt="" className="block max-w-none size-full" src="/images/team-member-2.png" />
+                    <Image
+                      alt=""
+                      src="/images/team-member-2.png"
+                      width={10}
+                      height={10}
+                      className="block max-w-none size-full"
+                    />
                   </div>
                   <div className="size-[clamp(8px,2.5vw,10px)]">
-                    <img alt="" className="block max-w-none size-full" src="/images/team-member-2.png" />
+                    <Image
+                      alt=""
+                      src="/images/team-member-2.png"
+                      width={10}
+                      height={10}
+                      className="block max-w-none size-full"
+                    />
                   </div>
                 </div>
               </div>
@@ -188,7 +211,14 @@ export function TeamSection({ data }: TeamSectionProps) {
               className="mb-0"
             />
             <div className="absolute right-[-270px] h-[154px] shrink-0 w-[260.963px]">
-              <img alt="Logo" className="block max-w-none size-full" src={supportGraphic} />
+              <Image
+                alt="Logo"
+                src={supportGraphic}
+                fill
+                sizes="260px"
+                className="block max-w-none size-full"
+                unoptimized={isRemoteUrl(supportGraphic)}
+              />
             </div>
           </div>
 
@@ -209,7 +239,7 @@ export function TeamSection({ data }: TeamSectionProps) {
                 <ArrowButton direction="right" onClick={goToNext} />
               </div>
               
-              {members.map((member: any, index: number) => {
+              {members.map((member, index: number) => {
                 // Determine slide class based on index position
                 let slideClass = "slide";
                 if (index === currentIndex) {
@@ -270,10 +300,13 @@ export function TeamSection({ data }: TeamSectionProps) {
                               borderRadius: isCenter ? "12px" : "11px",
                             }}
                           >
-                            <img
+                            <Image
                               alt={member.name}
-                              className="w-full h-full object-cover pointer-events-none"
                               src={member.photo}
+                              width={200}
+                              height={200}
+                              className="w-full h-full object-cover pointer-events-none"
+                              unoptimized={isRemoteUrl(member.photo)}
                             />
                           </div>
                           {/* Right side - Name */}

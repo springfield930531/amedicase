@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Header } from "@/components/sections/Header";
 import { Footer } from "@/components/sections/Footer";
 import { TitleBlock } from "@/components/shared/TitleBlock";
+import Image from "next/image";
 import { getPageBySlug } from "@/lib/strapi";
 import { getMediaUrl } from "@/lib/strapi-home";
 import type {
@@ -138,6 +139,7 @@ export default async function ContactPage() {
         overlayImage: getMediaUrl(overlay.overlayImage) || fallback.overlays[index]?.overlayImage,
       }))
     : fallback.overlays;
+  const isRemoteUrl = (url: string) => /^https?:\/\//i.test(url);
 
   const infoData = {
     label: contactInfo?.label || fallback.contactInfo.label,
@@ -178,9 +180,11 @@ export default async function ContactPage() {
               {/* Hero Image Background */}
               <div className="absolute inset-0 overflow-hidden rounded-xl">
                 <div className="absolute inset-0 overflow-hidden">
-                  <img
+                  <Image
                     src={heroData.backgroundImage}
                     alt="Healthcare professionals working"
+                    fill
+                    sizes="100vw"
                     className="absolute inset-0 w-full h-full object-cover"
                     style={{
                       height: '113.88%',
@@ -191,6 +195,7 @@ export default async function ContactPage() {
                       objectFit: 'cover',
                       objectPosition: 'center center'
                     }}
+                    unoptimized={isRemoteUrl(heroData.backgroundImage)}
                   />
                 </div>
                 <div className="absolute bg-[rgba(240,242,248,0.2)] inset-0" />
@@ -226,10 +231,13 @@ export default async function ContactPage() {
             {/* Hero Image Background */}
             <div className="absolute inset-0 overflow-hidden">
               <div className="absolute inset-0 overflow-hidden">
-                <img
+                <Image
                   src={heroData.backgroundImage}
                   alt="Healthcare professionals working"
+                  fill
+                  sizes="100vw"
                   className="absolute h-[200.03%] left-[-30.99%] max-w-none top-[-42.98%] w-[131.05%] object-cover"
+                  unoptimized={isRemoteUrl(heroData.backgroundImage)}
                 />
               </div>
               <div className="absolute bg-[rgba(240,242,248,0.2)] inset-0" />
@@ -293,13 +301,16 @@ export default async function ContactPage() {
             <div className="relative w-full rounded-[12px] overflow-hidden" style={{ aspectRatio: '1320/375', minHeight: '375px' }}>
               <div className="relative w-full h-full rounded-[8px] overflow-hidden">
                 {/* Background Image */}
-                <img
+                <Image
                   src={overlayData[0]?.backgroundImage}
                   alt="Office documents and files"
+                  fill
+                  sizes="(max-width: 1024px) 100vw, 1320px"
                   className="w-full h-full object-cover rounded-[8px]"
                   style={{
                     objectPosition: 'center center'
                   }}
+                  unoptimized={isRemoteUrl(overlayData[0]?.backgroundImage)}
                 />
                 
                 {/* Red Overlay */}
@@ -309,14 +320,17 @@ export default async function ContactPage() {
                 
                 {/* Subtract SVG Overlay - positioned to leave a few pixels visible at bottom */}
                 <div className="relative -mt-full rounded-[8px] pointer-events-none mb-[4px]" style={{ marginTop: '-100%', marginBottom: '4px' }}>
-                  <img
+                  <Image
                     src={overlayData[0]?.overlayImage}
                     alt=""
+                    fill
+                    sizes="(max-width: 1024px) 100vw, 1320px"
                     className="w-full h-full object-cover"
                     style={{
                       objectPosition: 'center top',
                       minHeight: 'calc(100% - 4px)'
                     }}
+                    unoptimized={isRemoteUrl(overlayData[0]?.overlayImage)}
                   />
                 </div>
               </div>
@@ -442,13 +456,16 @@ export default async function ContactPage() {
             <div className="relative w-full rounded-[12px] overflow-hidden" style={{ aspectRatio: '1320/375', minHeight: '375px' }}>
               <div className="relative w-full h-full rounded-[8px] overflow-hidden">
                 {/* Background Image */}
-                <img
+                <Image
                   src={overlayData[1]?.backgroundImage}
                   alt="Office documents and files"
+                  fill
+                  sizes="(max-width: 1024px) 100vw, 1320px"
                   className="w-full h-full object-cover rounded-[8px]"
                   style={{
                     objectPosition: 'center center'
                   }}
+                  unoptimized={isRemoteUrl(overlayData[1]?.backgroundImage)}
                 />
                 
                 {/* Blue Overlay */}
@@ -458,14 +475,17 @@ export default async function ContactPage() {
                 
                 {/* Subtract SVG Overlay - positioned to leave a few pixels visible at bottom */}
                 <div className="relative -mt-full rounded-[8px] pointer-events-none mb-[4px]" style={{ marginTop: '-100%', marginBottom: '4px' }}>
-                  <img
+                  <Image
                     src={overlayData[1]?.overlayImage}
                     alt=""
+                    fill
+                    sizes="(max-width: 1024px) 100vw, 1320px"
                     className="w-full h-full object-cover"
                     style={{
                       objectPosition: 'center top',
                       minHeight: 'calc(100% - 4px)'
                     }}
+                    unoptimized={isRemoteUrl(overlayData[1]?.overlayImage)}
                   />
                 </div>
               </div>

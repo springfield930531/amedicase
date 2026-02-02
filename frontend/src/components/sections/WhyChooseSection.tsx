@@ -1,6 +1,8 @@
 import type { CSSProperties } from "react";
 import svgPaths from "@/lib/imports/svg-ie2km5jka3";
 import { getMediaUrl } from "@/lib/strapi-home";
+import Image from "next/image";
+import type { AboutWhyChooseSection, StrapiMedia } from "@/lib/page-types";
 
 type ExtendedCSSProperties = CSSProperties & {
   textEdge?: string;
@@ -23,18 +25,22 @@ const defaultBenefits = [
 ];
 
 type WhyChooseSectionProps = {
-  data?: any;
+  data?: AboutWhyChooseSection & {
+    supportImage?: StrapiMedia | null;
+  };
 };
 
 export function WhyChooseSection({ data }: WhyChooseSectionProps) {
   const label = data?.label || "Why Choose Amedicase";
   const title = data?.title || "Why Home Health Agencies Choose Us";
   const benefits =
-    data?.benefits?.map((benefit: any) => benefit?.label).filter(Boolean) ||
-    defaultBenefits;
+    data?.benefits
+      ?.map((benefit) => benefit?.label)
+      .filter((value): value is string => Boolean(value)) || defaultBenefits;
   const ctaLabel = data?.cta?.label || "More About Us";
   const supportImage =
     getMediaUrl(data?.supportImage) || "/images/why-choose-image-figma.png";
+  const isRemoteUrl = (url: string) => /^https?:\/\//i.test(url);
 
   return (
     <section className="relative bg-[#f1f5ff] pt-[40px] md:pt-16 xl:pt-20 pb-[40px] md:pb-16 xl:pb-20 overflow-hidden">
@@ -179,10 +185,13 @@ export function WhyChooseSection({ data }: WhyChooseSectionProps) {
             <div className="flex flex-col gap-6 xl:gap-[24px] items-center xl:items-start w-full max-w-[403px] xl:w-[403px]">
               {/* Image - Exact Figma: 403px x 314px - Responsive */}
               <div className="relative w-full max-w-[403px] xl:w-[403px] aspect-[403/314] xl:h-[314px] rounded-[12px] overflow-hidden">
-                <img
+                <Image
                   src={supportImage}
                   alt="Why choose Amedicase"
+                  fill
+                  sizes="(max-width: 1024px) 100vw, 403px"
                   className="absolute inset-0 w-full h-full object-cover"
+                  unoptimized={isRemoteUrl(supportImage)}
                 />
                 <div className="absolute inset-0 bg-[rgba(30,58,138,0.5)] mix-blend-hard-light" />
               </div>

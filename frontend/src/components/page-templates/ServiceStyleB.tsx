@@ -1,8 +1,8 @@
 import { Header } from "@/components/sections/Header";
 import { Footer } from "@/components/sections/Footer";
 import { GradientTitle } from "@/components/shared/GradientTitle";
-import { TitleBlock } from "@/components/shared/TitleBlock";
 import { ContactSection } from "@/components/sections/ContactSection";
+import Image from "next/image";
 import { getMediaUrl } from "@/lib/strapi-home";
 import type {
   BenefitCardsSection,
@@ -12,6 +12,7 @@ import type {
   PageEntry,
   PageHeroSection,
   StoryBlockSection,
+  StrapiMedia,
 } from "@/lib/page-types";
 
 type ServiceStyleBProps = {
@@ -126,6 +127,14 @@ export function ServiceStyleB({ page }: ServiceStyleBProps) {
   const howItWorksSteps = howItWorksData?.steps?.length ? howItWorksData.steps : fallback.howItWorks.steps;
   const howItWorksCta = howItWorksData?.cta || fallback.howItWorks.cta;
   const howItWorksIcon = howItWorksData?.icon || fallback.howItWorks.icon;
+  const heroBackgroundImage =
+    heroData && "backgroundImage" in heroData ? heroData.backgroundImage : undefined;
+  const heroBadgeLabelDesktop =
+    heroData && "badgeLabelDesktop" in heroData ? heroData.badgeLabelDesktop : undefined;
+  const heroTitleDesktop =
+    heroData && "titleDesktop" in heroData ? heroData.titleDesktop : undefined;
+  const heroSubtitleDesktop =
+    heroData && "subtitleDesktop" in heroData ? heroData.subtitleDesktop : undefined;
 
   const renderWithBreaks = (value?: string) => {
     if (!value) return null;
@@ -137,9 +146,15 @@ export function ServiceStyleB({ page }: ServiceStyleBProps) {
       </span>
     ));
   };
-  const getUrl = (media: any, fallbackUrl?: string) => getMediaUrl(media) || fallbackUrl || "";
-  const getAlt = (media: any, fallbackAlt?: string) =>
-    media?.alternativeText || media?.data?.attributes?.alternativeText || fallbackAlt || "";
+  const getUrl = (media: StrapiMedia | string | null | undefined, fallbackUrl?: string) => {
+    if (typeof media === "string") return media;
+    return getMediaUrl(media) || fallbackUrl || "";
+  };
+  const getAlt = (media: StrapiMedia | string | null | undefined, fallbackAlt?: string) =>
+    typeof media === "string"
+      ? fallbackAlt || ""
+      : media?.alternativeText || media?.data?.attributes?.alternativeText || fallbackAlt || "";
+  const isRemoteUrl = (url: string) => /^https?:\/\//i.test(url);
   return (
     <div className="min-h-screen bg-[#f1f5ff] relative overflow-x-hidden">
       <Header />
@@ -166,10 +181,13 @@ export function ServiceStyleB({ page }: ServiceStyleBProps) {
 
               {/* Hero Image Background - Full width */}
               <div className="relative h-[562px] w-full -mt-[29px] overflow-hidden">
-                <img
-                  src={getUrl(heroData?.backgroundImage, "/images/services/hero-services.jpg")}
-                  alt={getAlt(heroData?.backgroundImage, "Home health professionals")}
+                <Image
+                  src={getUrl(heroBackgroundImage, "/images/services/hero-services.jpg")}
+                  alt={getAlt(heroBackgroundImage, "Home health professionals")}
+                  fill
+                  sizes="100vw"
                   className="w-full h-full object-cover object-center"
+                  unoptimized={isRemoteUrl(getUrl(heroBackgroundImage, "/images/services/hero-services.jpg"))}
                 />
                 <div className="absolute bg-[rgba(240,242,248,0.2)] inset-0 pointer-events-none" />
               </div>
@@ -210,10 +228,13 @@ export function ServiceStyleB({ page }: ServiceStyleBProps) {
             {/* Hero Image Background */}
             <div className="absolute inset-0 overflow-hidden">
               <div className="absolute inset-0 overflow-hidden">
-                <img
-                  src={getUrl(heroData?.backgroundImage, "/images/services/hero-services.jpg")}
-                  alt={getAlt(heroData?.backgroundImage, "Home health professionals")}
+                <Image
+                  src={getUrl(heroBackgroundImage, "/images/services/hero-services.jpg")}
+                  alt={getAlt(heroBackgroundImage, "Home health professionals")}
+                  fill
+                  sizes="100vw"
                   className="absolute h-[200.03%] left-[-30.99%] max-w-none top-[-42.98%] w-[131.05%] object-cover"
+                  unoptimized={isRemoteUrl(getUrl(heroBackgroundImage, "/images/services/hero-services.jpg"))}
                 />
               </div>
               <div className="absolute bg-[rgba(240,242,248,0.2)] inset-0" />
@@ -228,7 +249,7 @@ export function ServiceStyleB({ page }: ServiceStyleBProps) {
                     className="font-sans font-medium text-[#d01127] text-[33px] uppercase whitespace-nowrap"
                     style={{ fontVariationSettings: "'wdth' 100" }}
                   >
-                    {heroData?.badgeLabelDesktop || heroData?.badgeLabel || fallback.hero.badgeLabel}
+                    {heroBadgeLabelDesktop || heroData?.badgeLabel || fallback.hero.badgeLabel}
                   </p>
                 </div>
               </div>
@@ -240,13 +261,13 @@ export function ServiceStyleB({ page }: ServiceStyleBProps) {
                     className="font-sans font-semibold text-[52px] tracking-[-1.04px] w-full"
                     style={{ fontVariationSettings: "'wdth' 100" }}
                   >
-                    {renderWithBreaks(heroData?.titleDesktop || heroData?.title || fallback.hero.title)}
+                    {renderWithBreaks(heroTitleDesktop || heroData?.title || fallback.hero.title)}
                   </h1>
                   <p 
                     className="font-sans font-normal text-[33px] tracking-[-0.66px] w-full"
                     style={{ fontVariationSettings: "'wdth' 100" }}
                   >
-                    {renderWithBreaks(heroData?.subtitleDesktop || heroData?.subtitle || fallback.hero.subtitle)}
+                    {renderWithBreaks(heroSubtitleDesktop || heroData?.subtitle || fallback.hero.subtitle)}
                   </p>
                 </div>
                 
@@ -307,13 +328,16 @@ export function ServiceStyleB({ page }: ServiceStyleBProps) {
           <div className="mx-auto px-5 md:px-8 xl:px-0 max-w-[1440px]">
             <div className="relative w-full rounded-[12px] overflow-hidden" style={{ aspectRatio: '1320/375', minHeight: '375px' }}>
               {/* Background Image */}
-              <img
+              <Image
                 src={getUrl(overlayFirst?.backgroundImage, "/images/creative-development/office-documents-background.jpg")}
                 alt={getAlt(overlayFirst?.backgroundImage, "Office documents and files")}
+                fill
+                sizes="(max-width: 1024px) 100vw, 1320px"
                 className="w-full h-full object-cover rounded-[8px]"
                 style={{
                   objectPosition: 'center center'
                 }}
+                unoptimized={isRemoteUrl(getUrl(overlayFirst?.backgroundImage, "/images/creative-development/office-documents-background.jpg"))}
               />
               
               {/* Overlays Container - Single absolute wrapper for all overlays */}
@@ -326,14 +350,17 @@ export function ServiceStyleB({ page }: ServiceStyleBProps) {
                 
                 {/* White Abstract Shapes Overlay */}
                 <div className="absolute inset-0 rounded-[8px] overflow-visible">
-                  <img
+                  <Image
                     src={getUrl(overlayFirst?.overlayImage, "/images/creative-development/white-shapes-overlay.svg")}
                     alt={getAlt(overlayFirst?.overlayImage, "")}
+                    fill
+                    sizes="(max-width: 1024px) 100vw, 1320px"
                     className="w-full h-full object-cover"
                     style={{
                       transform: 'scale(1.1)',
                       transformOrigin: 'left center'
                     }}
+                    unoptimized={isRemoteUrl(getUrl(overlayFirst?.overlayImage, "/images/creative-development/white-shapes-overlay.svg"))}
                   />
                 </div>
               </div>
@@ -394,13 +421,16 @@ export function ServiceStyleB({ page }: ServiceStyleBProps) {
           <div className="mx-auto px-5 md:px-8 xl:px-0 max-w-[1440px]">
             <div className="relative w-full rounded-[12px] overflow-hidden" style={{ aspectRatio: '1320/375', minHeight: '375px' }}>
               {/* Background Image */}
-              <img
+              <Image
                 src={getUrl(overlaySecond?.backgroundImage, "/images/creative-development/office-documents-background.jpg")}
                 alt={getAlt(overlaySecond?.backgroundImage, "Office documents and files")}
+                fill
+                sizes="(max-width: 1024px) 100vw, 1320px"
                 className="w-full h-full object-cover rounded-[8px]"
                 style={{
                   objectPosition: 'center center'
                 }}
+                unoptimized={isRemoteUrl(getUrl(overlaySecond?.backgroundImage, "/images/creative-development/office-documents-background.jpg"))}
               />
               
               {/* Overlays Container - Single absolute wrapper for all overlays */}
@@ -413,14 +443,17 @@ export function ServiceStyleB({ page }: ServiceStyleBProps) {
                 
                 {/* White Abstract Shapes Overlay */}
                 <div className="absolute inset-0 rounded-[8px] overflow-visible">
-                  <img
+                  <Image
                     src={getUrl(overlaySecond?.overlayImage, "/images/creative-development/white-shapes-overlay.svg")}
                     alt={getAlt(overlaySecond?.overlayImage, "")}
+                    fill
+                    sizes="(max-width: 1024px) 100vw, 1320px"
                     className="w-full h-full object-cover"
                     style={{
                       transform: 'scale(1.1)',
                       transformOrigin: 'left center'
                     }}
+                    unoptimized={isRemoteUrl(getUrl(overlaySecond?.overlayImage, "/images/creative-development/white-shapes-overlay.svg"))}
                   />
                 </div>
               </div>
@@ -439,10 +472,13 @@ export function ServiceStyleB({ page }: ServiceStyleBProps) {
                 {/* Step 1: Assessment */}
                 <div className="flex items-start pl-0 pr-[70px] py-0 relative shrink-0">
                   <div className="mr-[-70px] relative shrink-0 size-[118px] mt-[30px]">
-                    <img 
-                      src={getUrl(howItWorksIcon, "/images/home-health/how-it-works-icon.svg")} 
-                      alt={getAlt(howItWorksIcon, "")} 
+                    <Image
+                      src={getUrl(howItWorksIcon, "/images/home-health/how-it-works-icon.svg")}
+                      alt={getAlt(howItWorksIcon, "")}
+                      width={118}
+                      height={118}
                       className="w-full h-full object-contain"
+                      unoptimized={isRemoteUrl(getUrl(howItWorksIcon, "/images/home-health/how-it-works-icon.svg"))}
                     />
                   </div>
                   <div className="flex flex-col gap-[20px] items-start mr-[-70px] relative shrink-0 w-[576px] whitespace-pre-wrap">
@@ -460,10 +496,13 @@ export function ServiceStyleB({ page }: ServiceStyleBProps) {
                 {/* Step 2: Talent Selection */}
                 <div className="flex items-start pl-0 pr-[70px] py-0 relative shrink-0">
                   <div className="mr-[-70px] relative shrink-0 size-[118px] mt-[30px]">
-                    <img 
-                      src={getUrl(howItWorksIcon, "/images/home-health/how-it-works-icon.svg")} 
-                      alt={getAlt(howItWorksIcon, "")} 
+                    <Image
+                      src={getUrl(howItWorksIcon, "/images/home-health/how-it-works-icon.svg")}
+                      alt={getAlt(howItWorksIcon, "")}
+                      width={118}
+                      height={118}
                       className="w-full h-full object-contain"
+                      unoptimized={isRemoteUrl(getUrl(howItWorksIcon, "/images/home-health/how-it-works-icon.svg"))}
                     />
                   </div>
                   <div className="flex flex-col gap-[20px] items-start mr-[-70px] relative shrink-0 w-[576px] whitespace-pre-wrap">
@@ -481,10 +520,13 @@ export function ServiceStyleB({ page }: ServiceStyleBProps) {
                 {/* Step 3: Seamless Integration */}
                 <div className="flex items-start pl-0 pr-[70px] py-0 relative shrink-0">
                   <div className="mr-[-70px] relative shrink-0 size-[118px] mt-[30px]">
-                    <img 
-                      src={getUrl(howItWorksIcon, "/images/home-health/how-it-works-icon.svg")} 
-                      alt={getAlt(howItWorksIcon, "")} 
+                    <Image
+                      src={getUrl(howItWorksIcon, "/images/home-health/how-it-works-icon.svg")}
+                      alt={getAlt(howItWorksIcon, "")}
+                      width={118}
+                      height={118}
                       className="w-full h-full object-contain"
+                      unoptimized={isRemoteUrl(getUrl(howItWorksIcon, "/images/home-health/how-it-works-icon.svg"))}
                     />
                   </div>
                   <div className="flex flex-col gap-[20px] items-start mr-[-70px] relative shrink-0 w-[576px] whitespace-pre-wrap">
@@ -502,10 +544,13 @@ export function ServiceStyleB({ page }: ServiceStyleBProps) {
                 {/* Step 4: Monitoring & Optimization */}
                 <div className="flex items-start pl-0 pr-[70px] py-0 relative shrink-0">
                   <div className="mr-[-70px] relative shrink-0 size-[118px] mt-[30px]">
-                    <img 
-                      src={getUrl(howItWorksIcon, "/images/home-health/how-it-works-icon.svg")} 
-                      alt={getAlt(howItWorksIcon, "")} 
+                    <Image
+                      src={getUrl(howItWorksIcon, "/images/home-health/how-it-works-icon.svg")}
+                      alt={getAlt(howItWorksIcon, "")}
+                      width={118}
+                      height={118}
                       className="w-full h-full object-contain"
+                      unoptimized={isRemoteUrl(getUrl(howItWorksIcon, "/images/home-health/how-it-works-icon.svg"))}
                     />
                   </div>
                   <div className="flex flex-col gap-[20px] items-start mr-[-70px] relative shrink-0 w-[576px] whitespace-pre-wrap">

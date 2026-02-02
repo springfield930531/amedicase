@@ -1,9 +1,15 @@
 import svgPaths from "@/lib/imports/svg-znty2oevvb";
 import Image from "next/image";
 import { getMediaUrl } from "@/lib/strapi-home";
+import type { PageHeroSection, StrapiMedia } from "@/lib/page-types";
 
 type HeroSectionProps = {
-  data?: any;
+  data?: PageHeroSection & {
+    primaryCta?: PageHeroSection["cta"];
+    mobileBackground?: StrapiMedia | null;
+    desktopBackground?: StrapiMedia | null;
+    logoImage?: StrapiMedia | null;
+  };
 };
 
 export function HeroSection({ data }: HeroSectionProps) {
@@ -16,6 +22,7 @@ export function HeroSection({ data }: HeroSectionProps) {
   const mobileImage = getMediaUrl(data?.mobileBackground) || "/images/Hero photo Mobile.jpg";
   const desktopImage = getMediaUrl(data?.desktopBackground) || "/images/hero-desktop-bg.jpg";
   const logoImage = getMediaUrl(data?.logoImage) || "/images/amedicase-logo-desktop.svg";
+  const isRemoteUrl = (url: string) => /^https?:\/\//i.test(url);
 
   return (
     <section className="relative bg-[#f1f5ff] pt-20 lg:pt-[100px] pb-[40px] md:pb-16 xl:pb-20 w-full">
@@ -31,8 +38,10 @@ export function HeroSection({ data }: HeroSectionProps) {
                     alt="Healthcare professionals"
                     src={mobileImage}
                     fill
+                    sizes="100vw"
                     className="object-cover object-left-top scale-100 sm:scale-[1.05] md:scale-[1.1]"
                     style={{ transformOrigin: 'top left' }}
+                    unoptimized={isRemoteUrl(mobileImage)}
                   />
           </div>
 
@@ -84,10 +93,13 @@ export function HeroSection({ data }: HeroSectionProps) {
           {/* Background Image Container - Full width of container with rounded corners */}
           <div className="absolute inset-0 h-full w-full overflow-hidden rounded-[12px]">
             <div className="absolute inset-0 rounded-[12px]">
-              <img 
-              alt="Healthcare professionals" 
+              <Image
+                alt="Healthcare professionals"
                 src={desktopImage}
-                className="absolute h-full left-0 top-0 w-full object-cover object-left-top rounded-[12px]" 
+                fill
+                sizes="100vw"
+                className="absolute h-full left-0 top-0 w-full object-cover object-left-top rounded-[12px]"
+                unoptimized={isRemoteUrl(desktopImage)}
               />
             </div>
             <div className="absolute bg-[rgba(0,0,0,0.4)] inset-0 rounded-[12px]" />
@@ -97,10 +109,13 @@ export function HeroSection({ data }: HeroSectionProps) {
           <div className="relative z-10 h-full flex items-end">
             {/* Logo - positioned 210px from left of image - Responsive */}
             <div className="absolute left-[clamp(60px,15vw,210px)] top-1/2 -translate-y-1/2 shrink-0 w-[clamp(200px,25vw,300px)] h-[clamp(200px,25vw,300px)]">
-              <img 
-                alt="Amedicase sign" 
+              <Image
+                alt="Amedicase sign"
                 src={logoImage}
-                className="block w-full h-full" 
+                fill
+                sizes="(max-width: 1024px) 200px, 300px"
+                className="block w-full h-full"
+                unoptimized={isRemoteUrl(logoImage)}
               />
             </div>
         </div>

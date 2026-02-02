@@ -6,7 +6,8 @@ WORKDIR /srv/app
 RUN apk add --no-cache python3 make g++ libc6-compat
 
 COPY package*.json ./
-RUN npm install --production
+# Install all dependencies for build (including dev deps needed for admin panel build)
+RUN --mount=type=cache,target=/root/.npm npm ci
 
 COPY . .
 

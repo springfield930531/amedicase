@@ -6,6 +6,7 @@ import { HowItWorksSection } from "@/components/sections/HowItWorksSection";
 import { TeamSection } from "@/components/sections/TeamSection";
 import { TestimonialsSection } from "@/components/sections/TestimonialsSection";
 import { ContactSection } from "@/components/sections/ContactSection";
+import type { PageSection } from "@/lib/page-types";
 
 const SECTION_COMPONENTS: Record<string, (props: { data?: any }) => JSX.Element> = {
   "sections.hero-section": HeroSection,
@@ -19,7 +20,7 @@ const SECTION_COMPONENTS: Record<string, (props: { data?: any }) => JSX.Element>
 };
 
 type PageSectionsProps = {
-  sections: any[];
+  sections: PageSection[];
 };
 
 export function PageSections({ sections }: PageSectionsProps) {

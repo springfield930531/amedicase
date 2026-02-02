@@ -31,10 +31,10 @@ services:
       DATABASE_NAME: strapi
       DATABASE_USERNAME: strapi
       DATABASE_PASSWORD: strapi
-      APP_KEYS: "$(openssl rand -hex 16),$(openssl rand -hex 16),$(openssl rand -hex 16),$(openssl rand -hex 16)"
-      API_TOKEN_SALT: "$(openssl rand -hex 16)"
-      ADMIN_JWT_SECRET: "$(openssl rand -hex 16)"
-      JWT_SECRET: "$(openssl rand -hex 16)"
+      APP_KEYS: ${APP_KEYS:-dev-key-1,dev-key-2,dev-key-3,dev-key-4}
+      API_TOKEN_SALT: ${API_TOKEN_SALT:-dev-api-token-salt}
+      ADMIN_JWT_SECRET: ${ADMIN_JWT_SECRET:-dev-admin-jwt-secret}
+      JWT_SECRET: ${JWT_SECRET:-dev-jwt-secret}
       HOST: "0.0.0.0"
       PORT: 1337
       FRONTEND_IMAGES_DIR: /srv/frontend-images

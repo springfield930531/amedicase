@@ -1,4 +1,6 @@
 import { getMediaUrl } from "@/lib/strapi-home";
+import Image from "next/image";
+import type { IconStepsSection, StrapiMedia } from "@/lib/page-types";
 
 const defaultSteps = [
   {
@@ -24,14 +26,14 @@ const defaultSteps = [
 ];
 
 type HowItWorksSectionProps = {
-  data?: any;
+  data?: IconStepsSection & { illustration?: StrapiMedia | null };
 };
 
 export function HowItWorksSection({ data }: HowItWorksSectionProps) {
   const label = data?.label || "How It Works";
   const steps =
     data?.steps?.length
-      ? data.steps.map((step: any) => ({
+      ? data.steps.map((step) => ({
           title: step?.title,
           description: step?.description,
           singleLine: true,
@@ -40,6 +42,7 @@ export function HowItWorksSection({ data }: HowItWorksSectionProps) {
   const ctaLabel = data?.cta?.label || "Start Your Free Assessment";
   const illustration =
     getMediaUrl(data?.illustration) || "/images/how-it-works-image.jpg";
+  const isRemoteUrl = (url: string) => /^https?:\/\//i.test(url);
 
   return (
     <section className="relative bg-[#f1f5ff] w-full pt-[40px] md:pt-16 xl:pt-20 pb-[40px] md:pb-16 xl:pb-20">
@@ -153,16 +156,21 @@ export function HowItWorksSection({ data }: HowItWorksSectionProps) {
 
           {/* Image Column - 15% larger: 782px x 810px, moved to the right */}
           <div className="relative w-[648px] h-[610px] rounded-[14px] overflow-hidden shrink-0" style={{ marginLeft: '-30px' }}>
-            <img
+            <Image
               src={illustration}
               alt="Business professional working"
+              fill
+              sizes="(max-width: 1024px) 100vw, 648px"
               className="absolute inset-0 w-full h-full object-cover object-center rounded-[12px]"
+              unoptimized={isRemoteUrl(illustration)}
             />
             {/* Subtract overlay - SVG mask */}
             <div className="absolute inset-[-0.28%_-0.59%_-0.85%_-0.59%] pointer-events-none">
-              <img 
-                src="/images/how-it-works-subtract.svg" 
-                alt="" 
+              <Image
+                src="/images/how-it-works-subtract.svg"
+                alt=""
+                fill
+                sizes="648px"
                 className="block max-w-none size-full"
               />
             </div>

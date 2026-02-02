@@ -82,6 +82,7 @@ export function TeamCarousel({
   const totalCards = teamMembers.length;
   const prevIndex = (currentIndex - 1 + totalCards) % totalCards;
   const nextIndex = (currentIndex + 1) % totalCards;
+  const isRemoteUrl = (url: string) => /^https?:\/\//i.test(url);
 
   const goToPrevious = () => {
     setCurrentIndex(prevIndex);
@@ -112,7 +113,9 @@ export function TeamCarousel({
                   src={mobilePhoto}
                   alt={`${member.name} ${member.surname}`}
                   fill
+                  sizes="(max-width: 1024px) 40vw, 144px"
                   className="object-cover"
+                  unoptimized={isRemoteUrl(mobilePhoto)}
                 />
               </div>
 
@@ -153,24 +156,33 @@ export function TeamCarousel({
                 style={{ top: "clamp(250px,73vw,293px)" }}
               >
                 <div className="size-[clamp(8px,2.5vw,10px)]">
-                  <img
+                  <Image
                     alt=""
                     className="block max-w-none size-full"
                     src={dotImagePrimary}
+                    width={10}
+                    height={10}
+                    unoptimized={isRemoteUrl(dotImagePrimary)}
                   />
                 </div>
                 <div className="size-[clamp(8px,2.5vw,10px)]">
-                  <img
+                  <Image
                     alt=""
                     className="block max-w-none size-full"
                     src={dotImageSecondary}
+                    width={10}
+                    height={10}
+                    unoptimized={isRemoteUrl(dotImageSecondary)}
                   />
                 </div>
                 <div className="size-[clamp(8px,2.5vw,10px)]">
-                  <img
+                  <Image
                     alt=""
                     className="block max-w-none size-full"
                     src={dotImageSecondary}
+                    width={10}
+                    height={10}
+                    unoptimized={isRemoteUrl(dotImageSecondary)}
                   />
                 </div>
               </div>
@@ -273,10 +285,13 @@ export function TeamCarousel({
                           borderRadius: isCenter ? "12px" : "11px",
                         }}
                       >
-                        <img
+                        <Image
                           alt={member.name}
                           className="w-full h-full object-cover pointer-events-none"
                           src={member.photo}
+                          width={200}
+                          height={200}
+                          unoptimized={isRemoteUrl(member.photo)}
                         />
                       </div>
                       {/* Right side - Name */}
@@ -326,5 +341,4 @@ export function TeamCarousel({
     </div>
   );
 }
-
 

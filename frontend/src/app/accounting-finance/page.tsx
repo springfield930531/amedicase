@@ -4,6 +4,7 @@ import { Footer } from "@/components/sections/Footer";
 import { GradientTitle } from "@/components/shared/GradientTitle";
 import { TitleBlock } from "@/components/shared/TitleBlock";
 import { ContactSection } from "@/components/sections/ContactSection";
+import Image from "next/image";
 import { getPageBySlug } from "@/lib/strapi";
 import { getMediaUrl } from "@/lib/strapi-home";
 import type {
@@ -14,6 +15,7 @@ import type {
   PageHeroSection,
   ProcessStagesSection,
   StoryBlockSection,
+  StrapiMedia,
 } from "@/lib/page-types";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -149,13 +151,12 @@ export default async function AccountingFinancePage() {
     },
   };
 
-  const heroData = hero || fallback.hero;
   const storyData = story || fallback.story;
   const overlayFirst = overlays[0] || fallback.overlays[0];
   const overlaySecond = overlays[1] || fallback.overlays[1];
   const cardGridData = cardGrid || fallback.cardGrid;
   const processData = processStages || fallback.processStages;
-  const heroCta = heroData?.cta || fallback.hero.cta;
+  const heroCta = (hero && 'cta' in hero ? hero.cta : undefined) || fallback.hero.cta;
   const gridCards = cardGridData?.cards?.length ? cardGridData.cards : fallback.cardGrid.cards;
   const stageItems = processData?.stages?.length ? processData.stages : fallback.processStages.stages;
   const processCta = processData?.cta || fallback.processStages.cta;
@@ -170,9 +171,15 @@ export default async function AccountingFinancePage() {
       </span>
     ));
   };
-  const getUrl = (media: any, fallbackUrl?: string) => getMediaUrl(media) || fallbackUrl || "";
-  const getAlt = (media: any, fallbackAlt?: string) =>
-    media?.alternativeText || media?.data?.attributes?.alternativeText || fallbackAlt || "";
+  const getUrl = (media: StrapiMedia | string | null | undefined, fallbackUrl?: string) => {
+    if (typeof media === 'string') return media;
+    return getMediaUrl(media) || fallbackUrl || "";
+  };
+  const getAlt = (media: StrapiMedia | string | null | undefined, fallbackAlt?: string) => {
+    if (typeof media === 'string') return fallbackAlt || "";
+    return media?.alternativeText || media?.data?.attributes?.alternativeText || fallbackAlt || "";
+  };
+  const isRemoteUrl = (url: string) => /^https?:\/\//i.test(url);
   return (
     <div className="min-h-screen bg-[#f1f5ff] relative overflow-x-hidden">
       <Header />
@@ -191,7 +198,7 @@ export default async function AccountingFinancePage() {
                       className="font-sans font-medium text-[#d01127] text-[13px] uppercase whitespace-nowrap"
                       style={{ fontVariationSettings: "'wdth' 100" }}
                     >
-                      {heroData?.badgeLabel || fallback.hero.badgeLabel}
+                      {(hero && 'badgeLabel' in hero ? hero.badgeLabel : undefined) || fallback.hero.badgeLabel}
                     </p>
                   </div>
                 </div>
@@ -199,10 +206,15 @@ export default async function AccountingFinancePage() {
 
               {/* Hero Image Background - Full width */}
               <div className="relative h-[562px] w-full -mt-[29px] overflow-hidden">
-                <img
-                  src={getUrl(heroData?.backgroundImage, "/images/services/hero-services.jpg")}
-                  alt={getAlt(heroData?.backgroundImage, "Accounting and finance professionals")}
+                <Image
+                  src={getUrl((hero && 'backgroundImage' in hero ? hero.backgroundImage : undefined), "/images/services/hero-services.jpg")}
+                  alt={getAlt((hero && 'backgroundImage' in hero ? hero.backgroundImage : undefined), "Accounting and finance professionals")}
+                  fill
+                  sizes="100vw"
                   className="w-full h-full object-cover object-center"
+                  unoptimized={isRemoteUrl(
+                    getUrl((hero && 'backgroundImage' in hero ? hero.backgroundImage : undefined), "/images/services/hero-services.jpg")
+                  )}
                 />
                 <div className="absolute bg-[rgba(240,242,248,0.2)] inset-0 pointer-events-none" />
               </div>
@@ -214,13 +226,13 @@ export default async function AccountingFinancePage() {
                     className="font-sans font-semibold text-[clamp(24px,3vw,28px)] leading-[1.1] tracking-[-0.66px] w-full whitespace-pre-wrap"
                     style={{ fontVariationSettings: "'wdth' 100" }}
                   >
-                    {renderWithBreaks(heroData?.title || fallback.hero.title)}
+                    {renderWithBreaks((hero && 'title' in hero ? hero.title : undefined) || fallback.hero.title)}
                   </h1>
                   <p 
                     className="font-sans font-normal text-[clamp(11px,1.5vw,12px)] leading-[1.4] tracking-[-0.26px] w-full"
                     style={{ fontVariationSettings: "'wdth' 100" }}
                   >
-                    {renderWithBreaks(heroData?.subtitle || fallback.hero.subtitle)}
+                    {renderWithBreaks((hero && 'subtitle' in hero ? hero.subtitle : undefined) || fallback.hero.subtitle)}
                   </p>
                 </div>
                 <div className="flex flex-col gap-[20px] items-center">
@@ -243,10 +255,15 @@ export default async function AccountingFinancePage() {
             {/* Hero Image Background */}
             <div className="absolute inset-0 overflow-hidden">
               <div className="absolute inset-0 overflow-hidden">
-                <img
-                  src={getUrl(heroData?.backgroundImage, "/images/services/hero-services.jpg")}
-                  alt={getAlt(heroData?.backgroundImage, "Accounting and finance professionals")}
+                <Image
+                  src={getUrl((hero && 'backgroundImage' in hero ? hero.backgroundImage : undefined), "/images/services/hero-services.jpg")}
+                  alt={getAlt((hero && 'backgroundImage' in hero ? hero.backgroundImage : undefined), "Accounting and finance professionals")}
+                  fill
+                  sizes="100vw"
                   className="absolute h-[200.03%] left-[-30.99%] max-w-none top-[-42.98%] w-[131.05%] object-cover"
+                  unoptimized={isRemoteUrl(
+                    getUrl((hero && 'backgroundImage' in hero ? hero.backgroundImage : undefined), "/images/services/hero-services.jpg")
+                  )}
                 />
               </div>
               <div className="absolute bg-[rgba(240,242,248,0.2)] inset-0" />
@@ -261,7 +278,7 @@ export default async function AccountingFinancePage() {
                     className="font-sans font-medium text-[#d01127] text-[33px] uppercase whitespace-nowrap"
                     style={{ fontVariationSettings: "'wdth' 100" }}
                   >
-                    {heroData?.badgeLabelDesktop || heroData?.badgeLabel || fallback.hero.badgeLabel}
+                    {(hero && 'badgeLabelDesktop' in hero ? hero.badgeLabelDesktop : undefined) || (hero && 'badgeLabel' in hero ? hero.badgeLabel : undefined) || fallback.hero.badgeLabel}
                   </p>
                 </div>
               </div>
@@ -273,14 +290,14 @@ export default async function AccountingFinancePage() {
                     className="font-sans font-semibold text-[52px] tracking-[-1.04px] w-full"
                     style={{ fontVariationSettings: "'wdth' 100" }}
                   >
-                    {renderWithBreaks(heroData?.titleDesktop || heroData?.title || fallback.hero.title)}
+                    {renderWithBreaks((hero && 'titleDesktop' in hero ? hero.titleDesktop : undefined) || (hero && 'title' in hero ? hero.title : undefined) || fallback.hero.title)}
                   </h1>
                   <p 
                     className="font-sans font-normal text-[33px] tracking-[-0.66px] w-full"
                     style={{ fontVariationSettings: "'wdth' 100" }}
                   >
                     {renderWithBreaks(
-                      heroData?.subtitleDesktop || heroData?.subtitle || fallback.hero.subtitle
+                      (hero && 'subtitleDesktop' in hero ? hero.subtitleDesktop : undefined) || (hero && 'subtitle' in hero ? hero.subtitle : undefined) || fallback.hero.subtitle
                     )}
                   </p>
                 </div>
@@ -342,13 +359,18 @@ export default async function AccountingFinancePage() {
           <div className="mx-auto px-5 md:px-8 xl:px-0 max-w-[1440px]">
             <div className="relative w-full rounded-[12px] overflow-hidden" style={{ aspectRatio: '1320/375', minHeight: '375px' }}>
               {/* Background Image */}
-              <img
+              <Image
                 src={getUrl(overlayFirst?.backgroundImage, "/images/creative-development/office-documents-background.jpg")}
                 alt={getAlt(overlayFirst?.backgroundImage, "Office documents and files")}
+                fill
+                sizes="(max-width: 1024px) 100vw, 1320px"
                 className="w-full h-full object-cover rounded-[8px]"
                 style={{
                   objectPosition: 'center center'
                 }}
+                unoptimized={isRemoteUrl(
+                  getUrl(overlayFirst?.backgroundImage, "/images/creative-development/office-documents-background.jpg")
+                )}
               />
               
               {/* Overlays Container - Single absolute wrapper for all overlays */}
@@ -361,14 +383,19 @@ export default async function AccountingFinancePage() {
                 
                 {/* White Abstract Shapes Overlay */}
                 <div className="absolute inset-0 rounded-[8px] overflow-visible">
-                  <img
+                  <Image
                     src={getUrl(overlayFirst?.overlayImage, "/images/creative-development/white-shapes-overlay.svg")}
                     alt={getAlt(overlayFirst?.overlayImage, "")}
+                    fill
+                    sizes="(max-width: 1024px) 100vw, 1320px"
                     className="w-full h-full object-cover"
                     style={{
                       transform: 'scale(1.1)',
                       transformOrigin: 'left center'
                     }}
+                    unoptimized={isRemoteUrl(
+                      getUrl(overlayFirst?.overlayImage, "/images/creative-development/white-shapes-overlay.svg")
+                    )}
                   />
                 </div>
               </div>
@@ -389,19 +416,29 @@ export default async function AccountingFinancePage() {
                   {/* Card 1: Accounts Receivable Coordinators */}
                   <div className="relative w-full min-h-[117px]">
                     <div className="absolute inset-0">
-                      <img
+                      <Image
                         src={getUrl(gridCards[0]?.backgroundImage, "/images/creative-development/card-bg-1.svg")}
                         alt={getAlt(gridCards[0]?.backgroundImage, "")}
+                        fill
+                        sizes="100vw"
                         className="w-full h-full object-cover"
+                        unoptimized={isRemoteUrl(
+                          getUrl(gridCards[0]?.backgroundImage, "/images/creative-development/card-bg-1.svg")
+                        )}
                       />
                     </div>
                     <div className="relative flex flex-col gap-[10px] p-[20px]">
                       <div className="flex items-start gap-[20px]">
-                        <img
+                        <Image
                           src={getUrl(cardGridData?.dotIcon, "/images/creative-development/dot-icon.svg")}
                           alt={getAlt(cardGridData?.dotIcon, "")}
+                          width={16}
+                          height={16}
                           className="w-4 h-4 flex-shrink-0 mt-[2px] -ml-[5px]"
                           style={{ filter: 'blur(0.3px)' }}
+                          unoptimized={isRemoteUrl(
+                            getUrl(cardGridData?.dotIcon, "/images/creative-development/dot-icon.svg")
+                          )}
                         />
                         <h3 className="font-sans font-bold leading-[1.2] text-[clamp(16px,2vw,18px)] text-blue-900 -mt-[5px]" style={{ fontVariationSettings: "'wdth' 100" }}>
                           {gridCards[0]?.title || "Accounts Receivable Coordinators"}
@@ -418,19 +455,29 @@ export default async function AccountingFinancePage() {
                   {/* Card 2: Payroll & Timesheet Support */}
                   <div className="relative w-full min-h-[117px]">
                     <div className="absolute inset-0">
-                      <img
+                      <Image
                         src={getUrl(gridCards[1]?.backgroundImage, "/images/creative-development/card-bg-2.svg")}
                         alt={getAlt(gridCards[1]?.backgroundImage, "")}
+                        fill
+                        sizes="100vw"
                         className="w-full h-full object-cover"
+                        unoptimized={isRemoteUrl(
+                          getUrl(gridCards[1]?.backgroundImage, "/images/creative-development/card-bg-2.svg")
+                        )}
                       />
                     </div>
                     <div className="relative flex flex-col gap-[10px] p-[20px]">
                       <div className="flex items-start gap-[20px]">
-                        <img
+                        <Image
                           src={getUrl(cardGridData?.dotIcon, "/images/creative-development/dot-icon.svg")}
                           alt={getAlt(cardGridData?.dotIcon, "")}
+                          width={16}
+                          height={16}
                           className="w-4 h-4 flex-shrink-0 mt-[2px] -ml-[5px]"
                           style={{ filter: 'blur(0.3px)' }}
+                          unoptimized={isRemoteUrl(
+                            getUrl(cardGridData?.dotIcon, "/images/creative-development/dot-icon.svg")
+                          )}
                         />
                         <h3 className="font-sans font-bold leading-[1.2] text-[clamp(16px,2vw,18px)] text-blue-900 -mt-[5px]" style={{ fontVariationSettings: "'wdth' 100" }}>
                           {gridCards[1]?.title || "Payroll & Timesheet Support"}
@@ -447,19 +494,29 @@ export default async function AccountingFinancePage() {
                   {/* Card 3: Billing & Claims Specialists */}
                   <div className="relative w-full min-h-[145px]">
                     <div className="absolute inset-0">
-                      <img
+                      <Image
                         src={getUrl(gridCards[2]?.backgroundImage, "/images/creative-development/card-bg-3.svg")}
                         alt={getAlt(gridCards[2]?.backgroundImage, "")}
+                        fill
+                        sizes="100vw"
                         className="w-full h-full object-cover"
+                        unoptimized={isRemoteUrl(
+                          getUrl(gridCards[2]?.backgroundImage, "/images/creative-development/card-bg-3.svg")
+                        )}
                       />
                     </div>
                     <div className="relative flex flex-col gap-[10px] p-[20px]">
                       <div className="flex items-start gap-[20px]">
-                        <img
+                        <Image
                           src={getUrl(cardGridData?.dotIcon, "/images/creative-development/dot-icon.svg")}
                           alt={getAlt(cardGridData?.dotIcon, "")}
+                          width={16}
+                          height={16}
                           className="w-4 h-4 flex-shrink-0 mt-[2px] -ml-[5px]"
                           style={{ filter: 'blur(0.3px)' }}
+                          unoptimized={isRemoteUrl(
+                            getUrl(cardGridData?.dotIcon, "/images/creative-development/dot-icon.svg")
+                          )}
                         />
                         <h3 className="font-sans font-bold leading-[1.2] text-[clamp(16px,2vw,18px)] text-blue-900 -mt-[5px]" style={{ fontVariationSettings: "'wdth' 100" }}>
                           {gridCards[2]?.title || "Billing & Claims Specialists"}
@@ -476,19 +533,29 @@ export default async function AccountingFinancePage() {
                   {/* Card 4: Bookkeeping & Financial Assistants */}
                   <div className="relative w-full min-h-[145px]">
                     <div className="absolute inset-0">
-                      <img
+                      <Image
                         src={getUrl(gridCards[3]?.backgroundImage, "/images/creative-development/card-bg-4.svg")}
                         alt={getAlt(gridCards[3]?.backgroundImage, "")}
+                        fill
+                        sizes="100vw"
                         className="w-full h-full object-cover"
+                        unoptimized={isRemoteUrl(
+                          getUrl(gridCards[3]?.backgroundImage, "/images/creative-development/card-bg-4.svg")
+                        )}
                       />
                     </div>
                     <div className="relative flex flex-col gap-[10px] p-[20px]">
                       <div className="flex items-start gap-[20px]">
-                        <img
+                        <Image
                           src={getUrl(cardGridData?.dotIcon, "/images/creative-development/dot-icon.svg")}
                           alt={getAlt(cardGridData?.dotIcon, "")}
+                          width={16}
+                          height={16}
                           className="w-4 h-4 flex-shrink-0 mt-[2px] -ml-[5px]"
                           style={{ filter: 'blur(0.3px)' }}
+                          unoptimized={isRemoteUrl(
+                            getUrl(cardGridData?.dotIcon, "/images/creative-development/dot-icon.svg")
+                          )}
                         />
                         <h3 className="font-sans font-bold leading-[1.2] text-[clamp(16px,2vw,18px)] text-blue-900 -mt-[5px]" style={{ fontVariationSettings: "'wdth' 100" }}>
                           {gridCards[3]?.title || "Bookkeeping & Financial Assistants"}
@@ -510,13 +577,18 @@ export default async function AccountingFinancePage() {
           <div className="mx-auto px-5 md:px-8 xl:px-0 max-w-[1440px]">
             <div className="relative w-full rounded-[12px] overflow-hidden" style={{ aspectRatio: '1320/375', minHeight: '375px' }}>
               {/* Background Image */}
-              <img
+              <Image
                 src={getUrl(overlaySecond?.backgroundImage, "/images/creative-development/office-documents-background.jpg")}
                 alt={getAlt(overlaySecond?.backgroundImage, "Office documents and files")}
+                fill
+                sizes="(max-width: 1024px) 100vw, 1320px"
                 className="w-full h-full object-cover rounded-[8px]"
                 style={{
                   objectPosition: 'center center'
                 }}
+                unoptimized={isRemoteUrl(
+                  getUrl(overlaySecond?.backgroundImage, "/images/creative-development/office-documents-background.jpg")
+                )}
               />
               
               {/* Overlays Container - Single absolute wrapper for all overlays */}
@@ -529,14 +601,19 @@ export default async function AccountingFinancePage() {
                 
                 {/* White Abstract Shapes Overlay */}
                 <div className="absolute inset-0 rounded-[8px] overflow-visible">
-                  <img
+                  <Image
                     src={getUrl(overlaySecond?.overlayImage, "/images/creative-development/white-shapes-overlay.svg")}
                     alt={getAlt(overlaySecond?.overlayImage, "")}
+                    fill
+                    sizes="(max-width: 1024px) 100vw, 1320px"
                     className="w-full h-full object-cover"
                     style={{
                       transform: 'scale(1.1)',
                       transformOrigin: 'left center'
                     }}
+                    unoptimized={isRemoteUrl(
+                      getUrl(overlaySecond?.overlayImage, "/images/creative-development/white-shapes-overlay.svg")
+                    )}
                   />
                 </div>
               </div>
@@ -573,10 +650,15 @@ export default async function AccountingFinancePage() {
               {/* Arrow 1 */}
               <div className="flex h-[20px] items-center justify-center w-[44px]">
                 <div className="flex-none rotate-90">
-                  <img 
-                    src={getUrl(processData?.arrowImage, "/images/creative-development/arrow-down.svg")} 
-                    alt={getAlt(processData?.arrowImage, "")} 
+                  <Image
+                    src={getUrl(processData?.arrowImage, "/images/creative-development/arrow-down.svg")}
+                    alt={getAlt(processData?.arrowImage, "")}
+                    width={20}
+                    height={44}
                     className="h-[44px] w-[20px]"
+                    unoptimized={isRemoteUrl(
+                      getUrl(processData?.arrowImage, "/images/creative-development/arrow-down.svg")
+                    )}
                   />
                 </div>
               </div>
@@ -603,10 +685,15 @@ export default async function AccountingFinancePage() {
               {/* Arrow 2 */}
               <div className="flex h-[20px] items-center justify-center w-[44px]">
                 <div className="flex-none rotate-90">
-                  <img 
-                    src={getUrl(processData?.arrowImage, "/images/creative-development/arrow-down.svg")} 
-                    alt={getAlt(processData?.arrowImage, "")} 
+                  <Image
+                    src={getUrl(processData?.arrowImage, "/images/creative-development/arrow-down.svg")}
+                    alt={getAlt(processData?.arrowImage, "")}
+                    width={20}
+                    height={44}
                     className="h-[44px] w-[20px]"
+                    unoptimized={isRemoteUrl(
+                      getUrl(processData?.arrowImage, "/images/creative-development/arrow-down.svg")
+                    )}
                   />
                 </div>
               </div>
@@ -633,10 +720,15 @@ export default async function AccountingFinancePage() {
               {/* Arrow 3 */}
               <div className="flex h-[20px] items-center justify-center w-[44px]">
                 <div className="flex-none rotate-90">
-                  <img 
-                    src={getUrl(processData?.arrowImage, "/images/creative-development/arrow-down.svg")} 
-                    alt={getAlt(processData?.arrowImage, "")} 
+                  <Image
+                    src={getUrl(processData?.arrowImage, "/images/creative-development/arrow-down.svg")}
+                    alt={getAlt(processData?.arrowImage, "")}
+                    width={20}
+                    height={44}
                     className="h-[44px] w-[20px]"
+                    unoptimized={isRemoteUrl(
+                      getUrl(processData?.arrowImage, "/images/creative-development/arrow-down.svg")
+                    )}
                   />
                 </div>
               </div>
@@ -663,10 +755,15 @@ export default async function AccountingFinancePage() {
               {/* Arrow 4 - Final */}
               <div className="flex h-[20px] items-center justify-center w-[44px]">
                 <div className="flex-none rotate-90">
-                  <img 
-                    src={getUrl(processData?.arrowFinalImage, "/images/creative-development/arrow-down-final.svg")} 
-                    alt={getAlt(processData?.arrowFinalImage, "")} 
+                  <Image
+                    src={getUrl(processData?.arrowFinalImage, "/images/creative-development/arrow-down-final.svg")}
+                    alt={getAlt(processData?.arrowFinalImage, "")}
+                    width={20}
+                    height={44}
                     className="h-[44px] w-[20px]"
+                    unoptimized={isRemoteUrl(
+                      getUrl(processData?.arrowFinalImage, "/images/creative-development/arrow-down-final.svg")
+                    )}
                   />
                 </div>
               </div>

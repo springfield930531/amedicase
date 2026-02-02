@@ -24,14 +24,27 @@ export interface ContactFormData {
   source?: string; // e.g., 'contact-page', 'home-page', etc.
 }
 
-export async function submitContactForm(data: ContactFormData): Promise<{ success: boolean; error?: string }> {
+type StrapiRequestError = {
+  status?: number;
+  message?: string;
+};
+
+const getErrorStatus = (error: unknown): number | undefined => {
+  if (!error || typeof error !== "object") return undefined;
+  const candidate = error as { status?: unknown };
+  return typeof candidate.status === "number" ? candidate.status : undefined;
+};
+
+export async function submitContactForm(
+  data: ContactFormData
+): Promise<{ success: boolean; error?: string }> {
   try {
     const strapiUrl = getStrapiUrl();
     
     // Try multiple possible content type names
     const contentTypes = ['contact-form', 'contact-submissions', 'contact-submission', 'contacts', 'contact-forms'];
     
-    let lastError: any = null;
+    let lastError: StrapiRequestError | Error | null = null;
     
     for (const contentType of contentTypes) {
       try {
@@ -54,7 +67,7 @@ export async function submitContactForm(data: ContactFormData): Promise<{ succes
         });
 
         if (response.ok) {
-          const result = await response.json();
+          await response.json();
           return { success: true };
         }
         
@@ -65,17 +78,22 @@ export async function submitContactForm(data: ContactFormData): Promise<{ succes
         
         // If 405 (Method Not Allowed), permissions are not set
         if (response.status === 405) {
-          lastError = { 
-            status: 405, 
-            message: 'Permissions not set. Please enable "create" permission for contact-submission in Strapi Admin → Settings → Users & Permissions → Roles → Public' 
+          lastError = {
+            status: 405,
+            message:
+              'Permissions not set. Please enable "create" permission for contact-submission in Strapi Admin → Settings → Users & Permissions → Roles → Public',
           };
           continue;
         }
         
         // For other errors, save and continue
-        lastError = await response.json().catch(() => ({ status: response.status }));
+        const errorBody = await response.json().catch(() => null);
+        lastError =
+          errorBody && typeof errorBody === "object"
+            ? { status: response.status, ...(errorBody as object) }
+            : { status: response.status, message: String(errorBody ?? "") };
       } catch (err) {
-        lastError = err;
+        lastError = err instanceof Error ? err : { message: String(err) };
         continue;
       }
     }
@@ -88,7 +106,7 @@ export async function submitContactForm(data: ContactFormData): Promise<{ succes
     console.log('Contact form submission (fallback):', data);
     
     // Provide helpful error message
-    const errorMessage = lastError?.status === 405 
+    const errorMessage = getErrorStatus(lastError) === 405
       ? 'Permissions not configured correctly. Please check: 1) Go to Strapi Admin → Settings → Users & Permissions → Roles → Public, 2) Find "contact-submission" in APPLICATION section, 3) Enable "create" checkbox, 4) Click the gear icon next to "create" to open Advanced settings, 5) In "Allow to perform this action for" dropdown, select "ratelimit" (NOT "None" - "None" blocks access), 6) Save and wait a few seconds, 7) Try submitting again.'
       : 'Contact form endpoint not configured. Please configure a contact-submissions content type in Strapi and set permissions.';
     

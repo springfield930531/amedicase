@@ -5,6 +5,7 @@ import { GradientTitle } from "@/components/shared/GradientTitle";
 import { TitleBlock } from "@/components/shared/TitleBlock";
 import { TeamCarousel } from "@/components/sections/TeamCarousel";
 import Link from "next/link";
+import Image from "next/image";
 import svgPaths from "@/lib/imports/svg-ie2km5jka3";
 import { getPageBySlug } from "@/lib/strapi";
 import { getMediaUrl } from "@/lib/strapi-home";
@@ -226,6 +227,7 @@ export default async function AboutPage() {
     image: getMediaUrl(whyChoose?.image) || fallback.whyChoose.image,
     overlayColor: whyChoose?.overlayColor || fallback.whyChoose.overlayColor,
   };
+  const isRemoteUrl = (url: string) => /^https?:\/\//i.test(url);
   return (
     <div className="min-h-screen bg-[#f1f5ff] relative overflow-x-hidden">
       <Header />
@@ -251,9 +253,11 @@ export default async function AboutPage() {
               {/* Hero Image Background */}
               <div className="relative h-[562px] w-full overflow-hidden rounded-xl -mt-[29px]">
                 <div className="absolute inset-0 overflow-hidden">
-                  <img
+                  <Image
                     src={heroData.backgroundImage}
                     alt="Healthcare professionals working"
+                    fill
+                    sizes="100vw"
                     className="absolute inset-0 w-full h-full object-cover"
                     style={{
                       height: '113.88%',
@@ -264,6 +268,7 @@ export default async function AboutPage() {
                       objectFit: 'cover',
                       objectPosition: 'center center'
                     }}
+                    unoptimized={isRemoteUrl(heroData.backgroundImage)}
                   />
                 </div>
                 <div className="absolute bg-[rgba(240,242,248,0.2)] inset-0" />
@@ -314,10 +319,13 @@ export default async function AboutPage() {
             {/* Hero Image Background */}
             <div className="absolute inset-0 overflow-hidden">
               <div className="absolute inset-0 overflow-hidden">
-                <img
+                <Image
                   src={heroData.backgroundImage}
                   alt="Healthcare professionals working"
+                  fill
+                  sizes="100vw"
                   className="absolute h-[200.03%] left-[-30.99%] max-w-none top-[-42.98%] w-[131.05%] object-cover"
+                  unoptimized={isRemoteUrl(heroData.backgroundImage)}
                 />
               </div>
               <div className="absolute bg-[rgba(240,242,248,0.2)] inset-0" />
@@ -736,10 +744,13 @@ export default async function AboutPage() {
                   <div className="flex flex-col gap-6 xl:gap-[24px] items-center xl:items-start w-full max-w-[403px] xl:w-[403px]">
                     {/* Image */}
                     <div className="relative w-full max-w-[403px] xl:w-[403px] aspect-[403/314] xl:h-[314px] rounded-[12px] overflow-hidden">
-                      <img
+                      <Image
                         src={whyChooseData.image}
                         alt="Why choose Amedicase"
+                        fill
+                        sizes="(max-width: 1024px) 100vw, 403px"
                         className="absolute inset-0 w-full h-full object-cover"
+                        unoptimized={isRemoteUrl(whyChooseData.image)}
                       />
                       <div className="absolute inset-0 mix-blend-hard-light" style={{ background: whyChooseData.overlayColor }} />
                     </div>
