@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+OUT_FILE="${1:-$ROOT_DIR/.env.prod}"
+
+umask 077
+
+APP_KEYS="$(openssl rand -hex 16),$(openssl rand -hex 16),$(openssl rand -hex 16),$(openssl rand -hex 16)"
+API_TOKEN_SALT="$(openssl rand -hex 16)"
+ADMIN_JWT_SECRET="$(openssl rand -hex 32)"
+JWT_SECRET="$(openssl rand -hex 32)"
+TRANSFER_TOKEN_SALT="$(openssl rand -hex 16)"
+ENCRYPTION_KEY="$(openssl rand -hex 32)"
+DB_PASSWORD="$(openssl rand -hex 32)"
+
+STRAPI_URL_VALUE="${STRAPI_URL:-https://amedicase.com}"
+CORS_ORIGIN_VALUE="${CORS_ORIGIN:-$STRAPI_URL_VALUE}"
+STRAPI_PROXY_VALUE="${STRAPI_PROXY:-true}"
+DATABASE_SSL_VALUE="${DATABASE_SSL:-false}"
+DATABASE_SCHEMA_VALUE="${DATABASE_SCHEMA:-public}"
+
+cat > "$OUT_FILE" <<ENV
+APP_KEYS=$APP_KEYS
+API_TOKEN_SALT=$API_TOKEN_SALT
+ADMIN_JWT_SECRET=$ADMIN_JWT_SECRET
+JWT_SECRET=$JWT_SECRET
+TRANSFER_TOKEN_SALT=$TRANSFER_TOKEN_SALT
+ENCRYPTION_KEY=$ENCRYPTION_KEY
+DB_PASSWORD=$DB_PASSWORD
+STRAPI_URL=$STRAPI_URL_VALUE
+STRAPI_PROXY=$STRAPI_PROXY_VALUE
+CORS_ORIGIN=$CORS_ORIGIN_VALUE
+DATABASE_SSL=$DATABASE_SSL_VALUE
+DATABASE_SCHEMA=$DATABASE_SCHEMA_VALUE
+ENV
+
+echo "Wrote secrets to $OUT_FILE"

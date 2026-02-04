@@ -270,25 +270,30 @@ export function ServiceStyleA({ page }: ServiceStyleAProps) {
               {/* Hero Image Background */}
               <div className="absolute inset-0 overflow-hidden rounded-xl">
                 <div className="absolute inset-0 overflow-hidden">
-                  <Image
-                    src={getUrl(('backgroundImage' in heroData ? heroData.backgroundImage : undefined), "/images/services/hero-services.jpg")}
-                    alt={getAlt(('backgroundImage' in heroData ? heroData.backgroundImage : undefined), "Healthcare professionals working")}
-                    fill
-                    sizes="100vw"
-                    className="absolute inset-0 w-full h-full object-cover"
+                  <div
+                    className="absolute"
                     style={{
                       height: '113.88%',
                       left: '-63.06%',
                       top: '-13.88%',
                       width: '266.63%',
                       maxWidth: 'none',
-                      objectFit: 'cover',
-                      objectPosition: 'center center'
                     }}
-                    unoptimized={isRemoteUrl(
-                      getUrl(('backgroundImage' in heroData ? heroData.backgroundImage : undefined), "/images/services/hero-services.jpg")
-                    )}
-                  />
+                  >
+                    <div className="relative w-full h-full">
+                      <Image
+                        src={getUrl(('backgroundImage' in heroData ? heroData.backgroundImage : undefined), "/images/services/hero-services.jpg")}
+                        alt={getAlt(('backgroundImage' in heroData ? heroData.backgroundImage : undefined), "Healthcare professionals working")}
+                        fill
+                        sizes="100vw"
+                        className="absolute inset-0 w-full h-full object-cover"
+                        style={{ objectFit: 'cover', objectPosition: 'center center' }}
+                        unoptimized={isRemoteUrl(
+                          getUrl(('backgroundImage' in heroData ? heroData.backgroundImage : undefined), "/images/services/hero-services.jpg")
+                        )}
+                      />
+                    </div>
+                  </div>
                 </div>
                 <div className="absolute bg-[rgba(240,242,248,0.2)] inset-0" />
               </div>
@@ -439,20 +444,26 @@ export function ServiceStyleA({ page }: ServiceStyleAProps) {
               <div className="backdrop-blur-[7px] bg-gradient-to-b from-[rgba(204,211,234,0.25)] to-[rgba(80,86,104,0.125)] rounded-[12px] border border-[rgba(99,103,146,0.8)]">
                 <div className="flex gap-[20px] items-start pl-[20px] pr-[37px] py-[20px] overflow-hidden">
                   <div className="h-[150px] w-[121.5px] flex-shrink-0 overflow-hidden rounded-[12px] relative">
-                    <Image
-                      src={getUrl(('image' in pillarCard1 ? pillarCard1.image : undefined), "/images/services/billing-finance-new.jpg")}
-                      alt={getAlt(('image' in pillarCard1 ? pillarCard1.image : undefined), "Billing & Finance")}
-                      fill
-                      sizes="122px"
-                      className="absolute inset-0 w-full h-full object-cover"
+                    <div
+                      className="absolute"
                       style={{
                         height: toPercent(pillarCard1.imageStyle?.heightPercent) || "121.49%",
                         left: toPercent(pillarCard1.imageStyle?.leftPercent) || "0%",
                         top: toPercent(pillarCard1.imageStyle?.topPercent) || "-17.42%",
                         width: toPercent(pillarCard1.imageStyle?.widthPercent) || "100%",
                       }}
-                      unoptimized={isRemoteUrl(getUrl(('image' in pillarCard1 ? pillarCard1.image : undefined), "/images/services/billing-finance-new.jpg"))}
-                    />
+                    >
+                      <div className="relative w-full h-full">
+                        <Image
+                          src={getUrl(('image' in pillarCard1 ? pillarCard1.image : undefined), "/images/services/billing-finance-new.jpg")}
+                          alt={getAlt(('image' in pillarCard1 ? pillarCard1.image : undefined), "Billing & Finance")}
+                          fill
+                          sizes="122px"
+                          className="absolute inset-0 w-full h-full object-cover"
+                          unoptimized={isRemoteUrl(getUrl(('image' in pillarCard1 ? pillarCard1.image : undefined), "/images/services/billing-finance-new.jpg"))}
+                        />
+                      </div>
+                    </div>
                   </div>
                   
                   <div className="flex flex-1 flex-col gap-[32px] items-start min-w-0">
@@ -499,20 +510,26 @@ export function ServiceStyleA({ page }: ServiceStyleAProps) {
                 <div className="flex gap-[20px] items-start pl-[20px] pr-[33px] py-[20px] overflow-hidden">
                   <div className="h-[150px] w-[120px] flex-shrink-0 overflow-hidden rounded-[12px] relative">
                     <div className="absolute inset-0 overflow-hidden pointer-events-none rounded-[12px]">
-                      <Image
-                        src={getUrl(('image' in pillarCard2 ? pillarCard2.image : undefined), "/images/services/patient-intake-correct.jpg")}
-                        alt={getAlt(('image' in pillarCard2 ? pillarCard2.image : undefined), "Patient Intake & Support")}
-                        fill
-                        sizes="120px"
-                        className="absolute h-full max-w-none"
+                      <div
+                        className="absolute"
                         style={{
                           left: toPercent(pillarCard2.imageStyle?.leftPercent) || "-71.67%",
                           width: toPercent(pillarCard2.imageStyle?.widthPercent) || "237.04%",
                           top: toPercent(pillarCard2.imageStyle?.topPercent) || "0%",
                           height: toPercent(pillarCard2.imageStyle?.heightPercent) || "100%",
                         }}
-                        unoptimized={isRemoteUrl(getUrl(('image' in pillarCard2 ? pillarCard2.image : undefined), "/images/services/patient-intake-correct.jpg"))}
-                      />
+                      >
+                        <div className="relative w-full h-full">
+                          <Image
+                            src={getUrl(('image' in pillarCard2 ? pillarCard2.image : undefined), "/images/services/patient-intake-correct.jpg")}
+                            alt={getAlt(('image' in pillarCard2 ? pillarCard2.image : undefined), "Patient Intake & Support")}
+                            fill
+                            sizes="120px"
+                            className="absolute h-full max-w-none"
+                            unoptimized={isRemoteUrl(getUrl(('image' in pillarCard2 ? pillarCard2.image : undefined), "/images/services/patient-intake-correct.jpg"))}
+                          />
+                        </div>
+                      </div>
                     </div>
                   </div>
                   
@@ -562,22 +579,28 @@ export function ServiceStyleA({ page }: ServiceStyleAProps) {
                 <div className="flex gap-[20px] items-start pl-[20px] pr-[22px] py-[20px] overflow-hidden">
                   <div className="h-[150px] w-[120px] flex-shrink-0 overflow-hidden rounded-[12px] relative">
                     <div className="absolute inset-0 overflow-hidden pointer-events-none rounded-[12px]">
-                      <Image
-                        src={getUrl(('image' in pillarCard3 ? pillarCard3.image : undefined), "/images/services/operations-admin-correct.jpg")}
-                        alt={getAlt(('image' in pillarCard3 ? pillarCard3.image : undefined), "Operations & Admin Support")}
-                        fill
-                        sizes="120px"
-                        className="absolute h-full max-w-none"
+                      <div
+                        className="absolute"
                         style={{
                           left: toPercent(pillarCard3.imageStyle?.leftPercent) || "-26.67%",
                           width: toPercent(pillarCard3.imageStyle?.widthPercent) || "187.27%",
                           top: toPercent(pillarCard3.imageStyle?.topPercent) || "0%",
                           height: toPercent(pillarCard3.imageStyle?.heightPercent) || "100%",
                         }}
-                        unoptimized={isRemoteUrl(
-                          getUrl(('image' in pillarCard3 ? pillarCard3.image : undefined), "/images/services/operations-admin-correct.jpg")
-                        )}
-                      />
+                      >
+                        <div className="relative w-full h-full">
+                          <Image
+                            src={getUrl(('image' in pillarCard3 ? pillarCard3.image : undefined), "/images/services/operations-admin-correct.jpg")}
+                            alt={getAlt(('image' in pillarCard3 ? pillarCard3.image : undefined), "Operations & Admin Support")}
+                            fill
+                            sizes="120px"
+                            className="absolute h-full max-w-none"
+                            unoptimized={isRemoteUrl(
+                              getUrl(('image' in pillarCard3 ? pillarCard3.image : undefined), "/images/services/operations-admin-correct.jpg")
+                            )}
+                          />
+                        </div>
+                      </div>
                     </div>
                   </div>
                   
@@ -628,22 +651,28 @@ export function ServiceStyleA({ page }: ServiceStyleAProps) {
               <div className="backdrop-blur-[7px] bg-gradient-to-b from-[rgba(204,211,234,0.25)] to-[rgba(80,86,104,0.125)] rounded-[12px] border border-[rgba(99,103,146,0.8)]">
                 <div className="flex gap-[20px] items-start pl-[20px] pr-[10px] py-[20px] overflow-hidden">
                   <div className="h-[150px] w-[120px] flex-shrink-0 overflow-hidden rounded-[12px] relative">
-                    <Image
-                      src={getUrl(('image' in pillarCard4 ? pillarCard4.image : undefined), "/images/services/digital-growth-new.jpg")}
-                      alt={getAlt(('image' in pillarCard4 ? pillarCard4.image : undefined), "Digital Presence & Growth")}
-                      fill
-                      sizes="120px"
-                      className="absolute inset-0 w-full h-full object-cover"
+                    <div
+                      className="absolute"
                       style={{
                         height: toPercent(pillarCard4.imageStyle?.heightPercent) || "119.99%",
                         left: toPercent(pillarCard4.imageStyle?.leftPercent) || "0%",
                         top: toPercent(pillarCard4.imageStyle?.topPercent) || "-6%",
                         width: toPercent(pillarCard4.imageStyle?.widthPercent) || "100%",
                       }}
-                      unoptimized={isRemoteUrl(
-                        getUrl(('image' in pillarCard4 ? pillarCard4.image : undefined), "/images/services/digital-growth-new.jpg")
-                      )}
-                    />
+                    >
+                      <div className="relative w-full h-full">
+                        <Image
+                          src={getUrl(('image' in pillarCard4 ? pillarCard4.image : undefined), "/images/services/digital-growth-new.jpg")}
+                          alt={getAlt(('image' in pillarCard4 ? pillarCard4.image : undefined), "Digital Presence & Growth")}
+                          fill
+                          sizes="120px"
+                          className="absolute inset-0 w-full h-full object-cover"
+                          unoptimized={isRemoteUrl(
+                            getUrl(('image' in pillarCard4 ? pillarCard4.image : undefined), "/images/services/digital-growth-new.jpg")
+                          )}
+                        />
+                      </div>
+                    </div>
                   </div>
                   
                   <div className="flex flex-col gap-[32px] items-start w-[150px] lg:w-auto">
@@ -698,20 +727,26 @@ export function ServiceStyleA({ page }: ServiceStyleAProps) {
                   >
                     <div className="flex gap-[20px] items-start pl-[20px] pr-[37px] py-[20px] overflow-hidden">
                       <div className="h-[150px] w-[121.5px] flex-shrink-0 overflow-hidden rounded-[12px] relative">
-                        <Image
-                          src={getUrl(('image' in card ? card.image : undefined))}
-                          alt={getAlt(('image' in card ? card.image : undefined), card.title || "Service")}
-                          fill
-                          sizes="122px"
-                          className="absolute inset-0 w-full h-full object-cover"
+                        <div
+                          className="absolute"
                           style={{
-                            height: toPercent(card.imageStyle?.heightPercent),
-                            left: toPercent(card.imageStyle?.leftPercent),
-                            top: toPercent(card.imageStyle?.topPercent),
-                            width: toPercent(card.imageStyle?.widthPercent),
+                            height: toPercent(card.imageStyle?.heightPercent) || "100%",
+                            left: toPercent(card.imageStyle?.leftPercent) || "0%",
+                            top: toPercent(card.imageStyle?.topPercent) || "0%",
+                            width: toPercent(card.imageStyle?.widthPercent) || "100%",
                           }}
-                          unoptimized={isRemoteUrl(getUrl(('image' in card ? card.image : undefined)))}
-                        />
+                        >
+                          <div className="relative w-full h-full">
+                            <Image
+                              src={getUrl(('image' in card ? card.image : undefined))}
+                              alt={getAlt(('image' in card ? card.image : undefined), card.title || "Service")}
+                              fill
+                              sizes="122px"
+                              className="absolute inset-0 w-full h-full object-cover"
+                              unoptimized={isRemoteUrl(getUrl(('image' in card ? card.image : undefined)))}
+                            />
+                          </div>
+                        </div>
                       </div>
 
                       <div className="flex flex-1 flex-col gap-[32px] items-start min-w-0">

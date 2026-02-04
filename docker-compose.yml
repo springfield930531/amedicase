@@ -3,10 +3,26 @@ services:
     image: postgres:15
     environment:
       POSTGRES_USER: strapi
-      POSTGRES_PASSWORD: strapi
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-strapi}
       POSTGRES_DB: strapi
     volumes:
       - db-data:/var/lib/postgresql/data
+    networks:
+      - webnet
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U strapi"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  db-dev:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: strapi
+      POSTGRES_PASSWORD: ${DEV_DB_PASSWORD:-strapi}
+      POSTGRES_DB: strapi_dev
+    volumes:
+      - db-dev-data:/var/lib/postgresql/data
     networks:
       - webnet
     healthcheck:
@@ -21,16 +37,17 @@ services:
       dockerfile: Dockerfile
     command: ["npm","run","develop"]
     depends_on:
-      db:
+      db-dev:
         condition: service_healthy
     environment:
       NODE_ENV: development
       DATABASE_CLIENT: postgres
-      DATABASE_HOST: db
+      DATABASE_HOST: db-dev
       DATABASE_PORT: 5432
-      DATABASE_NAME: strapi
+      DATABASE_NAME: strapi_dev
       DATABASE_USERNAME: strapi
-      DATABASE_PASSWORD: strapi
+      DATABASE_PASSWORD: ${DEV_DB_PASSWORD:-strapi}
+      PUBLIC_URL: https://dev.amedicase.com
       APP_KEYS: ${APP_KEYS:-dev-key-1,dev-key-2,dev-key-3,dev-key-4}
       API_TOKEN_SALT: ${API_TOKEN_SALT:-dev-api-token-salt}
       ADMIN_JWT_SECRET: ${ADMIN_JWT_SECRET:-dev-admin-jwt-secret}
@@ -44,6 +61,7 @@ services:
       - ./strapi-v4/.cache:/srv/app/.cache
       - ./strapi-v4/.tmp:/srv/app/.tmp
       - ./frontend/public/images:/srv/frontend-images:ro
+      - strapi-uploads-dev:/srv/app/public/uploads
     ports:
       - "1337:1337"
     networks:
@@ -94,8 +112,6 @@ services:
       - ./frontend:/app
       - /app/node_modules
       - /app/.next
-    depends_on:
-      - strapi
     networks:
       - webnet
       - traefik
@@ -126,15 +142,14 @@ services:
     environment:
       NODE_ENV: production
       NEXT_PUBLIC_SITE_URL: https://amedicase.com
+      NEXT_PUBLIC_STRAPI_URL: https://dev.amedicase.com
       STRAPI_URL: http://strapi:1337
-    depends_on:
-      - strapi
     networks:
       - webnet
       - traefik
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.amedicase-prod.rule=Host(`amedicase.com`) || Host(`www.amedicase.com`)"
+      - "traefik.http.routers.amedicase-prod.rule=(Host(`amedicase.com`) || Host(`www.amedicase.com`)) && !PathPrefix(`/admin`) && !PathPrefix(`/api`) && !PathPrefix(`/login`) && !PathPrefix(`/content-manager`) && !PathPrefix(`/content-type-builder`) && !PathPrefix(`/i18n`) && !PathPrefix(`/upload`) && !PathPrefix(`/users-permissions`)"
       - "traefik.http.routers.amedicase-prod.entrypoints=websecure"
       - "traefik.http.routers.amedicase-prod.tls=true"
       - "traefik.http.routers.amedicase-prod.tls.certresolver=letsencrypt"
@@ -176,7 +191,10 @@ services:
 
 volumes:
   db-data:
+  db-dev-data:
   strapi-data:
+  strapi-uploads:
+  strapi-uploads-dev:
 
 networks:
   webnet:

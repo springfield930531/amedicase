@@ -287,14 +287,20 @@ export default function ElementsPage() {
                     <div className="backdrop-blur-[7px] bg-gradient-to-b from-[rgba(204,211,234,0.25)] to-[rgba(80,86,104,0.125)] rounded-[12px] border border-[rgba(99,103,146,0.8)]">
                       <div className="flex gap-[20px] items-start pl-[20px] pr-[37px] py-[20px] overflow-hidden">
                         <div className="h-[150px] w-[121.5px] flex-shrink-0 overflow-hidden rounded-[12px] relative">
-                          <Image
-                            src="/images/services/billing-finance-new.jpg"
-                            alt="Billing & Finance"
-                            fill
-                            sizes="122px"
-                            className="absolute inset-0 w-full h-full object-cover"
+                          <div
+                            className="absolute"
                             style={{ height: '121.49%', left: 0, top: '-17.42%', width: '100%' }}
-                          />
+                          >
+                            <div className="relative w-full h-full">
+                              <Image
+                                src="/images/services/billing-finance-new.jpg"
+                                alt="Billing & Finance"
+                                fill
+                                sizes="122px"
+                                className="absolute inset-0 w-full h-full object-cover"
+                              />
+                            </div>
+                          </div>
                         </div>
                         <div className="flex flex-1 flex-col gap-[32px] items-start min-w-0">
                           <div className="flex flex-col gap-[20px] items-start justify-center">

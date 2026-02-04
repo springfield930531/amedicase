@@ -175,6 +175,11 @@ export default async function AboutPage() {
     primaryCta: hero?.primaryCta || fallback.hero.primaryCta,
     secondaryText: hero?.secondaryText || fallback.hero.secondaryText,
   };
+  const heroCtaUrl = heroData.primaryCta?.url || "/contact";
+  const isExternalUrl = (url?: string) => /^https?:\/\//i.test(url || "") || /^mailto:/i.test(url || "");
+  const heroCtaExternal =
+    (heroData.primaryCta as { isExternal?: boolean } | undefined)?.isExternal ||
+    isExternalUrl(heroCtaUrl);
 
   const storyData = {
     label: story?.label || fallback.story.label,
@@ -253,23 +258,28 @@ export default async function AboutPage() {
               {/* Hero Image Background */}
               <div className="relative h-[562px] w-full overflow-hidden rounded-xl -mt-[29px]">
                 <div className="absolute inset-0 overflow-hidden">
-                  <Image
-                    src={heroData.backgroundImage}
-                    alt="Healthcare professionals working"
-                    fill
-                    sizes="100vw"
-                    className="absolute inset-0 w-full h-full object-cover"
+                  <div
+                    className="absolute"
                     style={{
                       height: '113.88%',
                       left: '-63.06%',
                       top: '-13.88%',
                       width: '266.63%',
                       maxWidth: 'none',
-                      objectFit: 'cover',
-                      objectPosition: 'center center'
                     }}
-                    unoptimized={isRemoteUrl(heroData.backgroundImage)}
-                  />
+                  >
+                    <div className="relative w-full h-full">
+                      <Image
+                        src={heroData.backgroundImage}
+                        alt="Healthcare professionals working"
+                        fill
+                        sizes="100vw"
+                        className="absolute inset-0 w-full h-full object-cover"
+                        style={{ objectFit: 'cover', objectPosition: 'center center' }}
+                        unoptimized={isRemoteUrl(heroData.backgroundImage)}
+                      />
+                    </div>
+                  </div>
                 </div>
                 <div className="absolute bg-[rgba(240,242,248,0.2)] inset-0" />
               </div>
@@ -292,12 +302,15 @@ export default async function AboutPage() {
                     </p>
                   </div>
                   <div className="flex flex-col gap-[20px] items-start">
-                    <button 
+                    <Link 
+                      href={heroCtaUrl}
+                      target={heroCtaExternal ? "_blank" : undefined}
+                      rel={heroCtaExternal ? "noreferrer" : undefined}
                       className="backdrop-blur-[7px] bg-gradient-to-b from-[rgba(45,78,174,0.64)] to-[rgba(34,62,140,0.48)] rounded-[8px] border border-[rgba(50,59,159,0.8)] h-[45px] w-full max-w-[239px] font-sans font-semibold text-[clamp(16px,2.5vw,18px)] text-[#f1f5ff] tracking-[-0.36px] hover:opacity-90 transition-opacity flex items-center justify-center capitalize"
                       style={{ fontVariationSettings: "'wdth' 100" }}
                     >
                       {heroData.primaryCta?.label}
-                    </button>
+                    </Link>
                     <p 
                       className="font-sans font-normal leading-[1.4] text-[#d01127] text-[clamp(16px,2.5vw,20px)] tracking-[-0.4px] underline w-full whitespace-pre-wrap"
                       style={{ 
@@ -363,14 +376,17 @@ export default async function AboutPage() {
                 </div>
                 
                 <div className="flex flex-col gap-[20px] items-start w-[419px]">
-                  <button 
+                  <Link 
+                    href={heroCtaUrl}
+                    target={heroCtaExternal ? "_blank" : undefined}
+                    rel={heroCtaExternal ? "noreferrer" : undefined}
                     className="backdrop-blur-[3.777px] backdrop-filter bg-gradient-to-b border border-[rgba(50,59,159,0.8)] border-solid from-[rgba(45,78,174,0.64)] items-center justify-center p-[20px] relative rounded-[8px] to-[rgba(34,62,140,0.48)] w-full hover:opacity-90 transition-opacity flex"
                     style={{ fontVariationSettings: "'wdth' 100" }}
                   >
                     <p className="capitalize font-sans font-semibold leading-[1.1] text-[#f1f5ff] text-[33px] text-center tracking-[-0.66px] whitespace-nowrap" style={{ fontVariationSettings: "'wdth' 100" }}>
                       {heroData.primaryCta?.label}
                     </p>
-                  </button>
+                  </Link>
                   <p 
                     className="font-sans font-normal leading-[1.4] text-[#d01127] text-[20px] tracking-[-0.4px] underline w-full whitespace-pre-wrap"
                     style={{ 

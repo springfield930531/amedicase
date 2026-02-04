@@ -1,0 +1,80 @@
+services:
+  strapi:
+    profiles: ["strapi-dev"]
+
+  strapi-prod:
+    build:
+      context: ./strapi-v4
+      dockerfile: Dockerfile
+    command: ["npm","run","start"]
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      NODE_ENV: production
+      DATABASE_CLIENT: postgres
+      DATABASE_HOST: db
+      DATABASE_PORT: 5432
+      DATABASE_NAME: strapi
+      DATABASE_USERNAME: strapi
+      DATABASE_PASSWORD: ${DB_PASSWORD:-strapi}
+      APP_KEYS: ${APP_KEYS:-dev-key-1,dev-key-2,dev-key-3,dev-key-4}
+      API_TOKEN_SALT: ${API_TOKEN_SALT:-dev-api-token-salt}
+      ADMIN_JWT_SECRET: ${ADMIN_JWT_SECRET:-dev-admin-jwt-secret}
+      JWT_SECRET: ${JWT_SECRET:-dev-jwt-secret}
+      PUBLIC_URL: https://amedicase.com
+      HOST: "0.0.0.0"
+      PORT: 1337
+      FRONTEND_IMAGES_DIR: /srv/frontend-images
+    volumes:
+      - ./frontend/public/images:/srv/frontend-images:ro
+      - strapi-uploads:/srv/app/public/uploads
+    ports:
+      - "1337:1337"
+    networks:
+      - webnet
+      - traefik
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.middlewares.amedicase-retry.retry.attempts=3"
+      - "traefik.http.middlewares.amedicase-retry.retry.initialinterval=500ms"
+      - "traefik.http.routers.amedicase-strapi-admin.rule=(Host(`amedicase.com`) || Host(`www.amedicase.com`)) && (PathPrefix(`/admin`) || PathPrefix(`/login`) || PathPrefix(`/content-manager`) || PathPrefix(`/content-type-builder`) || PathPrefix(`/i18n`) || PathPrefix(`/upload`) || PathPrefix(`/users-permissions`))"
+      - "traefik.http.routers.amedicase-strapi-admin.entrypoints=web"
+      - "traefik.http.routers.amedicase-strapi-admin.service=amedicase-strapi"
+      - "traefik.http.routers.amedicase-strapi-admin.middlewares=amedicase-retry@docker"
+      - "traefik.http.routers.amedicase-strapi-admin.priority=10"
+      - "traefik.http.routers.amedicase-strapi-admin-secure.rule=(Host(`amedicase.com`) || Host(`www.amedicase.com`)) && (PathPrefix(`/admin`) || PathPrefix(`/login`) || PathPrefix(`/content-manager`) || PathPrefix(`/content-type-builder`) || PathPrefix(`/i18n`) || PathPrefix(`/upload`) || PathPrefix(`/users-permissions`))"
+      - "traefik.http.routers.amedicase-strapi-admin-secure.entrypoints=websecure"
+      - "traefik.http.routers.amedicase-strapi-admin-secure.service=amedicase-strapi"
+      - "traefik.http.routers.amedicase-strapi-admin-secure.middlewares=amedicase-retry@docker"
+      - "traefik.http.routers.amedicase-strapi-admin-secure.priority=10"
+      - "traefik.http.routers.amedicase-strapi-admin-secure.tls=true"
+      - "traefik.http.routers.amedicase-strapi-admin-secure.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.amedicase-strapi-api.rule=(Host(`amedicase.com`) || Host(`www.amedicase.com`)) && PathPrefix(`/api`)"
+      - "traefik.http.routers.amedicase-strapi-api.entrypoints=web"
+      - "traefik.http.routers.amedicase-strapi-api.service=amedicase-strapi"
+      - "traefik.http.routers.amedicase-strapi-api.middlewares=amedicase-retry@docker"
+      - "traefik.http.routers.amedicase-strapi-api.priority=10"
+      - "traefik.http.routers.amedicase-strapi-api-secure.rule=(Host(`amedicase.com`) || Host(`www.amedicase.com`)) && PathPrefix(`/api`)"
+      - "traefik.http.routers.amedicase-strapi-api-secure.entrypoints=websecure"
+      - "traefik.http.routers.amedicase-strapi-api-secure.service=amedicase-strapi"
+      - "traefik.http.routers.amedicase-strapi-api-secure.middlewares=amedicase-retry@docker"
+      - "traefik.http.routers.amedicase-strapi-api-secure.priority=10"
+      - "traefik.http.routers.amedicase-strapi-api-secure.tls=true"
+      - "traefik.http.routers.amedicase-strapi-api-secure.tls.certresolver=letsencrypt"
+      - "traefik.http.services.amedicase-strapi.loadbalancer.server.port=1337"
+      - "traefik.http.services.amedicase-strapi.loadbalancer.server.scheme=http"
+      - "traefik.docker.network=donor-auto-evacuator_donor-network"
+
+  frontend-prod:
+    environment:
+      NODE_ENV: production
+      NEXT_PUBLIC_STRAPI_URL: https://amedicase.com
+      STRAPI_URL: http://strapi-prod:1337
+    depends_on:
+      - strapi-prod
+
+  frontend-dev:
+    profiles: ["dev"]
+    environment:
+      STRAPI_URL: http://strapi-prod:1337

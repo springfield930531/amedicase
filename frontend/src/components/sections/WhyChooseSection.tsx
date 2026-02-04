@@ -2,6 +2,7 @@ import type { CSSProperties } from "react";
 import svgPaths from "@/lib/imports/svg-ie2km5jka3";
 import { getMediaUrl } from "@/lib/strapi-home";
 import Image from "next/image";
+import Link from "next/link";
 import type { AboutWhyChooseSection, StrapiMedia } from "@/lib/page-types";
 
 type ExtendedCSSProperties = CSSProperties & {
@@ -38,9 +39,12 @@ export function WhyChooseSection({ data }: WhyChooseSectionProps) {
       ?.map((benefit) => benefit?.label)
       .filter((value): value is string => Boolean(value)) || defaultBenefits;
   const ctaLabel = data?.cta?.label || "More About Us";
+  const ctaUrl = data?.cta?.url || "/about";
   const supportImage =
     getMediaUrl(data?.supportImage) || "/images/why-choose-image-figma.png";
   const isRemoteUrl = (url: string) => /^https?:\/\//i.test(url);
+  const isExternal = (url: string) => /^https?:\/\//i.test(url) || /^mailto:/i.test(url);
+  const ctaExternal = data?.cta?.isExternal || isExternal(ctaUrl);
 
   return (
     <section className="relative bg-[#f1f5ff] pt-[40px] md:pt-16 xl:pt-20 pb-[40px] md:pb-16 xl:pb-20 overflow-hidden">
@@ -108,7 +112,10 @@ export function WhyChooseSection({ data }: WhyChooseSectionProps) {
 
             {/* CTA Button - Outside card, after card - Mobile - Exact Figma: width 221px, height 54.5px */}
             <div className="md:hidden mt-[20px] md:mt-12">
-              <button
+              <Link
+                href={ctaUrl}
+                target={ctaExternal ? "_blank" : undefined}
+                rel={ctaExternal ? "noreferrer" : undefined}
                 className="backdrop-blur-[3.777px] backdrop-filter bg-gradient-to-b border border-[rgba(50,59,159,0.8)] border-solid box-border content-stretch flex from-[rgba(45,78,174,0.64)] gap-[20px] items-center justify-center px-[20px] py-[17px] relative rounded-[8px] shrink-0 to-[rgba(34,62,140,0.48)] hover:opacity-90 transition-opacity w-[221px]"
                 style={{ fontVariationSettings: "'wdth' 100" }}
               >
@@ -125,12 +132,15 @@ export function WhyChooseSection({ data }: WhyChooseSectionProps) {
                     </svg>
                   </div>
                 </div>
-              </button>
+              </Link>
             </div>
 
             {/* CTA Button - Tablet */}
             <div className="hidden md:flex lg:hidden mt-8 lg:mt-12 justify-center lg:justify-start">
-              <button
+              <Link
+                href={ctaUrl}
+                target={ctaExternal ? "_blank" : undefined}
+                rel={ctaExternal ? "noreferrer" : undefined}
                 className="inline-flex items-center justify-center gap-5 rounded-[8px] border border-[rgba(50,59,159,0.8)] shadow-[0px_1px_4px_0px_rgba(27,30,79,0.3)] backdrop-blur-[3.777px] px-5 py-[17px] font-sans font-semibold text-[18px] sm:text-[20px] text-[#f1f5ff] leading-[110%] hover:opacity-90 transition-opacity"
                 style={buttonStyle}
               >
@@ -145,7 +155,7 @@ export function WhyChooseSection({ data }: WhyChooseSectionProps) {
                     </g>
                   </svg>
                 </div>
-              </button>
+              </Link>
             </div>
           </div>
         </div>
@@ -197,7 +207,10 @@ export function WhyChooseSection({ data }: WhyChooseSectionProps) {
               </div>
 
               {/* Button - Exact Figma: 403px x 142px - Responsive */}
-              <button
+              <Link
+                href={ctaUrl}
+                target={ctaExternal ? "_blank" : undefined}
+                rel={ctaExternal ? "noreferrer" : undefined}
                 className="backdrop-blur-[10px] backdrop-filter bg-gradient-to-b border border-[rgba(50,59,159,0.8)] border-solid from-[rgba(45,78,174,0.64)] rounded-[12px] to-[rgba(34,62,140,0.48)] w-full max-w-[403px] xl:w-[403px] h-[142px] flex flex-col items-center justify-center gap-[20px] p-[20px] hover:opacity-90 transition-opacity"
                 style={{ fontVariationSettings: "'wdth' 100" }}
               >
@@ -214,7 +227,7 @@ export function WhyChooseSection({ data }: WhyChooseSectionProps) {
                     </g>
                   </svg>
                 </div>
-              </button>
+              </Link>
             </div>
           </div>
         </div>

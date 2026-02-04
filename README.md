@@ -6,8 +6,8 @@ Site modern cu Next.js, Strapi CMS și PostgreSQL, configurat pentru dezvoltare 
 
 - **Frontend Development**: `dev.amedicase.com` - Next.js în mod development
 - **Frontend Production**: `amedicase.com` - Next.js în mod producție  
-- **Strapi Admin**: `dev.amedicase.com/admin` sau `dev.amedicase.com/login`
-- **Strapi API**: `dev.amedicase.com/api` (folosit intern de frontend)
+- **Strapi Admin**: `dev.amedicase.com/admin` (dev) și `amedicase.com/admin` (prod)
+- **Strapi API**: `dev.amedicase.com/api` (dev) și `amedicase.com/api` (prod)
 
 ## 🚀 Comenzi utile
 
@@ -15,6 +15,16 @@ Site modern cu Next.js, Strapi CMS și PostgreSQL, configurat pentru dezvoltare 
 ```bash
 cd /root/amedicase
 docker compose up -d
+```
+
+### Pornire stack producție (Strapi + frontend-prod)
+```bash
+docker compose -f docker-compose.yml -f docker-compose.prod.yml --env-file .env.prod up -d --build
+```
+
+### Pornire frontend dev pe server (opțional)
+```bash
+docker compose -f docker-compose.yml -f docker-compose.prod.yml --env-file .env.prod --profile dev up -d frontend-dev
 ```
 
 ### Oprirea serviciilor
@@ -35,6 +45,7 @@ docker compose logs -f
 # Un serviciu specific
 docker compose logs -f frontend-dev
 docker compose logs -f strapi
+docker compose -f docker-compose.yml -f docker-compose.prod.yml --env-file .env.prod logs -f strapi-prod
 ```
 
 ### Status servicii
@@ -92,19 +103,32 @@ După crearea contului, vei avea acces la:
 
 Când ești gata să publichi pe producție:
 
-1. **Asigură-te că frontend-prod este construit**:
+1. **Generează secretele de producție** (creează `.env.prod` cu valori reale):
    ```bash
-   docker compose build frontend-prod
+   bash scripts/gen-secrets.sh
    ```
 
-2. **Restart producție**:
+2. **Pornește stack-ul de producție** (folosește override-ul de prod):
    ```bash
-   docker compose restart frontend-prod
+   docker compose -f docker-compose.yml -f docker-compose.prod.yml --env-file .env.prod up -d --build
    ```
 
 3. **Verifică producția**:
    - Accesează `https://amedicase.com`
-   - Verifică logs: `docker compose logs -f frontend-prod`
+   - Verifică logs: `docker compose -f docker-compose.yml -f docker-compose.prod.yml --env-file .env.prod logs -f frontend-prod`
+
+> Notă: `.env.example` conține doar placeholder-e. Nu folosi `.env` cu substituții shell pentru producție.
+
+## 🩺 Diagnostic server
+
+- **Status + logs rapide**:
+  ```bash
+  bash scripts/server/health-check.sh
+  ```
+- **Recovery safe (fără ștergere de volume)**:
+  ```bash
+  bash scripts/server/recover-docker.sh
+  ```
 
 ## 📁 Structura proiectului
 
@@ -145,6 +169,7 @@ docker compose exec db psql -U strapi strapi
 - Verifică logs: `docker compose logs -f strapi`
 - Verifică routing Traefik: containerul trebuie să fie pe rețeaua `traefik`
 - Accesează direct: `docker compose exec strapi curl localhost:1337/admin`
+- Pentru producție: `docker compose -f docker-compose.yml -f docker-compose.prod.yml --env-file .env.prod exec strapi-prod curl localhost:1337/admin`
 
 ## 📚 Resurse utile
 
@@ -159,7 +184,7 @@ docker compose exec db psql -U strapi strapi
 - [ ] Contul de admin Strapi este creat
 - [ ] Frontend dev funcționează pe `dev.amedicase.com`
 - [ ] Frontend prod funcționează pe `amedicase.com`
-- [ ] Strapi admin este accesibil pe `dev.amedicase.com/admin`
+- [ ] Strapi admin este accesibil pe `dev.amedicase.com/admin` și `amedicase.com/admin`
 - [ ] Parolele sunt schimbate din default
 - [ ] Backup-urile sunt programate (opțional, dar recomandat)
 

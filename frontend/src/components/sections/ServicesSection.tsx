@@ -187,65 +187,21 @@ export function ServicesSection({ data }: ServicesSectionProps) {
           
           {/* Grid - 3 columns, 2 rows - Exact Figma spacing: gap-[43px_55px] (row_col) - Responsive - All cards same height */}
           <div className="flex flex-wrap gap-[43px_55px] w-full justify-start items-stretch">
-            {/* Card 1: Customer Support - Responsive with equal height */}
-            <div className="backdrop-blur-[10px] backdrop-filter bg-gradient-to-b border border-[rgba(99,103,146,0.8)] from-[rgba(204,211,234,0.25)] to-[rgba(132,139,161,0.125)] rounded-[12px] w-full max-w-[403px] lg:w-[403px] min-h-[142px] flex flex-col shadow-[0px_2px_4px_0px_rgba(114,116,146,0.3)]">
-              <div className="flex flex-col gap-[30px] items-center justify-center flex-1 px-[20px] py-[5px] text-[#0b1737] text-center">
-                <h3 className="font-sans font-medium leading-[1.1] text-[33px] tracking-[-0.66px] w-full pt-[5px]" style={{ fontVariationSettings: "'wdth' 100" }}>
-                  {services[0]?.title || defaultServices[0].title}
-                </h3>
-                <p className="font-sans font-normal leading-[1.1] text-[20px] tracking-[-0.4px] w-full whitespace-pre-line pb-[5px]" style={{ fontVariationSettings: "'wdth' 100" }}>
-                  {services[0]?.description || defaultServices[0].description}
-                </p>
+            {services.map((service, index) => (
+              <div
+                key={`service-desktop-${index}`}
+                className="backdrop-blur-[10px] backdrop-filter bg-gradient-to-b border border-[rgba(99,103,146,0.8)] from-[rgba(204,211,234,0.25)] to-[rgba(132,139,161,0.125)] rounded-[12px] w-full max-w-[403px] lg:w-[403px] min-h-[142px] flex flex-col shadow-[0px_2px_4px_0px_rgba(114,116,146,0.3)]"
+              >
+                <div className="flex flex-col gap-[30px] items-center justify-center flex-1 px-[20px] py-[5px] text-[#0b1737] text-center">
+                  <h3 className="font-sans font-medium leading-[1.1] text-[33px] tracking-[-0.66px] w-full pt-[5px]" style={{ fontVariationSettings: "'wdth' 100" }}>
+                    {service.title}
+                  </h3>
+                  <p className="font-sans font-normal leading-[1.1] text-[20px] tracking-[-0.4px] w-full whitespace-pre-line pb-[5px]" style={{ fontVariationSettings: "'wdth' 100" }}>
+                    {service.description}
+                  </p>
+                </div>
               </div>
-            </div>
-
-            {/* Card 2: Accounting & Finance - Responsive with equal height */}
-            <div className="backdrop-blur-[10px] backdrop-filter bg-gradient-to-b border border-[rgba(99,103,146,0.8)] from-[rgba(204,211,234,0.25)] to-[rgba(132,139,161,0.125)] rounded-[12px] w-full max-w-[403px] lg:w-[403px] min-h-[142px] flex flex-col shadow-[0px_2px_4px_0px_rgba(114,116,146,0.3)]">
-              <div className="flex flex-col gap-[30px] items-center justify-center flex-1 px-[20px] py-[5px] text-[#0b1737] text-center">
-                <h3 className="font-sans font-medium leading-[1.1] text-[33px] tracking-[-0.66px] w-full pt-[5px]" style={{ fontVariationSettings: "'wdth' 100" }}>
-                  {services[1]?.title || defaultServices[1].title}
-                </h3>
-                <p className="font-sans font-normal leading-[1.1] text-[20px] tracking-[-0.4px] w-full whitespace-pre-line pb-[5px]" style={{ fontVariationSettings: "'wdth' 100" }}>
-                  {services[1]?.description || defaultServices[1].description}
-                </p>
-              </div>
-            </div>
-
-            {/* Card 3: Recruitment, Credentialing - Responsive with equal height */}
-            <div className="backdrop-blur-[10px] backdrop-filter bg-gradient-to-b border border-[rgba(99,103,146,0.8)] from-[rgba(204,211,234,0.25)] to-[rgba(132,139,161,0.125)] rounded-[12px] w-full max-w-[403px] lg:w-[403px] min-h-[142px] flex flex-col shadow-[0px_2px_4px_0px_rgba(114,116,146,0.3)]">
-              <div className="flex flex-col gap-[26px] items-center justify-center flex-1 px-[20px] py-[5px] text-[#0b1737] text-center">
-                <h3 className="font-sans font-medium leading-[1.1] text-[33px] tracking-[-0.66px] w-full pt-[5px]" style={{ fontVariationSettings: "'wdth' 100" }}>
-                  {services[3]?.title || defaultServices[3].title}
-                </h3>
-                <p className="font-sans font-normal leading-[1.1] text-[20px] tracking-[-0.4px] w-full whitespace-pre-line pb-[5px]" style={{ fontVariationSettings: "'wdth' 100" }}>
-                  {services[3]?.description || defaultServices[3].description}
-                </p>
-              </div>
-            </div>
-
-            {/* Card 4: QuickBooks support - Responsive with equal height */}
-            <div className="backdrop-blur-[10px] backdrop-filter bg-gradient-to-b border border-[rgba(99,103,146,0.8)] from-[rgba(204,211,234,0.25)] to-[rgba(132,139,161,0.125)] rounded-[12px] w-full max-w-[403px] lg:w-[403px] min-h-[142px] flex flex-col shadow-[0px_2px_4px_0px_rgba(114,116,146,0.3)]">
-              <div className="flex flex-col gap-[30px] items-center justify-center flex-1 px-[20px] py-[5px] text-[#0b1737] text-center">
-                <h3 className="font-sans font-medium leading-[1.1] text-[33px] tracking-[-0.66px] w-full pt-[5px]" style={{ fontVariationSettings: "'wdth' 100" }}>
-                  {services[2]?.title || defaultServices[2].title}
-                </h3>
-                <p className="font-sans font-normal leading-[1.1] text-[20px] tracking-[-0.4px] w-full whitespace-pre-line pb-[5px]" style={{ fontVariationSettings: "'wdth' 100" }}>
-                  {services[2]?.description || defaultServices[2].description}
-                </p>
-              </div>
-            </div>
-
-            {/* Card 5: Creative & Development - Responsive with equal height */}
-            <div className="backdrop-blur-[10px] backdrop-filter bg-gradient-to-b border border-[rgba(99,103,146,0.8)] from-[rgba(204,211,234,0.25)] to-[rgba(132,139,161,0.125)] rounded-[12px] w-full max-w-[403px] lg:w-[403px] min-h-[142px] flex flex-col shadow-[0px_2px_4px_0px_rgba(114,116,146,0.3)]">
-              <div className="flex flex-col gap-[30px] items-center justify-center flex-1 px-[20px] py-[5px] text-[#0b1737] text-center">
-                <h3 className="font-sans font-medium leading-[1.1] text-[33px] tracking-[-0.66px] w-full pt-[5px]" style={{ fontVariationSettings: "'wdth' 100" }}>
-                  {services[4]?.title || defaultServices[4].title}
-                </h3>
-                <p className="font-sans font-normal leading-[1.1] text-[20px] tracking-[-0.4px] w-full whitespace-pre-line pb-[5px]" style={{ fontVariationSettings: "'wdth' 100" }}>
-                  {services[4]?.description || defaultServices[4].description}
-                </p>
-              </div>
-            </div>
+            ))}
 
             {/* Explore All Services Card - Responsive with equal height */}
             <Link 

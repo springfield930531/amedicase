@@ -1,5 +1,6 @@
 import svgPaths from "@/lib/imports/svg-znty2oevvb";
 import Image from "next/image";
+import Link from "next/link";
 import { getMediaUrl } from "@/lib/strapi-home";
 import type { PageHeroSection, StrapiMedia } from "@/lib/page-types";
 
@@ -19,10 +20,13 @@ export function HeroSection({ data }: HeroSectionProps) {
     data?.subtitle ||
     "Delegate your billing, intake, and back-office operations to U.S.-trained healthcare professionals, so you can focus on patient care.";
   const ctaLabel = data?.primaryCta?.label || "Start building your team today";
+  const ctaUrl = data?.primaryCta?.url || "/contact";
   const mobileImage = getMediaUrl(data?.mobileBackground) || "/images/Hero photo Mobile.jpg";
   const desktopImage = getMediaUrl(data?.desktopBackground) || "/images/hero-desktop-bg.jpg";
   const logoImage = getMediaUrl(data?.logoImage) || "/images/amedicase-logo-desktop.svg";
   const isRemoteUrl = (url: string) => /^https?:\/\//i.test(url);
+  const isExternal = (url: string) => /^https?:\/\//i.test(url) || /^mailto:/i.test(url);
+  const ctaExternal = data?.primaryCta?.isExternal || isExternal(ctaUrl);
 
   return (
     <section className="relative bg-[#f1f5ff] pt-20 lg:pt-[100px] pb-[40px] md:pb-16 xl:pb-20 w-full">
@@ -75,11 +79,16 @@ export function HeroSection({ data }: HeroSectionProps) {
             </div>
 
                 {/* HeroButton */}
-                <button className="hero-button backdrop-blur-[3.777px] backdrop-filter bg-gradient-to-b border border-[rgba(219,220,241,0.8)] border-solid flex from-[rgba(211,216,232,0.8)] items-center justify-center p-[10px] rounded-[8px] to-[rgba(175,180,196,0.6)] w-full hover:opacity-90 transition-opacity cursor-pointer mt-[40px]">
+                <Link
+                  href={ctaUrl}
+                  target={ctaExternal ? "_blank" : undefined}
+                  rel={ctaExternal ? "noreferrer" : undefined}
+                  className="hero-button backdrop-blur-[3.777px] backdrop-filter bg-gradient-to-b border border-[rgba(219,220,241,0.8)] border-solid flex from-[rgba(211,216,232,0.8)] items-center justify-center p-[10px] rounded-[8px] to-[rgba(175,180,196,0.6)] w-full hover:opacity-90 transition-opacity cursor-pointer mt-[40px]"
+                >
                   <p className="capitalize font-sans font-semibold leading-[1.1] text-[#f1f5ff] text-[18px] text-center tracking-[-0.36px]" style={{ fontVariationSettings: "'wdth' 100" }}>
                 {ctaLabel}
               </p>
-            </button>
+            </Link>
               </div>
           </div>
         </div>
@@ -140,13 +149,16 @@ export function HeroSection({ data }: HeroSectionProps) {
                 </div>
 
                 {/* CTA Button - Exact Figma: p-[20px], no fixed width - Responsive */}
-            <button 
+            <Link 
+                  href={ctaUrl}
+                  target={ctaExternal ? "_blank" : undefined}
+                  rel={ctaExternal ? "noreferrer" : undefined}
                   className="backdrop-blur-[3.777px] backdrop-filter bg-gradient-to-b border border-[rgba(219,220,241,0.8)] from-[rgba(211,216,232,0.8)] to-[rgba(175,180,196,0.6)] rounded-[8px] p-4 md:p-6 xl:p-[20px] hover:opacity-90 transition-opacity cursor-pointer"
             >
                   <p className="capitalize font-sans font-semibold leading-[1.1] text-[#f1f5ff] text-[clamp(20px,3vw,33px)] text-center tracking-[-0.66px]" style={{ fontVariationSettings: "'wdth' 100" }}>
               {ctaLabel}
                   </p>
-            </button>
+            </Link>
               </div>
           </div>
         </div>

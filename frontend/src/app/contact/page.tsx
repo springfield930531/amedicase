@@ -180,23 +180,28 @@ export default async function ContactPage() {
               {/* Hero Image Background */}
               <div className="absolute inset-0 overflow-hidden rounded-xl">
                 <div className="absolute inset-0 overflow-hidden">
-                  <Image
-                    src={heroData.backgroundImage}
-                    alt="Healthcare professionals working"
-                    fill
-                    sizes="100vw"
-                    className="absolute inset-0 w-full h-full object-cover"
+                  <div
+                    className="absolute"
                     style={{
                       height: '113.88%',
                       left: '-63.06%',
                       top: '-13.88%',
                       width: '266.63%',
                       maxWidth: 'none',
-                      objectFit: 'cover',
-                      objectPosition: 'center center'
                     }}
-                    unoptimized={isRemoteUrl(heroData.backgroundImage)}
-                  />
+                  >
+                    <div className="relative w-full h-full">
+                      <Image
+                        src={heroData.backgroundImage}
+                        alt="Healthcare professionals working"
+                        fill
+                        sizes="100vw"
+                        className="absolute inset-0 w-full h-full object-cover"
+                        style={{ objectFit: 'cover', objectPosition: 'center center' }}
+                        unoptimized={isRemoteUrl(heroData.backgroundImage)}
+                      />
+                    </div>
+                  </div>
                 </div>
                 <div className="absolute bg-[rgba(240,242,248,0.2)] inset-0" />
               </div>

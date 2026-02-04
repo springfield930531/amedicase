@@ -291,23 +291,28 @@ export default async function ServicesPage() {
               {/* Hero Image Background */}
               <div className="absolute inset-0 overflow-hidden rounded-xl">
                 <div className="absolute inset-0 overflow-hidden">
-                  <Image
-                    src={getUrl((hero && 'backgroundImage' in hero ? hero.backgroundImage : undefined), "/images/services/hero-services.jpg")}
-                    alt={getAlt((hero && 'backgroundImage' in hero ? hero.backgroundImage : undefined), "Healthcare professionals working")}
-                    fill
-                    sizes="100vw"
-                    className="absolute inset-0 w-full h-full object-cover"
+                  <div
+                    className="absolute"
                     style={{
                       height: '113.88%',
                       left: '-63.06%',
                       top: '-13.88%',
                       width: '266.63%',
                       maxWidth: 'none',
-                      objectFit: 'cover',
-                      objectPosition: 'center center'
                     }}
-                    unoptimized={isRemoteUrl(getUrl((hero && 'backgroundImage' in hero ? hero.backgroundImage : undefined), "/images/services/hero-services.jpg"))}
-                  />
+                  >
+                    <div className="relative w-full h-full">
+                      <Image
+                        src={getUrl((hero && 'backgroundImage' in hero ? hero.backgroundImage : undefined), "/images/services/hero-services.jpg")}
+                        alt={getAlt((hero && 'backgroundImage' in hero ? hero.backgroundImage : undefined), "Healthcare professionals working")}
+                        fill
+                        sizes="100vw"
+                        className="absolute inset-0 w-full h-full object-cover"
+                        style={{ objectFit: 'cover', objectPosition: 'center center' }}
+                        unoptimized={isRemoteUrl(getUrl((hero && 'backgroundImage' in hero ? hero.backgroundImage : undefined), "/images/services/hero-services.jpg"))}
+                      />
+                    </div>
+                  </div>
                 </div>
                 <div className="absolute bg-[rgba(240,242,248,0.2)] inset-0" />
               </div>
@@ -461,22 +466,28 @@ export default async function ServicesPage() {
               <div className="backdrop-blur-[7px] bg-gradient-to-b from-[rgba(204,211,234,0.25)] to-[rgba(80,86,104,0.125)] rounded-[12px] border border-[rgba(99,103,146,0.8)]">
                 <div className="flex gap-[20px] items-start pl-[20px] pr-[37px] py-[20px] overflow-hidden">
                   <div className="h-[150px] w-[121.5px] flex-shrink-0 overflow-hidden rounded-[12px] relative">
-                    <Image
-                      src={getUrl(getCardImage(pillarCard1), "/images/services/billing-finance-new.jpg")}
-                      alt={getAlt(getCardImage(pillarCard1), "Billing & Finance")}
-                      fill
-                      sizes="122px"
-                      className="absolute inset-0 w-full h-full object-cover"
+                    <div
+                      className="absolute"
                       style={{
                         height: toPercent(getCardImageStyle(pillarCard1)?.heightPercent) || "121.49%",
                         left: toPercent(getCardImageStyle(pillarCard1)?.leftPercent) || "0%",
                         top: toPercent(getCardImageStyle(pillarCard1)?.topPercent) || "-17.42%",
                         width: toPercent(getCardImageStyle(pillarCard1)?.widthPercent) || "100%",
                       }}
-                      unoptimized={isRemoteUrl(
-                        getUrl(getCardImage(pillarCard1), "/images/services/billing-finance-new.jpg")
-                      )}
-                    />
+                    >
+                      <div className="relative w-full h-full">
+                        <Image
+                          src={getUrl(getCardImage(pillarCard1), "/images/services/billing-finance-new.jpg")}
+                          alt={getAlt(getCardImage(pillarCard1), "Billing & Finance")}
+                          fill
+                          sizes="122px"
+                          className="absolute inset-0 w-full h-full object-cover"
+                          unoptimized={isRemoteUrl(
+                            getUrl(getCardImage(pillarCard1), "/images/services/billing-finance-new.jpg")
+                          )}
+                        />
+                      </div>
+                    </div>
                   </div>
                   
                   <div className="flex flex-1 flex-col gap-[32px] items-start min-w-0">
@@ -525,22 +536,28 @@ export default async function ServicesPage() {
                 <div className="flex gap-[20px] items-start pl-[20px] pr-[33px] py-[20px] overflow-hidden">
                   <div className="h-[150px] w-[120px] flex-shrink-0 overflow-hidden rounded-[12px] relative">
                     <div className="absolute inset-0 overflow-hidden pointer-events-none rounded-[12px]">
-                      <Image
-                        src={getUrl(getCardImage(pillarCard2), "/images/services/patient-intake-correct.jpg")}
-                        alt={getAlt(getCardImage(pillarCard2), "Patient Intake & Support")}
-                        fill
-                        sizes="120px"
-                        className="absolute h-full max-w-none"
+                      <div
+                        className="absolute"
                         style={{
                           left: toPercent(getCardImageStyle(pillarCard2)?.leftPercent) || "-71.67%",
                           width: toPercent(getCardImageStyle(pillarCard2)?.widthPercent) || "237.04%",
                           top: toPercent(getCardImageStyle(pillarCard2)?.topPercent) || "0%",
                           height: toPercent(getCardImageStyle(pillarCard2)?.heightPercent) || "100%",
                         }}
-                        unoptimized={isRemoteUrl(
-                          getUrl(getCardImage(pillarCard2), "/images/services/patient-intake-correct.jpg")
-                        )}
-                      />
+                      >
+                        <div className="relative w-full h-full">
+                          <Image
+                            src={getUrl(getCardImage(pillarCard2), "/images/services/patient-intake-correct.jpg")}
+                            alt={getAlt(getCardImage(pillarCard2), "Patient Intake & Support")}
+                            fill
+                            sizes="120px"
+                            className="absolute h-full max-w-none"
+                            unoptimized={isRemoteUrl(
+                              getUrl(getCardImage(pillarCard2), "/images/services/patient-intake-correct.jpg")
+                            )}
+                          />
+                        </div>
+                      </div>
                     </div>
                   </div>
                   
@@ -590,22 +607,28 @@ export default async function ServicesPage() {
                 <div className="flex gap-[20px] items-start pl-[20px] pr-[22px] py-[20px] overflow-hidden">
                   <div className="h-[150px] w-[120px] flex-shrink-0 overflow-hidden rounded-[12px] relative">
                     <div className="absolute inset-0 overflow-hidden pointer-events-none rounded-[12px]">
-                      <Image
-                        src={getUrl(getCardImage(pillarCard3), "/images/services/operations-admin-correct.jpg")}
-                        alt={getAlt(getCardImage(pillarCard3), "Operations & Admin Support")}
-                        fill
-                        sizes="120px"
-                        className="absolute h-full max-w-none"
+                      <div
+                        className="absolute"
                         style={{
                           left: toPercent(getCardImageStyle(pillarCard3)?.leftPercent) || "-26.67%",
                           width: toPercent(getCardImageStyle(pillarCard3)?.widthPercent) || "187.27%",
                           top: toPercent(getCardImageStyle(pillarCard3)?.topPercent) || "0%",
                           height: toPercent(getCardImageStyle(pillarCard3)?.heightPercent) || "100%",
                         }}
-                        unoptimized={isRemoteUrl(
-                          getUrl(getCardImage(pillarCard3), "/images/services/operations-admin-correct.jpg")
-                        )}
-                      />
+                      >
+                        <div className="relative w-full h-full">
+                          <Image
+                            src={getUrl(getCardImage(pillarCard3), "/images/services/operations-admin-correct.jpg")}
+                            alt={getAlt(getCardImage(pillarCard3), "Operations & Admin Support")}
+                            fill
+                            sizes="120px"
+                            className="absolute h-full max-w-none"
+                            unoptimized={isRemoteUrl(
+                              getUrl(getCardImage(pillarCard3), "/images/services/operations-admin-correct.jpg")
+                            )}
+                          />
+                        </div>
+                      </div>
                     </div>
                   </div>
                   
@@ -656,22 +679,28 @@ export default async function ServicesPage() {
               <div className="backdrop-blur-[7px] bg-gradient-to-b from-[rgba(204,211,234,0.25)] to-[rgba(80,86,104,0.125)] rounded-[12px] border border-[rgba(99,103,146,0.8)]">
                 <div className="flex gap-[20px] items-start pl-[20px] pr-[10px] py-[20px] overflow-hidden">
                   <div className="h-[150px] w-[120px] flex-shrink-0 overflow-hidden rounded-[12px] relative">
-                    <Image
-                      src={getUrl(getCardImage(pillarCard4), "/images/services/digital-growth-new.jpg")}
-                      alt={getAlt(getCardImage(pillarCard4), "Digital Presence & Growth")}
-                      fill
-                      sizes="120px"
-                      className="absolute inset-0 w-full h-full object-cover"
+                    <div
+                      className="absolute"
                       style={{
                         height: toPercent(getCardImageStyle(pillarCard4)?.heightPercent) || "119.99%",
                         left: toPercent(getCardImageStyle(pillarCard4)?.leftPercent) || "0%",
                         top: toPercent(getCardImageStyle(pillarCard4)?.topPercent) || "-6%",
                         width: toPercent(getCardImageStyle(pillarCard4)?.widthPercent) || "100%",
                       }}
-                      unoptimized={isRemoteUrl(
-                        getUrl(getCardImage(pillarCard4), "/images/services/digital-growth-new.jpg")
-                      )}
-                    />
+                    >
+                      <div className="relative w-full h-full">
+                        <Image
+                          src={getUrl(getCardImage(pillarCard4), "/images/services/digital-growth-new.jpg")}
+                          alt={getAlt(getCardImage(pillarCard4), "Digital Presence & Growth")}
+                          fill
+                          sizes="120px"
+                          className="absolute inset-0 w-full h-full object-cover"
+                          unoptimized={isRemoteUrl(
+                            getUrl(getCardImage(pillarCard4), "/images/services/digital-growth-new.jpg")
+                          )}
+                        />
+                      </div>
+                    </div>
                   </div>
                   
                   <div className="flex flex-col gap-[32px] items-start w-[150px] lg:w-auto">
@@ -726,20 +755,26 @@ export default async function ServicesPage() {
                   >
                     <div className="flex gap-[20px] items-start pl-[20px] pr-[37px] py-[20px] overflow-hidden">
                       <div className="h-[150px] w-[121.5px] flex-shrink-0 overflow-hidden rounded-[12px] relative">
-                        <Image
-                          src={getUrl(getCardImage(card))}
-                          alt={getAlt(getCardImage(card), card.title || "Service")}
-                          fill
-                          sizes="122px"
-                          className="absolute inset-0 w-full h-full object-cover"
+                        <div
+                          className="absolute"
                           style={{
-                            height: toPercent(getCardImageStyle(card)?.heightPercent),
-                            left: toPercent(getCardImageStyle(card)?.leftPercent),
-                            top: toPercent(getCardImageStyle(card)?.topPercent),
-                            width: toPercent(getCardImageStyle(card)?.widthPercent),
+                            height: toPercent(getCardImageStyle(card)?.heightPercent) || "100%",
+                            left: toPercent(getCardImageStyle(card)?.leftPercent) || "0%",
+                            top: toPercent(getCardImageStyle(card)?.topPercent) || "0%",
+                            width: toPercent(getCardImageStyle(card)?.widthPercent) || "100%",
                           }}
-                          unoptimized={isRemoteUrl(getUrl(getCardImage(card)))}
-                        />
+                        >
+                          <div className="relative w-full h-full">
+                            <Image
+                              src={getUrl(getCardImage(card))}
+                              alt={getAlt(getCardImage(card), card.title || "Service")}
+                              fill
+                              sizes="122px"
+                              className="absolute inset-0 w-full h-full object-cover"
+                              unoptimized={isRemoteUrl(getUrl(getCardImage(card)))}
+                            />
+                          </div>
+                        </div>
                       </div>
 
                       <div className="flex flex-1 flex-col gap-[32px] items-start min-w-0">

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { SectionTitleWithSubtitle } from "@/components/shared/SectionTitleWithSubtitle";
 import { getMediaUrl } from "@/lib/strapi-home";
 import type { AboutTeamSection, CtaData, StrapiMedia } from "@/lib/page-types";
@@ -55,7 +56,10 @@ export function TeamSection({ data }: TeamSectionProps) {
   const supportGraphic =
     getMediaUrl(data?.supportGraphic) || "/images/team-vector-logo.svg";
   const ctaLabel = data?.cta?.label || "Learn More About Us";
+  const ctaUrl = data?.cta?.url || "/about";
   const isRemoteUrl = (url: string) => /^https?:\/\//i.test(url);
+  const isExternal = (url: string) => /^https?:\/\//i.test(url) || /^mailto:/i.test(url);
+  const ctaExternal = data?.cta?.isExternal || isExternal(ctaUrl);
 
   const [currentIndex, setCurrentIndex] = useState(0);
 
@@ -193,11 +197,17 @@ export function TeamSection({ data }: TeamSectionProps) {
 
           {/* CTA Button - Standardized padding */}
           <div className="mt-[20px] md:mt-12">
-            <button className="backdrop-blur-[3.777px] backdrop-filter bg-gradient-to-b border-[0.874px] border-[rgba(50,59,159,0.8)] border-solid box-border content-stretch flex from-[rgba(45,78,174,0.64)] gap-[5.396px] items-center justify-center p-[20px] relative rounded-[8px] shrink-0 to-[rgba(34,62,140,0.48)] w-full hover:opacity-90 transition-opacity" style={{ fontVariationSettings: "'wdth' 100" }}>
+            <Link
+              href={ctaUrl}
+              target={ctaExternal ? "_blank" : undefined}
+              rel={ctaExternal ? "noreferrer" : undefined}
+              className="backdrop-blur-[3.777px] backdrop-filter bg-gradient-to-b border-[0.874px] border-[rgba(50,59,159,0.8)] border-solid box-border content-stretch flex from-[rgba(45,78,174,0.64)] gap-[5.396px] items-center justify-center p-[20px] relative rounded-[8px] shrink-0 to-[rgba(34,62,140,0.48)] w-full hover:opacity-90 transition-opacity"
+              style={{ fontVariationSettings: "'wdth' 100" }}
+            >
               <p className="font-sans font-semibold leading-[1.1] relative shrink-0 text-[#f1f5ff] text-[clamp(18px,2.5vw,20px)] tracking-[-0.4px]" style={{ fontVariationSettings: "'wdth' 100" }}>
                 {ctaLabel}
               </p>
-            </button>
+            </Link>
           </div>
         </div>
 
@@ -355,11 +365,17 @@ export function TeamSection({ data }: TeamSectionProps) {
 
           {/* CTA Button - Centered */}
           <div className="flex justify-center">
-            <button className="backdrop-blur-[3.777px] backdrop-filter bg-gradient-to-b border-[0.874px] border-[rgba(50,59,159,0.8)] border-solid box-border flex from-[rgba(45,78,174,0.64)] gap-[5.396px] items-center justify-center p-[20px] rounded-[12px] to-[rgba(34,62,140,0.48)] w-[420px] hover:opacity-90 transition-opacity" style={{ fontVariationSettings: "'wdth' 100" }}>
+            <Link
+              href={ctaUrl}
+              target={ctaExternal ? "_blank" : undefined}
+              rel={ctaExternal ? "noreferrer" : undefined}
+              className="backdrop-blur-[3.777px] backdrop-filter bg-gradient-to-b border-[0.874px] border-[rgba(50,59,159,0.8)] border-solid box-border flex from-[rgba(45,78,174,0.64)] gap-[5.396px] items-center justify-center p-[20px] rounded-[12px] to-[rgba(34,62,140,0.48)] w-[420px] hover:opacity-90 transition-opacity"
+              style={{ fontVariationSettings: "'wdth' 100" }}
+            >
               <p className="font-sans font-semibold leading-[1.1] relative shrink-0 text-[#f1f5ff] text-[33px] tracking-[-0.66px]" style={{ fontVariationSettings: "'wdth' 100" }}>
-                Learn More About Us
+                {ctaLabel}
               </p>
-            </button>
+            </Link>
           </div>
         </div>
       </div>

@@ -1,5 +1,6 @@
 import { getMediaUrl } from "@/lib/strapi-home";
 import Image from "next/image";
+import Link from "next/link";
 import type { IconStepsSection, StrapiMedia } from "@/lib/page-types";
 
 const defaultSteps = [
@@ -40,9 +41,12 @@ export function HowItWorksSection({ data }: HowItWorksSectionProps) {
         }))
       : defaultSteps;
   const ctaLabel = data?.cta?.label || "Start Your Free Assessment";
+  const ctaUrl = data?.cta?.url || "/contact";
   const illustration =
     getMediaUrl(data?.illustration) || "/images/how-it-works-image.jpg";
   const isRemoteUrl = (url: string) => /^https?:\/\//i.test(url);
+  const isExternal = (url: string) => /^https?:\/\//i.test(url) || /^mailto:/i.test(url);
+  const ctaExternal = data?.cta?.isExternal || isExternal(ctaUrl);
 
   return (
     <section className="relative bg-[#f1f5ff] w-full pt-[40px] md:pt-16 xl:pt-20 pb-[40px] md:pb-16 xl:pb-20">
@@ -93,11 +97,17 @@ export function HowItWorksSection({ data }: HowItWorksSectionProps) {
 
           {/* CTA Button - Standardized padding */}
           <div className="mt-[20px] md:mt-12">
-            <button className="backdrop-blur-[3.777px] backdrop-filter bg-gradient-to-b border border-[rgba(209,51,69,0.8)] border-solid box-border flex from-[rgba(205,27,48,0.24)] gap-[5.396px] items-center justify-center p-[20px] relative rounded-[8px] to-[rgba(215,45,64,0.16)] w-full hover:opacity-90 transition-opacity" style={{ fontVariationSettings: "'wdth' 100" }}>
+            <Link
+              href={ctaUrl}
+              target={ctaExternal ? "_blank" : undefined}
+              rel={ctaExternal ? "noreferrer" : undefined}
+              className="backdrop-blur-[3.777px] backdrop-filter bg-gradient-to-b border border-[rgba(209,51,69,0.8)] border-solid box-border flex from-[rgba(205,27,48,0.24)] gap-[5.396px] items-center justify-center p-[20px] relative rounded-[8px] to-[rgba(215,45,64,0.16)] w-full hover:opacity-90 transition-opacity"
+              style={{ fontVariationSettings: "'wdth' 100" }}
+            >
               <p className="font-sans font-semibold leading-[1.1] relative shrink-0 text-[#d4283c] text-[clamp(18px,2.5vw,20px)] text-center tracking-[-0.4px]" style={{ fontVariationSettings: "'wdth' 100" }}>
                 {ctaLabel}
               </p>
-            </button>
+            </Link>
           </div>
         </div>
       </div>
@@ -146,11 +156,17 @@ export function HowItWorksSection({ data }: HowItWorksSectionProps) {
 
             {/* CTA Button - 15% larger */}
             <div className="w-full mt-0">
-              <button className="backdrop-blur-[3.777px] backdrop-filter bg-gradient-to-b border border-[rgba(209,51,69,0.8)] border-solid box-border flex from-[rgba(205,27,48,0.24)] gap-[6px] items-center justify-center px-[23px] py-[20px] relative rounded-[14px] shrink-0 to-[rgba(215,45,64,0.16)] w-full hover:opacity-90 transition-opacity" style={{ fontVariationSettings: "'wdth' 100" }}>
+              <Link
+                href={ctaUrl}
+                target={ctaExternal ? "_blank" : undefined}
+                rel={ctaExternal ? "noreferrer" : undefined}
+                className="backdrop-blur-[3.777px] backdrop-filter bg-gradient-to-b border border-[rgba(209,51,69,0.8)] border-solid box-border flex from-[rgba(205,27,48,0.24)] gap-[6px] items-center justify-center px-[23px] py-[20px] relative rounded-[14px] shrink-0 to-[rgba(215,45,64,0.16)] w-full hover:opacity-90 transition-opacity"
+                style={{ fontVariationSettings: "'wdth' 100" }}
+              >
                 <p className="font-sans font-medium leading-[1.1] relative shrink-0 text-[#d4283c] text-[26px] text-center tracking-[-0.52px]" style={{ fontVariationSettings: "'wdth' 100" }}>
                   {ctaLabel}
                 </p>
-              </button>
+              </Link>
             </div>
           </div>
 

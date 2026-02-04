@@ -9,18 +9,33 @@ import { TeamSection } from "@/components/sections/TeamSection";
 import { ContactSection } from "@/components/sections/ContactSection";
 import { Footer } from "@/components/sections/Footer";
 import { fetchHomePage } from "@/lib/strapi-home";
-import type { PageSection } from "@/lib/page-types";
+type HomeSection = {
+  __component?: string;
+  id?: number;
+  [key: string]: unknown;
+};
+
+type HeroSectionData = Parameters<typeof HeroSection>[0]["data"];
+type ServicesSectionData = Parameters<typeof ServicesSection>[0]["data"];
+type ImageSectionsData = Parameters<typeof ImageSections>[0]["data"];
+type WhyChooseSectionData = Parameters<typeof WhyChooseSection>[0]["data"];
+type HowItWorksSectionData = Parameters<typeof HowItWorksSection>[0]["data"];
+type TeamSectionData = Parameters<typeof TeamSection>[0]["data"];
+type ContactSectionData = Parameters<typeof ContactSection>[0]["data"];
 
 export default async function Home() {
   const homePage = await fetchHomePage();
-  const sections = homePage?.contentSections || [];
-  const hero = sections.find((section: PageSection) => (section as any).__component === "sections.hero-section");
-  const services = sections.find((section: PageSection) => (section as any).__component === "sections.service-grid");
-  const imageHighlight = sections.find((section: PageSection) => (section as any).__component === "sections.image-highlight");
-  const whyChoose = sections.find((section: PageSection) => (section as any).__component === "sections.why-choose");
-  const processSteps = sections.find((section: PageSection) => (section as any).__component === "sections.process-steps");
-  const teamShowcase = sections.find((section: PageSection) => (section as any).__component === "sections.team-showcase");
-  const contactBlock = sections.find((section: PageSection) => (section as any).__component === "sections.contact-block");
+  const sections = (homePage?.contentSections || []) as HomeSection[];
+  const findSection = <T,>(component: string) =>
+    sections.find((section) => section.__component === component) as T | undefined;
+
+  const hero = findSection<HeroSectionData>("sections.hero-section");
+  const services = findSection<ServicesSectionData>("sections.service-grid");
+  const imageHighlight = findSection<ImageSectionsData>("sections.image-highlight");
+  const whyChoose = findSection<WhyChooseSectionData>("sections.why-choose");
+  const processSteps = findSection<HowItWorksSectionData>("sections.process-steps");
+  const teamShowcase = findSection<TeamSectionData>("sections.team-showcase");
+  const contactBlock = findSection<ContactSectionData>("sections.contact-block");
 
   return (
     <div className="min-h-screen bg-[#f1f5ff] relative overflow-x-hidden">

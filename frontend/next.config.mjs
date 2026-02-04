@@ -24,6 +24,8 @@ const nextConfig = {
       { protocol: 'http', hostname: '127.0.0.1' },
       { protocol: 'http', hostname: '149.102.141.203' },
       { protocol: 'https', hostname: 'dev.amedicase.com' },
+      { protocol: 'https', hostname: 'amedicase.com' },
+      { protocol: 'https', hostname: 'www.amedicase.com' },
     ],
   },
 };

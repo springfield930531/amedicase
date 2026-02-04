@@ -11,7 +11,12 @@ const getStrapiUrl = () => {
 };
 
 const getPublicStrapiUrl = () => {
-  return process.env.NEXT_PUBLIC_STRAPI_URL || process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:1337';
+  const explicitPublic =
+    process.env.NEXT_PUBLIC_STRAPI_URL || process.env.NEXT_PUBLIC_SITE_URL;
+  if (typeof window !== 'undefined') {
+    return explicitPublic || window.location.origin;
+  }
+  return explicitPublic || 'http://localhost:1337';
 };
 
 export interface ContactFormData {
@@ -160,6 +165,14 @@ export async function getPageBySlug(slug: string) {
     const params = new URLSearchParams();
     params.set("filters[slug][$eq]", slug);
     params.set("populate[sections][populate]", "*");
+    params.set("populate[sections][on][sections.services-page-hero][populate]", "*");
+    params.set("populate[sections][on][sections.services-page-pillars][populate][cards][populate]", "*");
+    params.set("populate[sections][on][sections.card-grid][populate][cards][populate]", "*");
+    params.set("populate[sections][on][sections.icon-steps][populate][steps][populate]", "*");
+    params.set("populate[sections][on][sections.team-showcase][populate][members][populate]", "*");
+    params.set("populate[sections][on][sections.about-team][populate][teamMembers][populate]", "*");
+    params.set("populate[sections][on][sections.service-grid][populate][services][populate]", "*");
+    params.set("populate[sections][on][sections.testimonials][populate][items][populate]", "*");
     params.set("populate[template][populate]", "*");
     const response = await fetch(`${baseUrl}/api/pages?${params.toString()}`, {
       cache: "no-store",
