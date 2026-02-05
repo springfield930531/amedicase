@@ -12,6 +12,10 @@ RUN npm run build
 FROM node:20-alpine AS runner
 WORKDIR /app
 ENV NODE_ENV=production
+# Next standalone server defaults `hostname` to process.env.HOSTNAME, which is set by Docker
+# to the container id. Bind explicitly to 0.0.0.0 so Traefik can reach the container.
+ENV HOSTNAME=0.0.0.0
+ENV PORT=3000
 
 # Use Next.js "standalone" output to avoid copying full node_modules (faster + smaller image).
 # next.config.mjs already sets `output: 'standalone'`.
