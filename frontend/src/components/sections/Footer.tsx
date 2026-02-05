@@ -3,6 +3,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { getSiteSettings } from "@/lib/strapi";
 import { getMediaUrl } from "@/lib/strapi-home";
+import { isExternalHref, normalizeHref } from "@/lib/href";
 import type { NavItem, SocialLink } from "@/lib/site-settings-types";
 
 const fallbackNavigation: NavItem[] = [
@@ -33,8 +34,6 @@ const fallbackSocialLinks: SocialLink[] = [
 ];
 
 const fallbackCopyright = "© Copyright 2025 amedicase. All Rights Reserved.";
-
-const isExternal = (url?: string) => /^https?:\/\//i.test(url || "") || /^mailto:/i.test(url || "");
 
 const resolveLinks = (links?: NavItem[]) => (links && links.length ? links : fallbackNavigation);
 const resolveColumns = (columns?: Array<{ links?: NavItem[] }>) => (columns && columns.length ? columns : fallbackColumns);
@@ -74,8 +73,11 @@ export async function Footer() {
               <nav className="flex flex-col gap-[20px]">
                 <ul className="flex flex-col gap-[20px] list-none m-0 p-0">
                   {navigation.map((item, index) => {
-                    const href = item.url || "#";
-                    const external = item.isExternal || isExternal(href);
+                    const href = normalizeHref(item.url) || "#";
+                    const external =
+                      typeof item.isExternal === "boolean"
+                        ? item.isExternal
+                        : isExternalHref(href);
                     return (
                       <li key={`${item.label || "nav"}-${index}`}>
                         <Link
@@ -122,9 +124,9 @@ export async function Footer() {
                 {/* Social Icons - Only icons, no text */}
                 <div className="flex items-center gap-[8px]">
                   {socialLinks.map((link, index) => {
-                    const href = link.url || "#";
+                    const href = normalizeHref(link.url) || "#";
                     const iconUrl = getMediaUrl(link.icon) || getFallbackSocialIcon(link.platform);
-                    const external = isExternal(href);
+                    const external = isExternalHref(href);
                     const iconIsRemote = /^https?:\/\//i.test(iconUrl);
                     return (
                       <a
@@ -154,8 +156,11 @@ export async function Footer() {
           <nav className="flex flex-wrap gap-[20px] items-center justify-center mt-[15px]">
             <ul className="flex flex-wrap gap-[20px] items-center justify-center list-none m-0 p-0">
               {legalLinks.map((item, index) => {
-                const href = item.url || "#";
-                const external = item.isExternal || isExternal(href);
+                const href = normalizeHref(item.url) || "#";
+                const external =
+                  typeof item.isExternal === "boolean"
+                    ? item.isExternal
+                    : isExternalHref(href);
                 return (
                   <li key={`${item.label || "legal"}-${index}`}>
                     <a
@@ -197,8 +202,11 @@ export async function Footer() {
                 <div key={`footer-column-${columnIndex}`} className="flex flex-col gap-[60px] items-start justify-center">
                   {primary ? (
                     (() => {
-                      const href = primary.url || "#";
-                      const external = primary.isExternal || isExternal(href);
+                      const href = normalizeHref(primary.url) || "#";
+                      const external =
+                        typeof primary.isExternal === "boolean"
+                          ? primary.isExternal
+                          : isExternalHref(href);
                       return (
                         <Link
                           href={href}
@@ -214,8 +222,11 @@ export async function Footer() {
                   ) : null}
                   <div className="flex flex-col gap-[60px] items-start justify-center">
                     {secondary.map((link, linkIndex) => {
-                      const href = link.url || "#";
-                      const external = link.isExternal || isExternal(href);
+                      const href = normalizeHref(link.url) || "#";
+                      const external =
+                        typeof link.isExternal === "boolean"
+                          ? link.isExternal
+                          : isExternalHref(href);
                       return (
                         <Link
                           key={`${link.label || "link"}-${linkIndex}`}
@@ -269,8 +280,11 @@ export async function Footer() {
             {/* Policy Links */}
             <div className="flex flex-wrap gap-[60px] items-center justify-center">
               {legalLinks.map((item, index) => {
-                const href = item.url || "#";
-                const external = item.isExternal || isExternal(href);
+                const href = normalizeHref(item.url) || "#";
+                const external =
+                  typeof item.isExternal === "boolean"
+                    ? item.isExternal
+                    : isExternalHref(href);
                 return (
                   <a
                     key={`${item.label || "legal"}-${index}`}

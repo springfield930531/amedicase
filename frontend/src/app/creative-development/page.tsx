@@ -8,6 +8,7 @@ import { ContentUnavailable } from "@/components/shared/ContentUnavailable";
 import Image from "next/image";
 import { getPageBySlugDynamic } from "@/lib/strapi";
 import { getMediaUrl } from "@/lib/strapi-home";
+import { normalizeHref } from "@/lib/href";
 import type {
   CardGridSection,
   ContactBlockSection,
@@ -258,7 +259,7 @@ export default async function CreativeDevelopmentPage() {
                 </div>
                 <div className="flex flex-col gap-[20px] items-center">
                   <a 
-                    href={heroCta?.url || "/#contact"}
+                    href={normalizeHref(heroCta?.url) || "/#contact"}
                     className="backdrop-blur-[7px] backdrop-filter bg-gradient-to-b border border-[rgba(50,59,159,0.8)] border-solid from-[rgba(45,78,174,0.64)] items-center justify-center p-[16px] rounded-[8px] shadow-[0px_1px_4px_0px_rgba(191,192,215,0.3)] to-[rgba(34,62,140,0.48)] w-full hover:opacity-90 transition-opacity flex"
                     style={{ fontVariationSettings: "'wdth' 100" }}
                   >
@@ -325,7 +326,7 @@ export default async function CreativeDevelopmentPage() {
                 
                 <div className="flex flex-col gap-[20px] items-start w-[419px]">
                   <a 
-                    href={heroCtaDesktop?.url || heroCta?.url || "/#contact"}
+                    href={normalizeHref(heroCtaDesktop?.url || heroCta?.url) || "/#contact"}
                     className="backdrop-blur-[3.777px] backdrop-filter bg-gradient-to-b border border-[rgba(50,59,159,0.8)] border-solid from-[rgba(45,78,174,0.64)] items-center justify-center p-[20px] relative rounded-[8px] to-[rgba(34,62,140,0.48)] w-full hover:opacity-90 transition-opacity flex"
                     style={{ fontVariationSettings: "'wdth' 100" }}
                   >
@@ -791,7 +792,7 @@ export default async function CreativeDevelopmentPage() {
 
               {/* Contact Us Button */}
               <a
-                href={processCta?.url || "/#contact"}
+                href={normalizeHref(processCta?.url) || "/#contact"}
                 className="backdrop-blur-[3.777px] backdrop-filter bg-gradient-to-b border border-[rgba(209,51,69,0.8)] border-solid flex from-[rgba(205,27,48,0.24)] items-center justify-center px-[60px] py-[20px] relative rounded-[12px] shadow-[0px_1px_4px_0px_rgba(87,18,23,0.3)] to-[rgba(215,45,64,0.16)] hover:opacity-90 transition-opacity"
               >
                 <p className="font-sans font-semibold leading-[1.1] text-[#d4283c] text-[clamp(24px,3vw,33px)] text-center tracking-[-0.66px]" style={{ fontVariationSettings: "'wdth' 100" }}>

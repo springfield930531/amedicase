@@ -2,6 +2,7 @@ import svgPaths from "@/lib/imports/svg-znty2oevvb";
 import Image from "next/image";
 import Link from "next/link";
 import { getMediaUrl } from "@/lib/strapi-home";
+import { isExternalHref, normalizeHref } from "@/lib/href";
 import type { PageHeroSection, StrapiMedia } from "@/lib/page-types";
 
 type HeroSectionProps = {
@@ -20,7 +21,7 @@ export function HeroSection({ data }: HeroSectionProps) {
     data?.subtitle ||
     "Delegate your billing, intake, and back-office operations to U.S.-trained healthcare professionals, so you can focus on patient care.";
   const ctaLabel = data?.primaryCta?.label || "Start building your team today";
-  const ctaUrl = data?.primaryCta?.url || "/contact";
+  const ctaUrl = normalizeHref(data?.primaryCta?.url) || "/contact";
   const mobileImage =
     getMediaUrl(data?.mobileBackground) ||
     "https://amedicase.com/uploads/Hero_photo_1_bf82099b1f.jpg";
@@ -29,8 +30,10 @@ export function HeroSection({ data }: HeroSectionProps) {
     "https://amedicase.com/uploads/1_136_f4869a430a.jpg";
   const logoImage = getMediaUrl(data?.logoImage) || "/images/amedicase-logo-desktop.svg";
   const isRemoteUrl = (url: string) => /^https?:\/\//i.test(url);
-  const isExternal = (url: string) => /^https?:\/\//i.test(url) || /^mailto:/i.test(url);
-  const ctaExternal = data?.primaryCta?.isExternal || isExternal(ctaUrl);
+  const ctaExternal =
+    typeof data?.primaryCta?.isExternal === "boolean"
+      ? data.primaryCta.isExternal
+      : isExternalHref(ctaUrl);
 
   return (
     <section className="relative bg-[#f1f5ff] pt-20 lg:pt-[100px] pb-[40px] md:pb-16 xl:pb-20 w-full">

@@ -10,6 +10,7 @@ import Image from "next/image";
 import svgPaths from "@/lib/imports/svg-ie2km5jka3";
 import { getPageBySlugDynamic } from "@/lib/strapi";
 import { getMediaUrl } from "@/lib/strapi-home";
+import { isExternalHref, normalizeHref } from "@/lib/href";
 import { DEFAULT_YOUTUBE_ID, extractYoutubeId } from "@/lib/youtube";
 import type {
   AboutHeroSection,
@@ -194,11 +195,11 @@ export default async function AboutPage() {
     primaryCta: hero?.primaryCta || fallback.hero.primaryCta,
     secondaryText: hero?.secondaryText || fallback.hero.secondaryText,
   };
-  const heroCtaUrl = heroData.primaryCta?.url || "/contact";
-  const isExternalUrl = (url?: string) => /^https?:\/\//i.test(url || "") || /^mailto:/i.test(url || "");
+  const heroCtaUrl = normalizeHref(heroData.primaryCta?.url) || "/contact";
   const heroCtaExternal =
-    (heroData.primaryCta as { isExternal?: boolean } | undefined)?.isExternal ||
-    isExternalUrl(heroCtaUrl);
+    typeof heroData.primaryCta?.isExternal === "boolean"
+      ? heroData.primaryCta.isExternal
+      : isExternalHref(heroCtaUrl);
 
   const storyData = {
     label: story?.label || fallback.story.label,
@@ -490,7 +491,7 @@ export default async function AboutPage() {
 
                     {/* Explore All Services CTA */}
                     <Link 
-                      href={missionData.cta?.url || "/services"}
+                      href={normalizeHref(missionData.cta?.url) || "/services"}
                       data-discover="true"
                       className="md:col-span-2 lg:col-span-1 backdrop-blur-[7px] backdrop-filter bg-gradient-to-b border border-[rgba(114,49,61,0.8)] border-solid from-[rgba(174,45,66,0.64)] rounded-[12px] to-[rgba(34,62,140,0.48)] p-[11px] hover:opacity-90 transition-opacity flex flex-col items-center justify-center gap-3 min-h-[120px]"
                     >
@@ -535,7 +536,7 @@ export default async function AboutPage() {
 
                   {/* Explore All Services CTA */}
                   <Link 
-                    href={missionData.cta?.url || "/services"}
+                    href={normalizeHref(missionData.cta?.url) || "/services"}
                     className="backdrop-blur-md bg-gradient-to-b from-[rgba(174,45,66,0.64)] to-[rgba(34,62,140,0.48)] rounded-xl p-6 md:p-8 lg:p-10 border border-[rgba(114,49,61,0.8)] shadow-[0px_2px_4px_0px_rgba(68,70,102,0.3)] min-h-[180px] md:min-h-[200px] lg:min-h-[220px] flex flex-col items-center justify-center text-center hover:shadow-lg transition-shadow cursor-pointer w-full"
                   >
                     <div className="flex items-center gap-3">
@@ -584,7 +585,7 @@ export default async function AboutPage() {
 
                   {/* Explore All Services CTA */}
                   <Link 
-                    href={missionData.cta?.url || "/services"}
+                    href={normalizeHref(missionData.cta?.url) || "/services"}
                     className="backdrop-blur-[10px] backdrop-filter bg-gradient-to-b border border-[rgba(114,49,61,0.8)] from-[rgba(174,45,66,0.64)] to-[rgba(34,62,140,0.48)] rounded-[12px] w-full max-w-[403px] lg:w-[463px] min-h-[142px] flex flex-col items-center justify-center gap-[20px] py-[5px] px-[20px] hover:opacity-90 transition-opacity cursor-pointer"
                   >
                     <p className="font-sans font-semibold leading-[1.2] text-[#f1f5ff] text-[33px] tracking-[-0.66px]" style={{ fontVariationSettings: "'wdth' 100" }}>
@@ -704,7 +705,7 @@ export default async function AboutPage() {
                   {/* CTA Button - Mobile */}
                   <div className="md:hidden mt-[20px] md:mt-12">
                     <Link
-                      href={whyChooseData.cta?.url || "/#contact"}
+                      href={normalizeHref(whyChooseData.cta?.url) || "/#contact"}
                       className="backdrop-blur-[3.777px] backdrop-filter bg-gradient-to-b border border-[rgba(50,59,159,0.8)] border-solid box-border content-stretch flex from-[rgba(45,78,174,0.64)] gap-[20px] items-center justify-center px-[20px] py-[17px] relative rounded-[8px] shrink-0 to-[rgba(34,62,140,0.48)] hover:opacity-90 transition-opacity w-[221px]"
                       style={{ fontVariationSettings: "'wdth' 100" }}
                     >
@@ -727,7 +728,7 @@ export default async function AboutPage() {
                   {/* CTA Button - Tablet */}
                   <div className="hidden md:flex lg:hidden mt-8 lg:mt-12 justify-center lg:justify-start">
                     <Link
-                      href={whyChooseData.cta?.url || "/#contact"}
+                      href={normalizeHref(whyChooseData.cta?.url) || "/#contact"}
                       className="inline-flex items-center justify-center gap-5 rounded-[8px] border border-[rgba(50,59,159,0.8)] shadow-[0px_1px_4px_0px_rgba(27,30,79,0.3)] backdrop-blur-[3.777px] px-5 py-[17px] font-sans font-semibold text-[18px] sm:text-[20px] text-[#f1f5ff] leading-[110%] hover:opacity-90 transition-opacity"
                       style={{ background: "linear-gradient(180deg, rgba(45, 78, 174, 0.64) 0%, rgba(34, 62, 140, 0.48) 100%)", fontVariationSettings: "'wdth' 100" }}
                     >
@@ -795,7 +796,7 @@ export default async function AboutPage() {
 
                     {/* Button - Contact */}
                     <Link
-                      href={whyChooseData.cta?.url || "/#contact"}
+                      href={normalizeHref(whyChooseData.cta?.url) || "/#contact"}
                       className="backdrop-blur-[10px] backdrop-filter bg-gradient-to-b border border-[rgba(50,59,159,0.8)] border-solid from-[rgba(45,78,174,0.64)] rounded-[12px] to-[rgba(34,62,140,0.48)] w-full max-w-[403px] xl:w-[403px] h-[142px] flex flex-col items-center justify-center gap-[20px] p-[20px] hover:opacity-90 transition-opacity"
                       style={{ fontVariationSettings: "'wdth' 100" }}
                     >

@@ -7,6 +7,7 @@ import { ContentUnavailable } from "@/components/shared/ContentUnavailable";
 import Image from "next/image";
 import { getPageBySlugDynamic } from "@/lib/strapi";
 import { getMediaUrl } from "@/lib/strapi-home";
+import { normalizeHref } from "@/lib/href";
 import type {
   BenefitCardsSection,
   ContactBlockSection,
@@ -239,7 +240,7 @@ export default async function HomeHealthPage() {
                 </div>
                 <div className="flex flex-col gap-[20px] items-center">
                   <a 
-                    href={heroCta?.url || "/#contact"}
+                    href={normalizeHref(heroCta?.url) || "/#contact"}
                     className="backdrop-blur-[7px] backdrop-filter bg-gradient-to-b border border-[rgba(50,59,159,0.8)] border-solid from-[rgba(45,78,174,0.64)] items-center justify-center p-[16px] rounded-[8px] shadow-[0px_1px_4px_0px_rgba(191,192,215,0.3)] to-[rgba(34,62,140,0.48)] w-full hover:opacity-90 transition-opacity flex"
                     style={{ fontVariationSettings: "'wdth' 100" }}
                   >
@@ -304,7 +305,7 @@ export default async function HomeHealthPage() {
                 
                 <div className="flex flex-col gap-[20px] items-start w-[419px]">
                   <a 
-                    href={heroCta?.url || "/#contact"}
+                    href={normalizeHref(heroCta?.url) || "/#contact"}
                     className="backdrop-blur-[3.777px] backdrop-filter bg-gradient-to-b border border-[rgba(50,59,159,0.8)] border-solid from-[rgba(45,78,174,0.64)] items-center justify-center p-[20px] relative rounded-[8px] to-[rgba(34,62,140,0.48)] w-full hover:opacity-90 transition-opacity flex"
                     style={{ fontVariationSettings: "'wdth' 100" }}
                   >
@@ -615,7 +616,7 @@ export default async function HomeHealthPage() {
 
               {/* More Info Button */}
               <a
-                href={howItWorksCta?.url || "/#contact"}
+                href={normalizeHref(howItWorksCta?.url) || "/#contact"}
                 className="backdrop-blur-[3.777px] backdrop-filter bg-gradient-to-b border border-[rgba(50,59,159,0.8)] border-solid flex from-[rgba(45,78,174,0.64)] items-center justify-center px-[40px] py-[20px] relative rounded-[8px] shadow-[0px_1px_4px_0px_rgba(87,18,23,0.3)] to-[rgba(34,62,140,0.48)] w-full hover:opacity-90 transition-opacity"
               >
                 <p className="font-sans font-semibold leading-[1.1] text-[#f1f5ff] text-[clamp(24px,3vw,33px)] text-center tracking-[-0.66px]" style={{ fontVariationSettings: "'wdth' 100" }}>

@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { SectionTitleWithSubtitle } from "@/components/shared/SectionTitleWithSubtitle";
 import { getMediaUrl } from "@/lib/strapi-home";
+import { isExternalHref, normalizeHref } from "@/lib/href";
 import type { AboutTeamSection, CtaData, StrapiMedia } from "@/lib/page-types";
 
 const defaultTeamMembers = [
@@ -68,10 +69,12 @@ export function TeamSection({ data }: TeamSectionProps) {
   const supportGraphic =
     getMediaUrl(data?.supportGraphic) || "/images/team-vector-logo.svg";
   const ctaLabel = data?.cta?.label || "Learn More About Us";
-  const ctaUrl = data?.cta?.url || "/about";
+  const ctaUrl = normalizeHref(data?.cta?.url) || "/about";
   const isRemoteUrl = (url: string) => /^https?:\/\//i.test(url);
-  const isExternal = (url: string) => /^https?:\/\//i.test(url) || /^mailto:/i.test(url);
-  const ctaExternal = data?.cta?.isExternal || isExternal(ctaUrl);
+  const ctaExternal =
+    typeof data?.cta?.isExternal === "boolean"
+      ? data.cta.isExternal
+      : isExternalHref(ctaUrl);
 
   const [currentIndex, setCurrentIndex] = useState(0);
   const touchStartX = useRef<number | null>(null);

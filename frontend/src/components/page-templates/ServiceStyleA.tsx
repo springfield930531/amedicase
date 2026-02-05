@@ -5,6 +5,7 @@ import { ContactSection } from "@/components/sections/ContactSection";
 import svgPaths from "@/lib/imports/svg-ie2km5jka3";
 import Image from "next/image";
 import { getMediaUrl } from "@/lib/strapi-home";
+import { isExternalHref, normalizeHref } from "@/lib/href";
 import type {
   BackgroundPatternSection,
   ContactBlockSection,
@@ -213,12 +214,24 @@ export function ServiceStyleA({ page }: ServiceStyleAProps) {
   const whyChooseLine1 = splitLines(whyChooseBenefits[1]?.label || "Up to 60% Cost Savings\nvs. U.S. Operations");
 
   const heroData: ServicesHeroSection | typeof fallback.hero = hero || fallback.hero;
-  const heroPrimaryUrl = ('primaryCta' in heroData && heroData.primaryCta ? heroData.primaryCta.url : undefined) || fallback.hero.primaryCta?.url || "#";
-  const heroSecondaryUrl = ('secondaryCta' in heroData && heroData.secondaryCta ? heroData.secondaryCta.url : undefined) || fallback.hero.secondaryCta?.url || "#";
-  const heroPrimaryExternal = ('primaryCta' in heroData && heroData.primaryCta && 'isExternal' in heroData.primaryCta ? heroData.primaryCta.isExternal : undefined);
-  const heroSecondaryExternal = ('secondaryCta' in heroData && heroData.secondaryCta && 'isExternal' in heroData.secondaryCta ? heroData.secondaryCta.isExternal : undefined);
-  const howItWorksCtaUrl = howItWorks?.cta?.url || fallback.howItWorks?.cta?.url || "#";
-  const howItWorksCtaExternal = (howItWorks?.cta && 'isExternal' in howItWorks.cta ? howItWorks.cta.isExternal : undefined);
+  const heroPrimaryCta = ("primaryCta" in heroData ? heroData.primaryCta : null) || fallback.hero.primaryCta;
+  const heroSecondaryCta = ("secondaryCta" in heroData ? heroData.secondaryCta : null) || fallback.hero.secondaryCta;
+  const heroPrimaryUrl = normalizeHref(heroPrimaryCta?.url) || "#";
+  const heroSecondaryUrl = normalizeHref(heroSecondaryCta?.url) || "#";
+  const heroPrimaryExternal =
+    typeof heroPrimaryCta?.isExternal === "boolean"
+      ? heroPrimaryCta.isExternal
+      : isExternalHref(heroPrimaryUrl);
+  const heroSecondaryExternal =
+    typeof heroSecondaryCta?.isExternal === "boolean"
+      ? heroSecondaryCta.isExternal
+      : isExternalHref(heroSecondaryUrl);
+  const howItWorksCta = howItWorks?.cta || fallback.howItWorks?.cta;
+  const howItWorksCtaUrl = normalizeHref(howItWorksCta?.url) || "#";
+  const howItWorksCtaExternal =
+    typeof howItWorksCta?.isExternal === "boolean"
+      ? howItWorksCta.isExternal
+      : isExternalHref(howItWorksCtaUrl);
 
   const card1Lines = splitLines(pillarCard1.descriptionMobile || pillarCard1.description);
   const card2Lines = splitLines(pillarCard2.descriptionMobile || pillarCard2.description);
@@ -485,7 +498,7 @@ export function ServiceStyleA({ page }: ServiceStyleAProps) {
                     </div>
                     <a
                       className="flex gap-[10px] items-center w-full"
-                      href={pillarCard1.learnMoreUrl || "#"}
+                      href={normalizeHref(pillarCard1.learnMoreUrl) || "#"}
                     >
                       <p className="font-sans font-semibold text-[18px] lg:text-[23px] text-[#1f3b8a] tracking-[-0.36px] lg:tracking-[-0.46px] capitalize" style={{ fontVariationSettings: "'wdth' 100" }}>
                         {pillarCard1.learnMoreLabel || "Learn More"}
@@ -552,7 +565,7 @@ export function ServiceStyleA({ page }: ServiceStyleAProps) {
                     </div>
                     <a
                       className="flex gap-[10px] items-center w-full"
-                      href={pillarCard2.learnMoreUrl || "#"}
+                      href={normalizeHref(pillarCard2.learnMoreUrl) || "#"}
                     >
                       <p className="font-sans font-semibold text-[18px] lg:text-[23px] text-[#1f3b8a] tracking-[-0.36px] lg:tracking-[-0.46px] capitalize" style={{ fontVariationSettings: "'wdth' 100" }}>
                         {pillarCard2.learnMoreLabel || "Learn More"}
@@ -625,7 +638,7 @@ export function ServiceStyleA({ page }: ServiceStyleAProps) {
                     </div>
                     <a
                       className="flex gap-[10px] items-center w-full"
-                      href={pillarCard3.learnMoreUrl || "#"}
+                      href={normalizeHref(pillarCard3.learnMoreUrl) || "#"}
                     >
                       <p className="font-sans font-semibold text-[18px] lg:text-[23px] text-[#1f3b8a] tracking-[-0.36px] lg:tracking-[-0.46px] capitalize" style={{ fontVariationSettings: "'wdth' 100" }}>
                         {pillarCard3.learnMoreLabel || "Learn More"}
@@ -696,7 +709,7 @@ export function ServiceStyleA({ page }: ServiceStyleAProps) {
                     </div>
                     <a
                       className="flex gap-[10px] items-center w-[127px] lg:w-full"
-                      href={pillarCard4.learnMoreUrl || "#"}
+                      href={normalizeHref(pillarCard4.learnMoreUrl) || "#"}
                     >
                       <p className="font-sans font-semibold text-[18px] lg:text-[23px] text-[#1f3b8a] tracking-[-0.36px] lg:tracking-[-0.46px] capitalize" style={{ fontVariationSettings: "'wdth' 100" }}>
                         {pillarCard4.learnMoreLabel || "Learn More"}
@@ -766,7 +779,7 @@ export function ServiceStyleA({ page }: ServiceStyleAProps) {
                             <p className="lg:inline">{descriptionLines[1] || ""}</p>
                           </div>
                         </div>
-                        <a className="flex gap-[10px] items-center w-full" href={card.learnMoreUrl || "#"}>
+                        <a className="flex gap-[10px] items-center w-full" href={normalizeHref(card.learnMoreUrl) || "#"}>
                           <p className="font-sans font-semibold text-[18px] lg:text-[23px] text-[#1f3b8a] tracking-[-0.36px] lg:tracking-[-0.46px] capitalize" style={{ fontVariationSettings: "'wdth' 100" }}>
                             {card.learnMoreLabel || "Learn More"}
                           </p>

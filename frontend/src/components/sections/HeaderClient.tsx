@@ -5,6 +5,7 @@ import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import type { NavItem } from "@/lib/site-settings-types";
+import { isExternalHref, normalizeHref } from "@/lib/href";
 
 type HeaderClientProps = {
   logoUrl?: string | null;
@@ -23,8 +24,6 @@ const fallbackNavigation: NavItem[] = [
 
 const fallbackCta = { label: "Book a Call", url: "/contact", isExternal: false };
 
-const isExternal = (url?: string) => /^https?:\/\//i.test(url || "") || /^mailto:/i.test(url || "");
-
 const normalizeLinks = (links?: NavItem[]) =>
   links && links.length ? links : fallbackNavigation;
 
@@ -32,8 +31,11 @@ export function HeaderClient({ logoUrl, logoAlt, navigation, cta }: HeaderClient
   const [menuOpen, setMenuOpen] = useState(false);
   const navItems = normalizeLinks(navigation);
   const ctaData = cta?.label ? cta : fallbackCta;
-  const ctaHref = ctaData?.url || fallbackCta.url;
-  const ctaExternal = ctaData?.isExternal || isExternal(ctaHref);
+  const ctaHref = normalizeHref(ctaData?.url) || fallbackCta.url;
+  const ctaExternal =
+    typeof ctaData?.isExternal === "boolean"
+      ? ctaData.isExternal
+      : isExternalHref(ctaHref);
   const logoAltText = logoAlt || "Amedicase";
   const logoIsRemote = logoUrl ? /^https?:\/\//i.test(logoUrl) : false;
 
@@ -175,8 +177,11 @@ export function HeaderClient({ logoUrl, logoAlt, navigation, cta }: HeaderClient
             {/* Navigation Container - Exact Figma: backdrop-blur-[6px], px-[40px] py-[20px], rounded-[12px], gap-[40px] */}
             <nav className="backdrop-blur-[6px] backdrop-filter px-[40px] py-[20px] rounded-[12px] shadow-[0px_2px_8px_0px_rgba(255,255,255,0.1)] flex items-center gap-[40px] shrink-0">
               {navItems.map((item, index) => {
-                const href = item.url || "#";
-                const external = item.isExternal || isExternal(href);
+                const href = normalizeHref(item.url) || "#";
+                const external =
+                  typeof item.isExternal === "boolean"
+                    ? item.isExternal
+                    : isExternalHref(href);
                 return (
                   <Link
                     key={`${item.label || "nav"}-${index}`}
@@ -213,8 +218,11 @@ export function HeaderClient({ logoUrl, logoAlt, navigation, cta }: HeaderClient
           <div className="absolute top-20 right-0 left-0 bg-white shadow-lg p-6 m-4 rounded-lg">
             <nav className="flex flex-col gap-4">
               {navItems.map((item, index) => {
-                const href = item.url || "#";
-                const external = item.isExternal || isExternal(href);
+                const href = normalizeHref(item.url) || "#";
+                const external =
+                  typeof item.isExternal === "boolean"
+                    ? item.isExternal
+                    : isExternalHref(href);
                 return (
                   <Link
                     key={`${item.label || "nav"}-${index}`}

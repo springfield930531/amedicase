@@ -1,6 +1,7 @@
 import type { CSSProperties } from "react";
 import svgPaths from "@/lib/imports/svg-ie2km5jka3";
 import { getMediaUrl } from "@/lib/strapi-home";
+import { isExternalHref, normalizeHref } from "@/lib/href";
 import Image from "next/image";
 import Link from "next/link";
 import type { AboutWhyChooseSection, StrapiMedia } from "@/lib/page-types";
@@ -39,13 +40,15 @@ export function WhyChooseSection({ data }: WhyChooseSectionProps) {
       ?.map((benefit) => benefit?.label)
       .filter((value): value is string => Boolean(value)) || defaultBenefits;
   const ctaLabel = data?.cta?.label || "More About Us";
-  const ctaUrl = data?.cta?.url || "/about";
+  const ctaUrl = normalizeHref(data?.cta?.url) || "/about";
   const supportImage =
     getMediaUrl(data?.supportImage) ||
     "https://amedicase.com/uploads/1_164_54add90697.jpg";
   const isRemoteUrl = (url: string) => /^https?:\/\//i.test(url);
-  const isExternal = (url: string) => /^https?:\/\//i.test(url) || /^mailto:/i.test(url);
-  const ctaExternal = data?.cta?.isExternal || isExternal(ctaUrl);
+  const ctaExternal =
+    typeof data?.cta?.isExternal === "boolean"
+      ? data.cta.isExternal
+      : isExternalHref(ctaUrl);
 
   return (
     <section className="relative bg-[#f1f5ff] pt-[40px] md:pt-16 xl:pt-20 pb-[40px] md:pb-16 xl:pb-20 overflow-hidden">

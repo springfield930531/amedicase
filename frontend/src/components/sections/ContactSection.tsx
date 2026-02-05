@@ -5,6 +5,7 @@ import Image from "next/image";
 import { submitContactForm } from "@/lib/strapi";
 import type { ContactBlockSection } from "@/lib/page-types";
 import { DEFAULT_YOUTUBE_ID, extractYoutubeId } from "@/lib/youtube";
+import { isExternalHref, normalizeHref } from "@/lib/href";
 
 // Testimonial videos data (YouTube)
 const defaultTestimonialVideos = [
@@ -50,9 +51,8 @@ export function ContactSection({ data }: ContactSectionProps) {
   const facebookLink = socialLinks.find((link) => link?.platform?.toLowerCase?.().includes("facebook"));
   const instagramLink = socialLinks.find((link) => link?.platform?.toLowerCase?.().includes("instagram"));
   const emailHref = contactEmail ? `mailto:${contactEmail}` : "#";
-  const facebookHref = facebookLink?.url || "https://www.facebook.com/amedicase";
-  const instagramHref = instagramLink?.url || "https://www.instagram.com/amedicase";
-  const isExternal = (url: string) => /^https?:\/\//i.test(url);
+  const facebookHref = normalizeHref(facebookLink?.url) || "https://www.facebook.com/amedicase";
+  const instagramHref = normalizeHref(instagramLink?.url) || "https://www.instagram.com/amedicase";
 
   const [activeIndex, setActiveIndex] = useState(0);
   
@@ -226,8 +226,8 @@ export function ContactSection({ data }: ContactSectionProps) {
                   <a
                     className="flex gap-[20px] items-center w-full"
                     href={facebookHref}
-                    target={isExternal(facebookHref) ? "_blank" : undefined}
-                    rel={isExternal(facebookHref) ? "noreferrer" : undefined}
+                    target={isExternalHref(facebookHref) ? "_blank" : undefined}
+                    rel={isExternalHref(facebookHref) ? "noreferrer" : undefined}
                   >
                     <Image alt="Facebook" src="/images/facebook-icon.svg" width={24} height={24} className="w-[24px] h-[24px]" />
                     <p className="font-sans font-medium leading-none text-[20px] text-blue-900 tracking-[-0.4px]" style={{ fontVariationSettings: "'wdth' 100" }}>
@@ -237,8 +237,8 @@ export function ContactSection({ data }: ContactSectionProps) {
                   <a
                     className="flex gap-[20px] items-center w-full"
                     href={instagramHref}
-                    target={isExternal(instagramHref) ? "_blank" : undefined}
-                    rel={isExternal(instagramHref) ? "noreferrer" : undefined}
+                    target={isExternalHref(instagramHref) ? "_blank" : undefined}
+                    rel={isExternalHref(instagramHref) ? "noreferrer" : undefined}
                   >
                     <Image alt="Instagram" src="/images/instagram-icon.svg" width={24} height={24} className="w-[24px] h-[24px]" />
                     <p className="font-sans font-medium leading-none text-[20px] text-blue-900 tracking-[-0.4px]" style={{ fontVariationSettings: "'wdth' 100" }}>

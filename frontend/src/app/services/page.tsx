@@ -7,6 +7,7 @@ import svgPaths from "@/lib/imports/svg-ie2km5jka3";
 import Image from "next/image";
 import { getPageBySlugDynamic } from "@/lib/strapi";
 import { getMediaUrl } from "@/lib/strapi-home";
+import { isExternalHref, normalizeHref } from "@/lib/href";
 import type {
   BackgroundPatternSection,
   ContactBlockSection,
@@ -237,12 +238,24 @@ export default async function ServicesPage() {
   const whyChooseBenefits = whyChoose?.benefits?.length ? whyChoose.benefits : fallback.whyChoose?.benefits || [];
   const whyChooseLine1 = splitLines(whyChooseBenefits[1]?.label || "Up to 60% Cost Savings\nvs. U.S. Operations");
 
-  const heroPrimaryUrl = hero?.primaryCta?.url || "#";
-  const heroSecondaryUrl = hero?.secondaryCta?.url || "#";
-  const heroPrimaryExternal = (hero?.primaryCta && 'isExternal' in hero.primaryCta ? hero.primaryCta.isExternal : undefined);
-  const heroSecondaryExternal = (hero?.secondaryCta && 'isExternal' in hero.secondaryCta ? hero.secondaryCta.isExternal : undefined);
-  const howItWorksCtaUrl = howItWorks?.cta?.url || "#";
-  const howItWorksCtaExternal = (howItWorks?.cta && 'isExternal' in howItWorks.cta ? howItWorks.cta.isExternal : undefined);
+  const heroPrimaryCta = hero?.primaryCta;
+  const heroSecondaryCta = hero?.secondaryCta;
+  const heroPrimaryUrl = normalizeHref(heroPrimaryCta?.url) || "#";
+  const heroSecondaryUrl = normalizeHref(heroSecondaryCta?.url) || "#";
+  const heroPrimaryExternal =
+    typeof heroPrimaryCta?.isExternal === "boolean"
+      ? heroPrimaryCta.isExternal
+      : isExternalHref(heroPrimaryUrl);
+  const heroSecondaryExternal =
+    typeof heroSecondaryCta?.isExternal === "boolean"
+      ? heroSecondaryCta.isExternal
+      : isExternalHref(heroSecondaryUrl);
+  const howItWorksCta = howItWorks?.cta;
+  const howItWorksCtaUrl = normalizeHref(howItWorksCta?.url) || "#";
+  const howItWorksCtaExternal =
+    typeof howItWorksCta?.isExternal === "boolean"
+      ? howItWorksCta.isExternal
+      : isExternalHref(howItWorksCtaUrl);
 
   const card1Lines = splitLines(pillarCard1.descriptionMobile || pillarCard1.description);
   const card2Lines = splitLines(pillarCard2.descriptionMobile || pillarCard2.description);
@@ -512,7 +525,7 @@ export default async function ServicesPage() {
                     </div>
                     <a
                       className="flex gap-[10px] items-center w-full"
-                      href={pillarCard1.learnMoreUrl || "#"}
+                      href={normalizeHref(pillarCard1.learnMoreUrl) || "#"}
                     >
                       <p className="font-sans font-semibold text-[18px] lg:text-[23px] text-[#1f3b8a] tracking-[-0.36px] lg:tracking-[-0.46px] capitalize" style={{ fontVariationSettings: "'wdth' 100" }}>
                         {pillarCard1.learnMoreLabel || "Learn More"}
@@ -583,7 +596,7 @@ export default async function ServicesPage() {
                     </div>
                     <a
                       className="flex gap-[10px] items-center w-full"
-                      href={pillarCard2.learnMoreUrl || "#"}
+                      href={normalizeHref(pillarCard2.learnMoreUrl) || "#"}
                     >
                       <p className="font-sans font-semibold text-[18px] lg:text-[23px] text-[#1f3b8a] tracking-[-0.36px] lg:tracking-[-0.46px] capitalize" style={{ fontVariationSettings: "'wdth' 100" }}>
                         {pillarCard2.learnMoreLabel || "Learn More"}
@@ -656,7 +669,7 @@ export default async function ServicesPage() {
                     </div>
                     <a
                       className="flex gap-[10px] items-center w-full"
-                      href={pillarCard3.learnMoreUrl || "#"}
+                      href={normalizeHref(pillarCard3.learnMoreUrl) || "#"}
                     >
                       <p className="font-sans font-semibold text-[18px] lg:text-[23px] text-[#1f3b8a] tracking-[-0.36px] lg:tracking-[-0.46px] capitalize" style={{ fontVariationSettings: "'wdth' 100" }}>
                         {pillarCard3.learnMoreLabel || "Learn More"}
@@ -727,7 +740,7 @@ export default async function ServicesPage() {
                     </div>
                     <a
                       className="flex gap-[10px] items-center w-[127px] lg:w-full"
-                      href={pillarCard4.learnMoreUrl || "#"}
+                      href={normalizeHref(pillarCard4.learnMoreUrl) || "#"}
                     >
                       <p className="font-sans font-semibold text-[18px] lg:text-[23px] text-[#1f3b8a] tracking-[-0.36px] lg:tracking-[-0.46px] capitalize" style={{ fontVariationSettings: "'wdth' 100" }}>
                         {pillarCard4.learnMoreLabel || "Learn More"}
@@ -797,7 +810,7 @@ export default async function ServicesPage() {
                             <p className="lg:inline">{descriptionLines[1] || ""}</p>
                           </div>
                         </div>
-                        <a className="flex gap-[10px] items-center w-full" href={card.learnMoreUrl || "#"}>
+                        <a className="flex gap-[10px] items-center w-full" href={normalizeHref(card.learnMoreUrl) || "#"}>
                           <p className="font-sans font-semibold text-[18px] lg:text-[23px] text-[#1f3b8a] tracking-[-0.36px] lg:tracking-[-0.46px] capitalize" style={{ fontVariationSettings: "'wdth' 100" }}>
                             {card.learnMoreLabel || "Learn More"}
                           </p>

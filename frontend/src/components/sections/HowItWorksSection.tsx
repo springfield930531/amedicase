@@ -1,4 +1,5 @@
 import { getMediaUrl } from "@/lib/strapi-home";
+import { isExternalHref, normalizeHref } from "@/lib/href";
 import Image from "next/image";
 import Link from "next/link";
 import type { IconStepsSection, StrapiMedia } from "@/lib/page-types";
@@ -41,13 +42,13 @@ export function HowItWorksSection({ data }: HowItWorksSectionProps) {
         }))
       : defaultSteps;
   const ctaLabel = data?.cta?.label || "Start Your Free Assessment";
-  const ctaUrl = data?.cta?.url || "/contact";
+  const ctaUrl = normalizeHref(data?.cta?.url) || "/contact";
   const illustration =
     getMediaUrl(data?.illustration) ||
     "https://amedicase.com/uploads/1_100_22424f0566.jpg";
   const isRemoteUrl = (url: string) => /^https?:\/\//i.test(url);
-  const isExternal = (url: string) => /^https?:\/\//i.test(url) || /^mailto:/i.test(url);
-  const ctaExternal = data?.cta?.isExternal || isExternal(ctaUrl);
+  const ctaExternal =
+    typeof data?.cta?.isExternal === "boolean" ? data.cta.isExternal : isExternalHref(ctaUrl);
 
   return (
     <section className="relative bg-[#f1f5ff] w-full pt-[40px] md:pt-16 xl:pt-20 pb-[40px] md:pb-16 xl:pb-20">

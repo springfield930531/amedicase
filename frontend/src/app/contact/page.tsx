@@ -6,6 +6,7 @@ import { ContentUnavailable } from "@/components/shared/ContentUnavailable";
 import Image from "next/image";
 import { getPageBySlugDynamic } from "@/lib/strapi";
 import { getMediaUrl } from "@/lib/strapi-home";
+import { normalizeHref } from "@/lib/href";
 import type {
   ContactBlockSection,
   ContactInfoFormSection,
@@ -162,6 +163,7 @@ export default async function ContactPage() {
       }))
     : fallback.overlays;
   const isRemoteUrl = (url: string) => /^https?:\/\//i.test(url);
+  const heroCtaHref = normalizeHref(heroData.cta?.url) || "/#contact";
 
   const infoCards =
     contactInfo?.infoCards?.length
@@ -257,7 +259,7 @@ export default async function ContactPage() {
                   </div>
                   <div className="flex flex-col gap-[20px] items-start">
                     <a 
-                      href={heroData.cta?.url || "/#contact"}
+                      href={heroCtaHref}
                       className="backdrop-blur-[7px] bg-gradient-to-b from-[rgba(45,78,174,0.64)] to-[rgba(34,62,140,0.48)] rounded-[8px] border border-[rgba(50,59,159,0.8)] h-[45px] w-full max-w-[239px] font-sans font-semibold text-[clamp(16px,2.5vw,18px)] text-[#f1f5ff] tracking-[-0.36px] hover:opacity-90 transition-opacity flex items-center justify-center capitalize"
                       style={{ fontVariationSettings: "'wdth' 100" }}
                     >
@@ -313,7 +315,7 @@ export default async function ContactPage() {
                 
                 <div className="flex flex-col gap-[20px] items-start w-[419px]">
                   <a 
-                    href={heroData.cta?.url || "/#contact"}
+                    href={heroCtaHref}
                     className="backdrop-blur-[3.777px] backdrop-filter bg-gradient-to-b border border-[rgba(50,59,159,0.8)] border-solid from-[rgba(45,78,174,0.64)] items-center justify-center p-[20px] relative rounded-[8px] to-[rgba(34,62,140,0.48)] w-full hover:opacity-90 transition-opacity flex"
                     style={{ fontVariationSettings: "'wdth' 100" }}
                   >

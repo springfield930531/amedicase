@@ -1,6 +1,7 @@
 import type { CSSProperties } from "react";
 import Link from "next/link";
 import svgPaths from "@/lib/imports/svg-ie2km5jka3";
+import { normalizeHref } from "@/lib/href";
 
 type ExtendedCSSProperties = CSSProperties & {
   textEdge?: string;
@@ -55,7 +56,7 @@ export function ServicesSection({ data }: ServicesSectionProps) {
   const label = data?.label || "Our Outsourcing Solutions";
   const services = data?.services?.length ? data.services : defaultServices;
   const ctaLabel = data?.cta?.label || "Explore All Services";
-  const ctaUrl = data?.cta?.url || "/services";
+  const ctaUrl = normalizeHref(data?.cta?.url) || "/services";
   const getMobileCardClass = (index: number) =>
     index === 1 || index === 3
       ? `${cardBaseClass} flex flex-col items-center justify-center gap-3 p-4 sm:p-5 lg:p-6 text-center`
