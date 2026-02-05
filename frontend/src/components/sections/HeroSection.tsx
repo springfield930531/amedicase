@@ -21,8 +21,12 @@ export function HeroSection({ data }: HeroSectionProps) {
     "Delegate your billing, intake, and back-office operations to U.S.-trained healthcare professionals, so you can focus on patient care.";
   const ctaLabel = data?.primaryCta?.label || "Start building your team today";
   const ctaUrl = data?.primaryCta?.url || "/contact";
-  const mobileImage = getMediaUrl(data?.mobileBackground) || "/images/Hero photo Mobile.jpg";
-  const desktopImage = getMediaUrl(data?.desktopBackground) || "/images/hero-desktop-bg.jpg";
+  const mobileImage =
+    getMediaUrl(data?.mobileBackground) ||
+    "https://amedicase.com/uploads/Hero_photo_1_bf82099b1f.jpg";
+  const desktopImage =
+    getMediaUrl(data?.desktopBackground) ||
+    "https://amedicase.com/uploads/1_136_f4869a430a.jpg";
   const logoImage = getMediaUrl(data?.logoImage) || "/images/amedicase-logo-desktop.svg";
   const isRemoteUrl = (url: string) => /^https?:\/\//i.test(url);
   const isExternal = (url: string) => /^https?:\/\//i.test(url) || /^mailto:/i.test(url);

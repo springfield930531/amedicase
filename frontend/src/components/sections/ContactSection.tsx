@@ -48,8 +48,8 @@ export function ContactSection({ data }: ContactSectionProps) {
   const facebookLink = socialLinks.find((link) => link?.platform?.toLowerCase?.().includes("facebook"));
   const instagramLink = socialLinks.find((link) => link?.platform?.toLowerCase?.().includes("instagram"));
   const emailHref = contactEmail ? `mailto:${contactEmail}` : "#";
-  const facebookHref = facebookLink?.url || "#";
-  const instagramHref = instagramLink?.url || "#";
+  const facebookHref = facebookLink?.url || "https://www.facebook.com/amedicase";
+  const instagramHref = instagramLink?.url || "https://www.instagram.com/amedicase";
   const isExternal = (url: string) => /^https?:\/\//i.test(url);
 
   const [activeIndex, setActiveIndex] = useState(0);

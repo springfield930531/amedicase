@@ -15,7 +15,9 @@ export function ImageSections({ data }: ImageSectionsProps) {
   const title =
     data?.title ||
     "Redefining patient management\nthrough clarity and trust.";
-  const background = getMediaUrl(data?.backgroundImage) || "/images/Photo section3.jpg";
+  const background =
+    getMediaUrl(data?.backgroundImage) ||
+    "https://amedicase.com/uploads/Mask_group_1_4053b1f902.jpg";
   const logoImage = getMediaUrl(data?.logoImage) || "/images/amedicase-logo-desktop.svg";
   const isRemoteUrl = (url: string) => /^https?:\/\//i.test(url);
 

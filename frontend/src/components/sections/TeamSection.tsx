@@ -33,22 +33,34 @@ const defaultTeamMembers = [
 
 type TeamSectionProps = {
   data?: AboutTeamSection & {
+    members?: Array<{
+      firstName?: string;
+      lastName?: string;
+      role?: string;
+      bio?: string;
+      photo?: StrapiMedia | null;
+    }>;
     supportGraphic?: StrapiMedia | null;
     cta?: CtaData | null;
   };
 };
 
 export function TeamSection({ data }: TeamSectionProps) {
-  const members =
+  const teamList =
     data?.teamMembers?.length
-      ? data.teamMembers.map((member) => ({
-          name: member?.firstName || "",
-          surname: member?.lastName || "",
-          position: member?.role || "",
-          description: member?.bio || "",
-          photo: getMediaUrl(member?.photo) || "/images/team-member-photo.jpg",
-        }))
-      : defaultTeamMembers;
+      ? data.teamMembers
+      : data?.members?.length
+        ? data.members
+        : null;
+  const members = teamList?.length
+    ? teamList.map((member) => ({
+        name: member?.firstName || "",
+        surname: member?.lastName || "",
+        position: member?.role || "",
+        description: member?.bio || "",
+        photo: getMediaUrl(member?.photo) || "/images/team-member-photo.jpg",
+      }))
+    : defaultTeamMembers;
   const label = data?.label || "Our Team Behind the Care";
   const title =
     data?.title ||
