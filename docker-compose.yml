@@ -149,6 +149,14 @@ services:
       - traefik
     labels:
       - "traefik.enable=true"
+      # Reserve a single Next route under /api for on-demand ISR revalidation.
+      # Everything else under /api continues to be served by Strapi.
+      - "traefik.http.routers.amedicase-revalidate.rule=(Host(`amedicase.com`) || Host(`www.amedicase.com`)) && PathPrefix(`/api/revalidate`)"
+      - "traefik.http.routers.amedicase-revalidate.entrypoints=websecure"
+      - "traefik.http.routers.amedicase-revalidate.tls=true"
+      - "traefik.http.routers.amedicase-revalidate.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.amedicase-revalidate.priority=20"
+      - "traefik.http.routers.amedicase-revalidate.service=amedicase-prod"
       - "traefik.http.routers.amedicase-prod.rule=(Host(`amedicase.com`) || Host(`www.amedicase.com`)) && !PathPrefix(`/admin`) && !PathPrefix(`/api`) && !PathPrefix(`/login`) && !PathPrefix(`/content-manager`) && !PathPrefix(`/content-type-builder`) && !PathPrefix(`/i18n`) && !PathPrefix(`/upload`) && !PathPrefix(`/users-permissions`)"
       - "traefik.http.routers.amedicase-prod.entrypoints=websecure"
       - "traefik.http.routers.amedicase-prod.tls=true"

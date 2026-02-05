@@ -119,6 +119,18 @@ Când ești gata să publichi pe producție:
 
 > Notă: `.env.example` conține doar placeholder-e. Nu folosi `.env` cu substituții shell pentru producție.
 
+## 🔁 Refresh cache (ISR) la cerere
+
+Unele rute rămân **statice/ISR** (ex: `/` + site settings pentru header/footer/SEO) și se actualizează automat după `revalidate` (ex: 300s).
+
+Pentru update imediat (fără să aștepți), setează `REVALIDATE_SECRET` în `.env.prod` și apelează:
+
+```bash
+curl -X POST "https://amedicase.com/api/revalidate?secret=REVALIDATE_SECRET&path=/"
+```
+
+Poți configura și un webhook în Strapi (Publish/Unpublish) către aceeași adresă.
+
 ## 🩺 Diagnostic server
 
 - **Status + logs rapide**:
