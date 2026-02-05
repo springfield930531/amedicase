@@ -4,7 +4,7 @@ import { ServiceStyleA } from "@/components/page-templates/ServiceStyleA";
 import { ServiceStyleB } from "@/components/page-templates/ServiceStyleB";
 import { ServiceStyleC } from "@/components/page-templates/ServiceStyleC";
 import { LegalStyle } from "@/components/page-templates/LegalStyle";
-import { getPageBySlug } from "@/lib/strapi";
+import { getPageBySlugDynamic } from "@/lib/strapi";
 import { getMediaUrl } from "@/lib/strapi-home";
 import type { PageEntry } from "@/lib/page-types";
 
@@ -14,6 +14,9 @@ type DynamicPageProps = {
   };
 };
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 const getTemplateKey = (page: PageEntry | null) =>
   page?.template?.key ||
   page?.template?.attributes?.key ||
@@ -21,7 +24,7 @@ const getTemplateKey = (page: PageEntry | null) =>
   null;
 
 export async function generateMetadata({ params }: DynamicPageProps): Promise<Metadata> {
-  const page = (await getPageBySlug(params.slug)) as PageEntry | null;
+  const page = (await getPageBySlugDynamic(params.slug)) as PageEntry | null;
   if (!page?.seo) {
     return {};
   }
@@ -42,7 +45,7 @@ export async function generateMetadata({ params }: DynamicPageProps): Promise<Me
 }
 
 export default async function DynamicServicePage({ params }: DynamicPageProps) {
-  const page = (await getPageBySlug(params.slug)) as PageEntry | null;
+  const page = (await getPageBySlugDynamic(params.slug)) as PageEntry | null;
   if (!page) {
     notFound();
   }

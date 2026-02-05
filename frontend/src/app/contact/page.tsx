@@ -4,7 +4,7 @@ import { Footer } from "@/components/sections/Footer";
 import { TitleBlock } from "@/components/shared/TitleBlock";
 import { ContentUnavailable } from "@/components/shared/ContentUnavailable";
 import Image from "next/image";
-import { getPageBySlug } from "@/lib/strapi";
+import { getPageBySlugDynamic } from "@/lib/strapi";
 import { getMediaUrl } from "@/lib/strapi-home";
 import type {
   ContactInfoFormSection,
@@ -15,8 +15,11 @@ import type {
   StoryBlockSection,
 } from "@/lib/page-types";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 export async function generateMetadata(): Promise<Metadata> {
-  const page = (await getPageBySlug("contact")) as PageEntry | null;
+  const page = (await getPageBySlugDynamic("contact")) as PageEntry | null;
   const seo = page?.seo;
   const ogImage = seo?.ogImage ? getMediaUrl(seo.ogImage) : undefined;
   return {
@@ -35,7 +38,7 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function ContactPage() {
-  const page = (await getPageBySlug("contact")) as PageEntry | null;
+  const page = (await getPageBySlugDynamic("contact")) as PageEntry | null;
   if (!page) {
     if (process.env.NODE_ENV !== "production") {
       console.warn("[strapi] Contact page content not available");

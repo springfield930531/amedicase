@@ -8,7 +8,7 @@ import { ContentUnavailable } from "@/components/shared/ContentUnavailable";
 import Link from "next/link";
 import Image from "next/image";
 import svgPaths from "@/lib/imports/svg-ie2km5jka3";
-import { getPageBySlug } from "@/lib/strapi";
+import { getPageBySlugDynamic } from "@/lib/strapi";
 import { getMediaUrl } from "@/lib/strapi-home";
 import type {
   AboutHeroSection,
@@ -20,6 +20,9 @@ import type {
   VideoEmbedSection,
 } from "@/lib/page-types";
 import type { CSSProperties } from "react";
+
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 const defaultBenefits = [
   "HIPAA-Compliant & Secure Data Handling",
@@ -50,7 +53,7 @@ const cardBaseClass =
 const INSIDE_AMEDICASE_YOUTUBE_ID = "M7lc1UVf-VE";
 
 export async function generateMetadata(): Promise<Metadata> {
-  const page = (await getPageBySlug("about")) as PageEntry | null;
+  const page = (await getPageBySlugDynamic("about")) as PageEntry | null;
   const seo = page?.seo;
   const ogImage = seo?.ogImage ? getMediaUrl(seo.ogImage) : undefined;
   return {
@@ -69,7 +72,7 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function AboutPage() {
-  const page = (await getPageBySlug("about")) as PageEntry | null;
+  const page = (await getPageBySlugDynamic("about")) as PageEntry | null;
   if (!page) {
     if (process.env.NODE_ENV !== "production") {
       console.warn("[strapi] About page content not available");

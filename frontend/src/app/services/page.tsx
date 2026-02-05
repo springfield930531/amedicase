@@ -5,7 +5,7 @@ import { Footer } from "@/components/sections/Footer";
 import { ContactSection } from "@/components/sections/ContactSection";
 import svgPaths from "@/lib/imports/svg-ie2km5jka3";
 import Image from "next/image";
-import { getPageBySlug } from "@/lib/strapi";
+import { getPageBySlugDynamic } from "@/lib/strapi";
 import { getMediaUrl } from "@/lib/strapi-home";
 import type {
   BackgroundPatternSection,
@@ -21,8 +21,11 @@ import type {
   StrapiMedia,
 } from "@/lib/page-types";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 export async function generateMetadata(): Promise<Metadata> {
-  const servicePage = (await getPageBySlug("services")) as PageEntry | null;
+  const servicePage = (await getPageBySlugDynamic("services")) as PageEntry | null;
   const seo = servicePage?.seo;
   const ogImage = seo?.ogImage ? getMediaUrl(seo.ogImage) : undefined;
   return {
@@ -46,7 +49,7 @@ type ExtendedCSSProperties = CSSProperties & {
 };
 
 export default async function ServicesPage() {
-  const page = (await getPageBySlug("services")) as PageEntry | null;
+  const page = (await getPageBySlugDynamic("services")) as PageEntry | null;
   const sections = page?.sections || [];
   const contactBlock = sections.find(
     (section: PageSection): section is ContactBlockSection => section.__component === "sections.contact-block"
