@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { DEFAULT_YOUTUBE_ID } from "@/lib/youtube";
 
 interface ExtendedCSSProperties extends React.CSSProperties {
   WebkitBackgroundClip?: string;
@@ -19,19 +20,19 @@ const testimonials: Testimonial[] = [
     id: 1,
     name: "Client Name 1",
     position: "Client Position 1",
-    youtubeId: "M7lc1UVf-VE",
+    youtubeId: DEFAULT_YOUTUBE_ID,
   },
   {
     id: 2,
     name: "Client Name 2",
     position: "Client Position 2",
-    youtubeId: "ScMzIvxBSi4",
+    youtubeId: DEFAULT_YOUTUBE_ID,
   },
   {
     id: 3,
     name: "Client Name 3",
     position: "Client Position 3",
-    youtubeId: "ysz5u1jJz2A",
+    youtubeId: DEFAULT_YOUTUBE_ID,
   },
 ];
 

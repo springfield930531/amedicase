@@ -4,6 +4,7 @@ import { useState } from "react";
 import Image from "next/image";
 import { submitContactForm } from "@/lib/strapi";
 import type { ContactBlockSection } from "@/lib/page-types";
+import { DEFAULT_YOUTUBE_ID, extractYoutubeId } from "@/lib/youtube";
 
 // Testimonial videos data (YouTube)
 const defaultTestimonialVideos = [
@@ -11,19 +12,19 @@ const defaultTestimonialVideos = [
     id: 1,
     clientName: "Client Name",
     position: "Client Position",
-    youtubeId: "M7lc1UVf-VE", // demo video ID – replace with real client video
+    youtubeId: DEFAULT_YOUTUBE_ID,
   },
   {
     id: 2,
     clientName: "Client Name 2",
     position: "Client Position 2",
-    youtubeId: "ScMzIvxBSi4",
+    youtubeId: DEFAULT_YOUTUBE_ID,
   },
   {
     id: 3,
     clientName: "Client Name 3",
     position: "Client Position 3",
-    youtubeId: "ysz5u1jJz2A",
+    youtubeId: DEFAULT_YOUTUBE_ID,
   },
 ];
 
@@ -38,7 +39,7 @@ export function ContactSection({ data }: ContactSectionProps) {
           id: index + 1,
           clientName: video?.name || "Client Name",
           position: video?.position || "Client Position",
-          youtubeId: video?.youtubeId || "M7lc1UVf-VE",
+          youtubeId: extractYoutubeId(video?.youtubeId) || DEFAULT_YOUTUBE_ID,
         }))
       : defaultTestimonialVideos;
   const label = data?.label || "What Our Clients Say";

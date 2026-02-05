@@ -10,6 +10,7 @@ import Image from "next/image";
 import svgPaths from "@/lib/imports/svg-ie2km5jka3";
 import { getPageBySlugDynamic } from "@/lib/strapi";
 import { getMediaUrl } from "@/lib/strapi-home";
+import { DEFAULT_YOUTUBE_ID, extractYoutubeId } from "@/lib/youtube";
 import type {
   AboutHeroSection,
   AboutTeamSection,
@@ -50,7 +51,7 @@ const gradientLabelStyle: ExtendedCSSProperties = {
 const cardBaseClass =
   "rounded-[12px] border border-[rgba(99,103,146,0.8)] shadow-[0px_2px_4px_0px_rgba(129,132,178,0.3)] backdrop-blur-[7px] bg-gradient-to-b from-[rgba(204,211,234,0.25)] to-[rgba(80,86,104,0.125)]";
 
-const INSIDE_AMEDICASE_YOUTUBE_ID = "M7lc1UVf-VE";
+const INSIDE_AMEDICASE_YOUTUBE_ID = DEFAULT_YOUTUBE_ID;
 
 export async function generateMetadata(): Promise<Metadata> {
   const page = (await getPageBySlugDynamic("about")) as PageEntry | null;
@@ -234,7 +235,10 @@ export default async function AboutPage() {
 
   const videoData = {
     label: video?.label || fallback.video.label,
-    youtubeId: video?.youtubeId || fallback.video.youtubeId,
+    youtubeId:
+      extractYoutubeId(video?.youtubeId) ||
+      fallback.video.youtubeId ||
+      DEFAULT_YOUTUBE_ID,
   };
 
   const benefitsList =
