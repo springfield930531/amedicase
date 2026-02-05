@@ -42,6 +42,7 @@ export function ContactSection({ data }: ContactSectionProps) {
           youtubeId: extractYoutubeId(video?.youtubeId) || DEFAULT_YOUTUBE_ID,
         }))
       : defaultTestimonialVideos;
+  const hasMultipleTestimonials = testimonialVideos.length > 1;
   const label = data?.label || "What Our Clients Say";
   const title = data?.title || "Ready to Build Your Outsource Team?";
   const contactEmail = data?.contactEmail;
@@ -157,20 +158,22 @@ export function ContactSection({ data }: ContactSectionProps) {
                     </div>
                     
                     {/* Slider Indicators */}
-                    <div className="flex justify-center gap-2 mb-3">
-                      {testimonialVideos.map((_, index) => (
-                        <button
-                          key={index}
-                          onClick={() => goToSlide(index)}
-                          className={`transition-all duration-300 rounded-full hover:opacity-70 ${
-                            index === activeIndex
-                              ? "w-[10px] h-[10px] bg-[#1E3A8A] opacity-100"
-                              : "w-[8px] h-[8px] bg-[#1E3A8A] opacity-40"
-                          }`}
-                          aria-label={`Go to slide ${index + 1}`}
-                        />
-                      ))}
-                    </div>
+                    {hasMultipleTestimonials ? (
+                      <div className="flex justify-center gap-2 mb-3">
+                        {testimonialVideos.map((_, index) => (
+                          <button
+                            key={index}
+                            onClick={() => goToSlide(index)}
+                            className={`transition-all duration-300 rounded-full hover:opacity-70 ${
+                              index === activeIndex
+                                ? "w-[10px] h-[10px] bg-[#1E3A8A] opacity-100"
+                                : "w-[8px] h-[8px] bg-[#1E3A8A] opacity-40"
+                            }`}
+                            aria-label={`Go to slide ${index + 1}`}
+                          />
+                        ))}
+                      </div>
+                    ) : null}
                   </div>
                   
                   {/* Client Name (Left) & Navigation Arrows (Right) */}
@@ -186,24 +189,26 @@ export function ContactSection({ data }: ContactSectionProps) {
                     </div>
                     
                     {/* Navigation Arrows - Right aligned */}
-                    <div className="flex gap-[20px] items-center">
-                      <button 
-                        onClick={goToPrevious}
-                        className="flex items-center justify-center hover:opacity-80 transition-opacity"
-                        aria-label="Previous testimonial"
-                      >
-                        <div className="rotate-180 scale-y-[-1]">
-                          <Image alt="Previous" src="/images/arrow-left.svg" width={40} height={40} className="w-[40px] h-[40px]" />
-                        </div>
-                      </button>
-                      <button 
-                        onClick={goToNext}
-                        className="flex items-center justify-center hover:opacity-80 transition-opacity"
-                        aria-label="Next testimonial"
-                      >
-                        <Image alt="Next" src="/images/arrow-right.svg" width={40} height={40} className="w-[40px] h-[40px]" />
-                      </button>
-                    </div>
+                    {hasMultipleTestimonials ? (
+                      <div className="flex gap-[20px] items-center">
+                        <button 
+                          onClick={goToPrevious}
+                          className="flex items-center justify-center hover:opacity-80 transition-opacity"
+                          aria-label="Previous testimonial"
+                        >
+                          <div className="rotate-180 scale-y-[-1]">
+                            <Image alt="Previous" src="/images/arrow-left.svg" width={40} height={40} className="w-[40px] h-[40px]" />
+                          </div>
+                        </button>
+                        <button 
+                          onClick={goToNext}
+                          className="flex items-center justify-center hover:opacity-80 transition-opacity"
+                          aria-label="Next testimonial"
+                        >
+                          <Image alt="Next" src="/images/arrow-right.svg" width={40} height={40} className="w-[40px] h-[40px]" />
+                        </button>
+                      </div>
+                    ) : null}
                   </div>
                 </div>
                 

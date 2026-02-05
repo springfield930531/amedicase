@@ -3,7 +3,8 @@ import {
   strapiFetchDynamic,
   strapiFetchStatic,
 } from "@/lib/strapi-client";
-import type { PageEntry, SeoData, StrapiMedia } from "@/lib/page-types";
+import type { PageEntry } from "@/lib/page-types";
+import type { SiteSettings } from "@/lib/site-settings-types";
 
 // Helper function to submit contact forms to Strapi
 // In browser, we need to use the public URL, not the internal Docker network URL
@@ -18,17 +19,6 @@ export interface ContactFormData {
   message: string;
   source?: string; // e.g., 'contact-page', 'home-page', etc.
 }
-
-export type SiteSettings = {
-  header?: Record<string, any>;
-  footer?: Record<string, any>;
-  brandAssets?: {
-    siteName?: string;
-    favicon?: StrapiMedia | null;
-    appleTouchIcon?: StrapiMedia | null;
-  };
-  defaultSeo?: SeoData;
-};
 
 type StrapiRequestError = {
   status?: number;

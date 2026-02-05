@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { SectionTitleWithSubtitle } from "@/components/shared/SectionTitleWithSubtitle";
@@ -74,6 +74,8 @@ export function TeamSection({ data }: TeamSectionProps) {
   const ctaExternal = data?.cta?.isExternal || isExternal(ctaUrl);
 
   const [currentIndex, setCurrentIndex] = useState(0);
+  const touchStartX = useRef<number | null>(null);
+  const touchEndX = useRef<number | null>(null);
 
   const ArrowButton = ({
     direction,
@@ -111,15 +113,42 @@ export function TeamSection({ data }: TeamSectionProps) {
   const currentMember = members[currentIndex] || members[0];
 
   const goToPrevious = () => {
-    // When clicking left arrow:
-    // - Cardul din stânga (prevIndex) se mișcă spre centru și devine cardul principal
-    setCurrentIndex(prevIndex);
+    setCurrentIndex((prev) => (prev - 1 + totalCards) % totalCards);
   };
 
   const goToNext = () => {
-    // When clicking right arrow:
-    // - Cardul din dreapta (nextIndex) se mișcă spre centru și devine cardul principal
-    setCurrentIndex(nextIndex);
+    setCurrentIndex((prev) => (prev + 1) % totalCards);
+  };
+
+  const goToSlide = (index: number) => {
+    const safeIndex = ((index % totalCards) + totalCards) % totalCards;
+    setCurrentIndex(safeIndex);
+  };
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0]?.clientX ?? null;
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    touchEndX.current = e.touches[0]?.clientX ?? null;
+  };
+
+  const handleTouchEnd = () => {
+    if (touchStartX.current === null || touchEndX.current === null) return;
+
+    const distance = touchStartX.current - touchEndX.current;
+    const minSwipeDistance = 50;
+
+    if (distance > minSwipeDistance) {
+      // Swipe left -> next
+      goToNext();
+    } else if (distance < -minSwipeDistance) {
+      // Swipe right -> previous
+      goToPrevious();
+    }
+
+    touchStartX.current = null;
+    touchEndX.current = null;
   };
 
 
@@ -140,7 +169,12 @@ export function TeamSection({ data }: TeamSectionProps) {
           </div>
 
           {/* Team Card - Mobile Responsive layout */}
-          <div className="mb-[20px] md:mb-12 overflow-hidden">
+          <div
+            className="mb-[20px] md:mb-12 overflow-hidden"
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleTouchEnd}
+          >
             <div className="min-h-[clamp(280px,81vw,323px)] relative shrink-0 w-full">
               <div className="absolute contents left-0 top-0">
                 {/* Card Background - Full width with inset-0 */}
@@ -175,33 +209,26 @@ export function TeamSection({ data }: TeamSectionProps) {
                 
                 {/* Pagination Dots - Responsive positioning */}
                 <div className="absolute flex gap-[clamp(10px,3vw,15px)] items-center left-1/2 -translate-x-1/2" style={{ top: 'clamp(250px,73vw,293px)' }}>
-                  <div className="size-[clamp(8px,2.5vw,10px)]">
-                    <Image
-                      alt=""
-                      src="/images/team-member-1.png"
-                      width={10}
-                      height={10}
-                      className="block max-w-none size-full"
-                    />
-                  </div>
-                  <div className="size-[clamp(8px,2.5vw,10px)]">
-                    <Image
-                      alt=""
-                      src="/images/team-member-2.png"
-                      width={10}
-                      height={10}
-                      className="block max-w-none size-full"
-                    />
-                  </div>
-                  <div className="size-[clamp(8px,2.5vw,10px)]">
-                    <Image
-                      alt=""
-                      src="/images/team-member-2.png"
-                      width={10}
-                      height={10}
-                      className="block max-w-none size-full"
-                    />
-                  </div>
+                  {members.map((_, index) => {
+                    const isActive = index === currentIndex;
+                    return (
+                      <button
+                        key={`team-dot-${index}`}
+                        type="button"
+                        onClick={() => goToSlide(index)}
+                        className="size-[clamp(8px,2.5vw,10px)] p-0 border-0 bg-transparent hover:opacity-80 transition-opacity"
+                        aria-label={`Go to team member ${index + 1}`}
+                      >
+                        <Image
+                          alt=""
+                          src={isActive ? "/images/team-member-1.png" : "/images/team-member-2.png"}
+                          width={10}
+                          height={10}
+                          className="block max-w-none size-full"
+                        />
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
             </div>
