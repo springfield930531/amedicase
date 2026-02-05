@@ -170,6 +170,15 @@ export type ImageOverlaySection = {
   overlayImage?: StrapiMedia | null;
 };
 
+export type CoordinatingBannerSection = {
+  __component: "sections.coordinating-banner";
+  enabled?: boolean;
+  title?: string;
+  backgroundImage?: StrapiMedia | null;
+  topIcon?: StrapiMedia | null;
+  bottomIcon?: StrapiMedia | null;
+};
+
 export type ContactInfoFormSection = {
   __component: "sections.contact-info-form";
   label?: string;

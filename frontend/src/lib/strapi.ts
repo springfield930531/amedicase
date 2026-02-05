@@ -1,23 +1,9 @@
+import { getStrapiPublicBaseUrl, strapiFetch } from "@/lib/strapi-client";
+import type { PageEntry, SeoData, StrapiMedia } from "@/lib/page-types";
+
 // Helper function to submit contact forms to Strapi
 // In browser, we need to use the public URL, not the internal Docker network URL
-const getStrapiUrl = () => {
-  if (typeof window !== 'undefined') {
-    // Client-side: prefer explicit Strapi public URL
-    const publicUrl = process.env.NEXT_PUBLIC_STRAPI_URL || process.env.NEXT_PUBLIC_SITE_URL;
-    return publicUrl || window.location.origin;
-  }
-  // Server-side: can use internal Docker network
-  return process.env.STRAPI_URL || process.env.NEXT_PUBLIC_STRAPI_URL || 'http://localhost:1337';
-};
-
-const getPublicStrapiUrl = () => {
-  const explicitPublic =
-    process.env.NEXT_PUBLIC_STRAPI_URL || process.env.NEXT_PUBLIC_SITE_URL;
-  if (typeof window !== 'undefined') {
-    return explicitPublic || window.location.origin;
-  }
-  return explicitPublic || 'http://localhost:1337';
-};
+const getStrapiUrl = () => getStrapiPublicBaseUrl();
 
 export interface ContactFormData {
   firstName: string;
@@ -28,6 +14,17 @@ export interface ContactFormData {
   message: string;
   source?: string; // e.g., 'contact-page', 'home-page', etc.
 }
+
+export type SiteSettings = {
+  header?: Record<string, any>;
+  footer?: Record<string, any>;
+  brandAssets?: {
+    siteName?: string;
+    favicon?: StrapiMedia | null;
+    appleTouchIcon?: StrapiMedia | null;
+  };
+  defaultSeo?: SeoData;
+};
 
 type StrapiRequestError = {
   status?: number;
@@ -129,7 +126,6 @@ export async function submitContactForm(
 }
 
 export async function getServicePage() {
-  const baseUrl = getPublicStrapiUrl();
   try {
     const params = new URLSearchParams();
     // Strapi v5 does not support populate=deep; explicitly populate needed media fields.
@@ -145,13 +141,13 @@ export async function getServicePage() {
     params.append("populate[whyChoose][populate][0]", "separatorImage");
     params.append("populate[whyChoose][populate][1]", "rightImage");
     params.append("populate[whyChoose][populate][2]", "rightOverlay");
-    const response = await fetch(`${baseUrl}/api/services-page?${params.toString()}`, {
-      cache: "no-store",
-    });
-    if (!response.ok) {
+    const payload = await strapiFetch<{ data?: { attributes?: unknown } }>(
+      `/api/services-page`,
+      { params }
+    );
+    if (!payload) {
       return null;
     }
-    const payload = await response.json();
     return payload?.data?.attributes || payload?.data || null;
   } catch (error) {
     console.error("Failed to fetch services page from Strapi:", error);
@@ -160,37 +156,84 @@ export async function getServicePage() {
 }
 
 export async function getPageBySlug(slug: string) {
-  const baseUrl = getPublicStrapiUrl();
   try {
     const params = new URLSearchParams();
     params.set("filters[slug][$eq]", slug);
+    params.set("populate[seo][populate]", "*");
     params.set("populate[sections][populate]", "*");
-    params.set("populate[sections][on][sections.services-page-hero][populate]", "*");
-    params.set("populate[sections][on][sections.services-page-pillars][populate][cards][populate]", "*");
-    params.set("populate[sections][on][sections.card-grid][populate][cards][populate]", "*");
-    params.set("populate[sections][on][sections.icon-steps][populate][steps][populate]", "*");
-    params.set("populate[sections][on][sections.team-showcase][populate][members][populate]", "*");
-    params.set("populate[sections][on][sections.about-team][populate][teamMembers][populate]", "*");
-    params.set("populate[sections][on][sections.service-grid][populate][services][populate]", "*");
-    params.set("populate[sections][on][sections.testimonials][populate][items][populate]", "*");
+
+    const addMediaPopulate = (component: string, field: string) => {
+      params.set(
+        `populate[sections][on][${component}][populate][${field}]`,
+        "true"
+      );
+    };
+    const addNestedPopulate = (component: string, field: string) => {
+      params.set(
+        `populate[sections][on][${component}][populate][${field}][populate]`,
+        "*"
+      );
+    };
+
+    addMediaPopulate("sections.services-page-hero", "backgroundImage");
+    addNestedPopulate("sections.services-page-pillars", "cards");
+    addMediaPopulate("sections.services-page-how-we-help", "bulletIcon");
+    addMediaPopulate("sections.services-page-quality", "backgroundImage");
+    addMediaPopulate("sections.services-page-quality", "desktopTopIcon");
+    addMediaPopulate("sections.services-page-quality", "desktopBottomIcon");
+    addMediaPopulate("sections.services-page-how-it-works", "illustration");
+    addMediaPopulate("sections.services-page-why-choose", "separatorImage");
+    addMediaPopulate("sections.services-page-why-choose", "rightImage");
+    addMediaPopulate("sections.services-page-why-choose", "rightOverlay");
+
+    addMediaPopulate("sections.about-hero", "backgroundImage");
+    addNestedPopulate("sections.about-team", "teamMembers");
+    addMediaPopulate("sections.about-team", "mobileProfilePhoto");
+    addMediaPopulate("sections.about-team", "dotImagePrimary");
+    addMediaPopulate("sections.about-team", "dotImageSecondary");
+    addMediaPopulate("sections.about-why-choose", "image");
+
+    addMediaPopulate("sections.page-hero", "backgroundImage");
+    addMediaPopulate("sections.image-overlay", "backgroundImage");
+    addMediaPopulate("sections.image-overlay", "overlayImage");
+
+    addMediaPopulate("sections.card-grid", "dotIcon");
+    addNestedPopulate("sections.card-grid", "cards");
+
+    addMediaPopulate("sections.icon-steps", "icon");
+    addNestedPopulate("sections.icon-steps", "steps");
+
+    addMediaPopulate("sections.process-stages", "arrowImage");
+    addMediaPopulate("sections.process-stages", "arrowFinalImage");
+
+    addMediaPopulate("sections.team-showcase", "supportGraphic");
+    addNestedPopulate("sections.team-showcase", "members");
+
+    addNestedPopulate("sections.testimonials", "items");
+    addNestedPopulate("sections.contact-block", "videoTestimonials");
+    addNestedPopulate("sections.service-grid", "services");
+    addNestedPopulate("sections.contact-info-form", "infoCards");
+    addNestedPopulate("sections.contact-info-form", "fields");
+    addNestedPopulate("sections.faq-list", "items");
+    addNestedPopulate("sections.process-stages", "stages");
+    addNestedPopulate("sections.benefit-cards", "cards");
+
     params.set("populate[template][populate]", "*");
-    const response = await fetch(`${baseUrl}/api/pages?${params.toString()}`, {
-      cache: "no-store",
+    const payload = await strapiFetch<{ data?: Array<PageEntry & { attributes?: PageEntry }> }>(`/api/pages`, {
+      params,
     });
-    if (!response.ok) {
+    if (!payload) {
       return null;
     }
-    const payload = await response.json();
     const entry = payload?.data?.[0];
-    return entry?.attributes || entry || null;
+    return (entry?.attributes || entry || null) as PageEntry | null;
   } catch (error) {
     console.error("Failed to fetch page from Strapi:", error);
     return null;
   }
 }
 
-export async function getSiteSettings() {
-  const baseUrl = getPublicStrapiUrl();
+export async function getSiteSettings(): Promise<SiteSettings | null> {
   try {
     const params = new URLSearchParams();
     params.set("populate[header][populate]", "*");
@@ -202,14 +245,14 @@ export async function getSiteSettings() {
     params.set("populate[footer][populate][legalLinks][populate]", "*");
     params.set("populate[brandAssets][populate]", "*");
     params.set("populate[defaultSeo][populate]", "*");
-    const response = await fetch(`${baseUrl}/api/site-setting?${params.toString()}`, {
-      cache: "no-store",
-    });
-    if (!response.ok) {
+    const payload = await strapiFetch<{ data?: { attributes?: SiteSettings } }>(
+      `/api/site-setting`,
+      { params }
+    );
+    if (!payload) {
       return null;
     }
-    const payload = await response.json();
-    return payload?.data?.attributes || payload?.data || null;
+    return (payload?.data?.attributes || payload?.data || null) as SiteSettings | null;
   } catch (error) {
     console.error("Failed to fetch site settings from Strapi:", error);
     return null;

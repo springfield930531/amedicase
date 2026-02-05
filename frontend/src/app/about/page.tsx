@@ -4,6 +4,7 @@ import { Footer } from "@/components/sections/Footer";
 import { GradientTitle } from "@/components/shared/GradientTitle";
 import { TitleBlock } from "@/components/shared/TitleBlock";
 import { TeamCarousel } from "@/components/sections/TeamCarousel";
+import { ContentUnavailable } from "@/components/shared/ContentUnavailable";
 import Link from "next/link";
 import Image from "next/image";
 import svgPaths from "@/lib/imports/svg-ie2km5jka3";
@@ -69,6 +70,20 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function AboutPage() {
   const page = (await getPageBySlug("about")) as PageEntry | null;
+  if (!page) {
+    if (process.env.NODE_ENV !== "production") {
+      console.warn("[strapi] About page content not available");
+    }
+    return (
+      <div className="min-h-screen bg-[#f1f5ff] relative overflow-x-hidden">
+        <Header />
+        <main className="flex flex-col items-start w-full overflow-x-hidden">
+          <ContentUnavailable />
+        </main>
+        <Footer />
+      </div>
+    );
+  }
   const sections = page?.sections || [];
   const hero = sections.find(
     (section): section is AboutHeroSection => section.__component === "sections.about-hero"

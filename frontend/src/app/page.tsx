@@ -22,6 +22,7 @@ type WhyChooseSectionData = Parameters<typeof WhyChooseSection>[0]["data"];
 type HowItWorksSectionData = Parameters<typeof HowItWorksSection>[0]["data"];
 type TeamSectionData = Parameters<typeof TeamSection>[0]["data"];
 type ContactSectionData = Parameters<typeof ContactSection>[0]["data"];
+type CoordinatingSectionData = Parameters<typeof CoordinatingSection>[0]["data"];
 
 export default async function Home() {
   const homePage = await fetchHomePage();
@@ -36,6 +37,7 @@ export default async function Home() {
   const processSteps = findSection<HowItWorksSectionData>("sections.process-steps");
   const teamShowcase = findSection<TeamSectionData>("sections.team-showcase");
   const contactBlock = findSection<ContactSectionData>("sections.contact-block");
+  const coordinatingBanner = findSection<CoordinatingSectionData>("sections.coordinating-banner");
 
   return (
     <div className="min-h-screen bg-[#f1f5ff] relative overflow-x-hidden">
@@ -64,7 +66,7 @@ export default async function Home() {
           <ServicesSection data={services} />
           <ImageSections data={imageHighlight} />
           <WhyChooseSection data={whyChoose} />
-          <CoordinatingSection />
+          <CoordinatingSection data={coordinatingBanner} />
           <HowItWorksSection data={processSteps} />
           <TeamSection data={teamShowcase} />
           <ContactSection data={contactBlock} />

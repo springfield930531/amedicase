@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Header } from "@/components/sections/Header";
 import { Footer } from "@/components/sections/Footer";
 import { TitleBlock } from "@/components/shared/TitleBlock";
+import { ContentUnavailable } from "@/components/shared/ContentUnavailable";
 import Image from "next/image";
 import { getPageBySlug } from "@/lib/strapi";
 import { getMediaUrl } from "@/lib/strapi-home";
@@ -35,6 +36,20 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function ContactPage() {
   const page = (await getPageBySlug("contact")) as PageEntry | null;
+  if (!page) {
+    if (process.env.NODE_ENV !== "production") {
+      console.warn("[strapi] Contact page content not available");
+    }
+    return (
+      <div className="min-h-screen bg-[#f1f5ff] relative overflow-x-hidden">
+        <Header />
+        <main className="flex flex-col items-start w-full overflow-x-hidden">
+          <ContentUnavailable />
+        </main>
+        <Footer />
+      </div>
+    );
+  }
   const sections = page?.sections || [];
   const hero = sections.find(
     (section): section is PageHeroSection => section.__component === "sections.page-hero"
