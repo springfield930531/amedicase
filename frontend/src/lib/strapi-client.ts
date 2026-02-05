@@ -47,6 +47,10 @@ const shouldDebugStrapi = () =>
   (process.env.STRAPI_DEBUG === "true" ||
     process.env.NEXT_PUBLIC_STRAPI_DEBUG === "true");
 
+const isBuildTime = () =>
+  process.env.NEXT_PHASE === "phase-production-build" ||
+  process.env.NEXT_PHASE === "phase-export";
+
 const buildStrapiUrl = (path: string, params?: URLSearchParams) => {
   const normalizedPath = path.startsWith("/") ? path : `/${path}`;
   const baseUrl = getStrapiBaseUrl();
@@ -124,7 +128,9 @@ export const strapiFetchStatic = async <T = unknown>(
   path: string,
   options: StrapiFetchOptions = {}
 ): Promise<T | null> =>
-  strapiFetchInternal<T>(path, options, { next: { revalidate: 300 } });
+  isBuildTime()
+    ? null
+    : strapiFetchInternal<T>(path, options, { next: { revalidate: 300 } });
 
 export const strapiFetchDynamic = async <T = unknown>(
   path: string,

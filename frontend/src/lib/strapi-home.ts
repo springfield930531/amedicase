@@ -28,8 +28,10 @@ export const fetchHomePage = async (): Promise<HomePageData | null> => {
     addMediaPopulate("sections.hero-section", "mobileBackground");
     addMediaPopulate("sections.hero-section", "logoImage");
     addMediaPopulate("sections.hero-section", "overlayIcon");
+    addNestedPopulate("sections.hero-section", "primaryCta");
 
     addNestedPopulate("sections.service-grid", "services");
+    addNestedPopulate("sections.service-grid", "cta");
 
     addMediaPopulate("sections.image-highlight", "backgroundImage");
     addMediaPopulate("sections.image-highlight", "logoImage");
@@ -41,11 +43,14 @@ export const fetchHomePage = async (): Promise<HomePageData | null> => {
     addMediaPopulate("sections.coordinating-banner", "bottomIcon");
 
     addMediaPopulate("sections.why-choose", "supportImage");
+    addNestedPopulate("sections.why-choose", "cta");
 
     addMediaPopulate("sections.process-steps", "illustration");
+    addNestedPopulate("sections.process-steps", "cta");
 
     addMediaPopulate("sections.team-showcase", "supportGraphic");
     addNestedPopulate("sections.team-showcase", "members");
+    addNestedPopulate("sections.team-showcase", "cta");
 
     addNestedPopulate("sections.testimonials", "items");
     addNestedPopulate("sections.contact-block", "videoTestimonials");
@@ -54,9 +59,13 @@ export const fetchHomePage = async (): Promise<HomePageData | null> => {
       "/api/home-page",
       { params }
     );
-    return (payload?.data?.attributes || payload?.data || null) as HomePageData | null;
+    return (payload?.data?.attributes || payload?.data || {
+      contentSections: [],
+    }) as HomePageData | null;
   } catch (error) {
-    console.error("Failed to fetch home page from Strapi:", error);
-    return null;
+    if (process.env.NODE_ENV !== "production") {
+      console.error("Failed to fetch home page from Strapi:", error);
+    }
+    return { contentSections: [] };
   }
 };

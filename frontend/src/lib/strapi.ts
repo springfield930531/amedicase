@@ -183,24 +183,32 @@ const fetchPageBySlug = async (
     };
 
     addMediaPopulate("sections.services-page-hero", "backgroundImage");
+    addNestedPopulate("sections.services-page-hero", "primaryCta");
+    addNestedPopulate("sections.services-page-hero", "secondaryCta");
     addNestedPopulate("sections.services-page-pillars", "cards");
     addMediaPopulate("sections.services-page-how-we-help", "bulletIcon");
     addMediaPopulate("sections.services-page-quality", "backgroundImage");
     addMediaPopulate("sections.services-page-quality", "desktopTopIcon");
     addMediaPopulate("sections.services-page-quality", "desktopBottomIcon");
     addMediaPopulate("sections.services-page-how-it-works", "illustration");
+    addNestedPopulate("sections.services-page-how-it-works", "cta");
     addMediaPopulate("sections.services-page-why-choose", "separatorImage");
     addMediaPopulate("sections.services-page-why-choose", "rightImage");
     addMediaPopulate("sections.services-page-why-choose", "rightOverlay");
 
     addMediaPopulate("sections.about-hero", "backgroundImage");
+    addNestedPopulate("sections.about-hero", "primaryCta");
     addNestedPopulate("sections.about-team", "teamMembers");
     addMediaPopulate("sections.about-team", "mobileProfilePhoto");
     addMediaPopulate("sections.about-team", "dotImagePrimary");
     addMediaPopulate("sections.about-team", "dotImageSecondary");
     addMediaPopulate("sections.about-why-choose", "image");
+    addNestedPopulate("sections.about-why-choose", "cta");
+    addNestedPopulate("sections.mission-values", "cta");
 
     addMediaPopulate("sections.page-hero", "backgroundImage");
+    addNestedPopulate("sections.page-hero", "cta");
+    addNestedPopulate("sections.page-hero", "ctaDesktop");
     addMediaPopulate("sections.image-overlay", "backgroundImage");
     addMediaPopulate("sections.image-overlay", "overlayImage");
 
@@ -209,16 +217,20 @@ const fetchPageBySlug = async (
 
     addMediaPopulate("sections.icon-steps", "icon");
     addNestedPopulate("sections.icon-steps", "steps");
+    addNestedPopulate("sections.icon-steps", "cta");
 
     addMediaPopulate("sections.process-stages", "arrowImage");
     addMediaPopulate("sections.process-stages", "arrowFinalImage");
+    addNestedPopulate("sections.process-stages", "cta");
 
     addMediaPopulate("sections.team-showcase", "supportGraphic");
     addNestedPopulate("sections.team-showcase", "members");
+    addNestedPopulate("sections.team-showcase", "cta");
 
     addNestedPopulate("sections.testimonials", "items");
     addNestedPopulate("sections.contact-block", "videoTestimonials");
     addNestedPopulate("sections.service-grid", "services");
+    addNestedPopulate("sections.service-grid", "cta");
     addNestedPopulate("sections.contact-info-form", "infoCards");
     addNestedPopulate("sections.contact-info-form", "fields");
     addNestedPopulate("sections.faq-list", "items");
@@ -249,11 +261,13 @@ export async function getPageBySlugDynamic(slug: string) {
 }
 
 export async function getSiteSettings(): Promise<SiteSettings | null> {
+  const fallback: SiteSettings = {
+    header: { navigation: [] },
+    footer: { columns: [], socialLinks: [], legalLinks: [] },
+  };
   try {
     const params = new URLSearchParams();
     params.set("populate[header][populate]", "*");
-    params.set("populate[header][populate][navigation][populate]", "*");
-    params.set("populate[header][populate][navigation][populate][children][populate]", "*");
     params.set("populate[footer][populate]", "*");
     params.set("populate[footer][populate][columns][populate]", "*");
     params.set("populate[footer][populate][socialLinks][populate]", "*");
@@ -265,11 +279,13 @@ export async function getSiteSettings(): Promise<SiteSettings | null> {
       { params, next: { revalidate: 300 } }
     );
     if (!payload) {
-      return null;
+      return fallback;
     }
-    return (payload?.data?.attributes || payload?.data || null) as SiteSettings | null;
+    return (payload?.data?.attributes || payload?.data || fallback) as SiteSettings | null;
   } catch (error) {
-    console.error("Failed to fetch site settings from Strapi:", error);
-    return null;
+    if (process.env.NODE_ENV !== "production") {
+      console.error("Failed to fetch site settings from Strapi:", error);
+    }
+    return fallback;
   }
 }

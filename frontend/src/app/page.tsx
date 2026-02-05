@@ -24,6 +24,8 @@ type TeamSectionData = Parameters<typeof TeamSection>[0]["data"];
 type ContactSectionData = Parameters<typeof ContactSection>[0]["data"];
 type CoordinatingSectionData = Parameters<typeof CoordinatingSection>[0]["data"];
 
+export const revalidate = 300;
+
 export default async function Home() {
   const homePage = await fetchHomePage();
   const sections = (homePage?.contentSections || []) as HomeSection[];
