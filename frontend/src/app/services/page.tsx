@@ -1069,45 +1069,45 @@ export default async function ServicesPage() {
                 {howItWorks?.label || "How It Works"}
               </p>
 
-              <div className="flex flex-col gap-[20px] items-start">
-                <div className="flex flex-col gap-[10px] items-start w-full">
-                  <p className="font-sans font-medium text-[20px] text-[#0b1737] leading-[1.2] tracking-[-0.4px] w-full" style={{ fontVariationSettings: "'wdth' 100" }}>
+              <div className="flex flex-col gap-[20px] items-start w-full max-w-full overflow-x-hidden">
+                <div className="flex flex-col gap-[10px] items-start w-full max-w-full">
+                  <p className="font-sans font-medium text-[20px] text-[#0b1737] leading-[1.2] tracking-[-0.4px] w-full max-w-full break-words" style={{ fontVariationSettings: "'wdth' 100" }}>
                     {howItWorksSteps[0]?.title || "Discovery & Planning"}
                   </p>
-                  <p className="font-sans font-normal text-[13px] text-[#2b4691] leading-[1.4] tracking-[-0.26px] w-full" style={{ fontVariationSettings: "'wdth' 100" }}>
+                  <p className="font-sans font-normal text-[13px] text-[#2b4691] leading-[1.4] tracking-[-0.26px] w-full max-w-full break-words" style={{ fontVariationSettings: "'wdth' 100" }}>
                     {renderWithBreaks(
                       howItWorksSteps[0]?.description ||
                         "We identify your workflow needs and define clear KPIs."
                     )}
                   </p>
                 </div>
-                <div className="flex flex-col gap-[10px] items-start w-full">
-                  <p className="font-sans font-medium text-[20px] text-[#0b1737] leading-[1.2] tracking-[-0.4px] w-full" style={{ fontVariationSettings: "'wdth' 100" }}>
+                <div className="flex flex-col gap-[10px] items-start w-full max-w-full">
+                  <p className="font-sans font-medium text-[20px] text-[#0b1737] leading-[1.2] tracking-[-0.4px] w-full max-w-full break-words" style={{ fontVariationSettings: "'wdth' 100" }}>
                     {howItWorksSteps[1]?.title || "Onboarding & Training"}
                   </p>
-                  <p className="font-sans font-normal text-[13px] text-[#2b4691] leading-[1.4] tracking-[-0.26px] w-full" style={{ fontVariationSettings: "'wdth' 100" }}>
+                  <p className="font-sans font-normal text-[13px] text-[#2b4691] leading-[1.4] tracking-[-0.26px] w-full max-w-full break-words" style={{ fontVariationSettings: "'wdth' 100" }}>
                     {renderWithBreaks(
                       howItWorksSteps[1]?.description ||
                         "Your dedicated Amedicase team gets trained on\nyour EMR tools and processes."
                     )}
                   </p>
                 </div>
-                <div className="flex flex-col gap-[10px] items-start w-full">
-                  <p className="font-sans font-medium text-[20px] text-[#0b1737] leading-[1.2] tracking-[-0.4px] w-full" style={{ fontVariationSettings: "'wdth' 100" }}>
+                <div className="flex flex-col gap-[10px] items-start w-full max-w-full">
+                  <p className="font-sans font-medium text-[20px] text-[#0b1737] leading-[1.2] tracking-[-0.4px] w-full max-w-full break-words" style={{ fontVariationSettings: "'wdth' 100" }}>
                     {howItWorksSteps[2]?.title || "Execution & Support"}
                   </p>
-                  <p className="font-sans font-normal text-[13px] text-[#2b4691] leading-[1.4] tracking-[-0.26px] w-full" style={{ fontVariationSettings: "'wdth' 100" }}>
+                  <p className="font-sans font-normal text-[13px] text-[#2b4691] leading-[1.4] tracking-[-0.26px] w-full max-w-full break-words" style={{ fontVariationSettings: "'wdth' 100" }}>
                     {renderWithBreaks(
                       howItWorksSteps[2]?.description ||
                         "We manage daily operations, reports, and QA checks."
                     )}
                   </p>
                 </div>
-                <div className="flex flex-col gap-[10px] items-start w-full">
-                  <p className="font-sans font-medium text-[20px] text-[#0b1737] leading-[1.2] tracking-[-0.4px] w-full" style={{ fontVariationSettings: "'wdth' 100" }}>
+                <div className="flex flex-col gap-[10px] items-start w-full max-w-full">
+                  <p className="font-sans font-medium text-[20px] text-[#0b1737] leading-[1.2] tracking-[-0.4px] w-full max-w-full break-words" style={{ fontVariationSettings: "'wdth' 100" }}>
                     {howItWorksSteps[3]?.title || "Ongoing Optimization"}
                   </p>
-                  <p className="font-sans font-normal text-[13px] text-[#2b4691] leading-[1.4] tracking-[-0.26px] w-full" style={{ fontVariationSettings: "'wdth' 100" }}>
+                  <p className="font-sans font-normal text-[13px] text-[#2b4691] leading-[1.4] tracking-[-0.26px] w-full max-w-full break-words" style={{ fontVariationSettings: "'wdth' 100" }}>
                     {renderWithBreaks(
                       howItWorksSteps[3]?.description ||
                         "Continuous performance tracking and scaling\nwhen needed."
@@ -1119,7 +1119,7 @@ export default async function ServicesPage() {
               {/* CTA Button */}
               <div className="mt-8">
                 <a
-                  className="w-full backdrop-blur-[3.777px] bg-gradient-to-b from-[rgba(45,78,174,0.64)] to-[rgba(34,62,140,0.48)] rounded-[8px] border border-[rgba(50,59,159,0.8)] shadow-[0px_1px_4px_0px_rgba(27,30,79,0.3)] px-5 py-[17px] font-sans font-semibold text-[18px] text-[#f1f5ff] leading-[110%] hover:opacity-90 transition-opacity"
+                  className="block w-full max-w-full backdrop-blur-[3.777px] bg-gradient-to-b from-[rgba(45,78,174,0.64)] to-[rgba(34,62,140,0.48)] rounded-[8px] border border-[rgba(50,59,159,0.8)] shadow-[0px_1px_4px_0px_rgba(27,30,79,0.3)] px-5 py-[17px] font-sans font-semibold text-[18px] text-[#f1f5ff] leading-[110%] hover:opacity-90 transition-opacity"
                   style={{ fontVariationSettings: "'wdth' 100" }}
                   href={howItWorksCtaUrl}
                   target={howItWorksCtaExternal ? "_blank" : undefined}

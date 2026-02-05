@@ -27,7 +27,9 @@ const baseMetadata: Metadata = {
 
 export async function generateMetadata(): Promise<Metadata> {
   const settings = await getSiteSettings();
-  const faviconUrl = getMediaUrl(settings?.brandAssets?.favicon) || "/favicon.ico";
+  const faviconUrl =
+    getMediaUrl(settings?.brandAssets?.favicon) ||
+    "https://amedicase.com/uploads/Vector_b7131a7800.png";
   const appleIconUrl = getMediaUrl(settings?.brandAssets?.appleTouchIcon);
   const seo = settings?.defaultSeo;
   const ogImageUrl = seo?.ogImage ? getMediaUrl(seo.ogImage) : null;
