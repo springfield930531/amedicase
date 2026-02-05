@@ -10,7 +10,7 @@ type CoordinatingSectionProps = {
 export function CoordinatingSection({ data }: CoordinatingSectionProps) {
   const backgroundUrl =
     getMediaUrl(data?.backgroundImage) ||
-    "https://amedicase.com/uploads/1_148_6748576d24.jpg";
+    "https://amedicase.com/uploads/Mask_group_9_a5bc1d7013.jpg";
   const title = data?.title || "Coordinating better outcomes.";
   const topIconUrl = getMediaUrl(data?.topIcon);
   const bottomIconUrl = getMediaUrl(data?.bottomIcon);
