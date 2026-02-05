@@ -119,7 +119,7 @@ export default async function AboutPage() {
       subtitleDesktop:
         "From billing and intake to back-office support, our healthcare-trained teams\nkeep your agency efficient, compliant and ready to grow.",
       backgroundImage: "/images/services/hero-services.jpg",
-      primaryCta: { label: "Book a Free Consultation", url: "#" },
+      primaryCta: { label: "Book a Free Consultation", url: "#", isExternal: false },
       secondaryText: "Meet the Team",
     },
     story: {

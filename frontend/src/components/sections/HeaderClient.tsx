@@ -119,8 +119,11 @@ export function HeaderClient({ logoUrl, logoAlt, navigation, cta }: HeaderClient
             {/* Tablet Navigation */}
             <nav className="flex items-center gap-6">
               {navItems.map((item, index) => {
-                const href = item.url || "#";
-                const external = item.isExternal || isExternal(href);
+                const href = normalizeHref(item.url) || "#";
+                const external =
+                  typeof item.isExternal === "boolean"
+                    ? item.isExternal
+                    : isExternalHref(href);
                 return (
                   <Link
                     key={`${item.label || "nav"}-${index}`}

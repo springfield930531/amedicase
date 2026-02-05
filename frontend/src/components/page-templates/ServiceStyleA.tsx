@@ -54,8 +54,8 @@ export function ServiceStyleA({ page }: ServiceStyleAProps) {
         "From patient intake to billing and operations — Amedicase helps U.S. home health providers streamline workflows, cut costs, and focus on patient care.",
       subtitleDesktop:
         "From patient intake to billing and operations — Amedicase helps\nU.S. home health providers streamline workflows, cut costs, and focus on patient care.",
-      primaryCta: { label: "Book a Free Consultation", url: "#" },
-      secondaryCta: { label: "Download Service Overview", url: "#" },
+      primaryCta: { label: "Book a Free Consultation", url: "#", isExternal: false },
+      secondaryCta: { label: "Download Service Overview", url: "#", isExternal: false },
     },
     servicePillars: {
       label: "Our Service Pillars",
@@ -132,7 +132,7 @@ export function ServiceStyleA({ page }: ServiceStyleAProps) {
         { title: "Execution & Support", description: "We manage daily operations, reports, and QA checks." },
         { title: "Ongoing Optimization", description: "Continuous performance tracking and scaling when needed." },
       ],
-      cta: { label: "Start Your Free Discovery Call", url: "#" },
+      cta: { label: "Start Your Free Discovery Call", url: "#", isExternal: false },
     },
     whyChoose: {
       label: "Why Choose Amedicase",
