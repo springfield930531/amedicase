@@ -41,7 +41,8 @@ export function WhyChooseSection({ data }: WhyChooseSectionProps) {
   const ctaLabel = data?.cta?.label || "More About Us";
   const ctaUrl = data?.cta?.url || "/about";
   const supportImage =
-    getMediaUrl(data?.supportImage) || "/images/why-choose-image-figma.png";
+    getMediaUrl(data?.supportImage) ||
+    "https://amedicase.com/uploads/1_164_54add90697.jpg";
   const isRemoteUrl = (url: string) => /^https?:\/\//i.test(url);
   const isExternal = (url: string) => /^https?:\/\//i.test(url) || /^mailto:/i.test(url);
   const ctaExternal = data?.cta?.isExternal || isExternal(ctaUrl);
