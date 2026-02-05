@@ -76,14 +76,19 @@ export type ProcessStage = {
 
 export type ContactBlockSection = {
   __component: "sections.contact-block";
+  enabled?: boolean;
   label?: string;
   title?: string;
   videoTestimonials?: Array<{
     name?: string;
     position?: string;
+    quote?: string | null;
     youtubeId?: string;
   }>;
   contactEmail?: string;
+  contactPhone?: string | null;
+  contactAddress?: string | null;
+  formDisclaimer?: string | null;
   socialLinks?: Array<{
     platform?: string;
     url?: string;

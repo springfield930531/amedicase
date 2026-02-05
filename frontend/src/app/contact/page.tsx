@@ -7,6 +7,7 @@ import Image from "next/image";
 import { getPageBySlugDynamic } from "@/lib/strapi";
 import { getMediaUrl } from "@/lib/strapi-home";
 import type {
+  ContactBlockSection,
   ContactInfoFormSection,
   FaqListSection,
   ImageOverlaySection,
@@ -62,6 +63,9 @@ export default async function ContactPage() {
   );
   const overlays = sections.filter(
     (section): section is ImageOverlaySection => section.__component === "sections.image-overlay"
+  );
+  const contactBlock = sections.find(
+    (section): section is ContactBlockSection => section.__component === "sections.contact-block"
   );
   const contactInfo = sections.find(
     (section): section is ContactInfoFormSection => section.__component === "sections.contact-info-form"
@@ -159,9 +163,25 @@ export default async function ContactPage() {
     : fallback.overlays;
   const isRemoteUrl = (url: string) => /^https?:\/\//i.test(url);
 
+  const infoCards =
+    contactInfo?.infoCards?.length
+      ? contactInfo.infoCards
+      : fallback.contactInfo.infoCards.map((card) => {
+          if (card.title === "Main Office" && contactBlock?.contactAddress) {
+            return { ...card, body: contactBlock.contactAddress };
+          }
+          if (card.title === "Email" && contactBlock?.contactEmail) {
+            return { ...card, body: contactBlock.contactEmail };
+          }
+          if (card.title === "Phone" && contactBlock?.contactPhone) {
+            return { ...card, body: contactBlock.contactPhone };
+          }
+          return card;
+        });
+
   const infoData = {
     label: contactInfo?.label || fallback.contactInfo.label,
-    infoCards: contactInfo?.infoCards?.length ? contactInfo.infoCards : fallback.contactInfo.infoCards,
+    infoCards,
     formTitle: contactInfo?.formTitle || fallback.contactInfo.formTitle,
     fields: contactInfo?.fields?.length ? contactInfo.fields : fallback.contactInfo.fields,
     submitLabel: contactInfo?.submitLabel || fallback.contactInfo.submitLabel,
