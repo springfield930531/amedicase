@@ -67,11 +67,10 @@ export const getMediaUrl = (media?: StrapiMedia | null) => {
   return `${getStrapiPublicUrl()}${url}`;
 };
 
-export const strapiFetch = async <T = unknown>(
-  path: string,
-  options: StrapiFetchOptions = {}
-): Promise<T | null> => {
-  const url = buildStrapiUrl(path, options.params);
+const buildFetchOptions = (
+  options: StrapiFetchOptions,
+  defaults?: { cache?: RequestCache; next?: { revalidate?: number } }
+) => {
   const headers: HeadersInit = {};
   const token = process.env.STRAPI_API_TOKEN;
   if (token) {
@@ -84,9 +83,21 @@ export const strapiFetch = async <T = unknown>(
     fetchOptions.next = options.next;
   } else if (options.cache) {
     fetchOptions.cache = options.cache;
-  } else {
-    fetchOptions.cache = "no-store";
+  } else if (defaults?.next) {
+    fetchOptions.next = defaults.next;
+  } else if (defaults?.cache) {
+    fetchOptions.cache = defaults.cache;
   }
+  return fetchOptions;
+};
+
+const strapiFetchInternal = async <T = unknown>(
+  path: string,
+  options: StrapiFetchOptions,
+  defaults?: { cache?: RequestCache; next?: { revalidate?: number } }
+): Promise<T | null> => {
+  const url = buildStrapiUrl(path, options.params);
+  const fetchOptions = buildFetchOptions(options, defaults);
 
   const response = await fetch(url, fetchOptions);
   let payload: T | null = null;
@@ -108,6 +119,18 @@ export const strapiFetch = async <T = unknown>(
 
   return payload;
 };
+
+export const strapiFetchStatic = async <T = unknown>(
+  path: string,
+  options: StrapiFetchOptions = {}
+): Promise<T | null> =>
+  strapiFetchInternal<T>(path, options, { next: { revalidate: 300 } });
+
+export const strapiFetchDynamic = async <T = unknown>(
+  path: string,
+  options: StrapiFetchOptions = {}
+): Promise<T | null> =>
+  strapiFetchInternal<T>(path, options, { cache: "no-store" });
 
 export const getStrapiPublicBaseUrl = getStrapiPublicUrl;
 export const getStrapiServerBaseUrl = getStrapiBaseUrl;

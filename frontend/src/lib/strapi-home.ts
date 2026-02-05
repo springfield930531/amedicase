@@ -1,4 +1,4 @@
-import { getMediaUrl, strapiFetch } from "@/lib/strapi-client";
+import { getMediaUrl, strapiFetchStatic } from "@/lib/strapi-client";
 
 export type HomePageData = {
   contentSections?: Array<Record<string, unknown>>;
@@ -50,7 +50,7 @@ export const fetchHomePage = async (): Promise<HomePageData | null> => {
     addNestedPopulate("sections.testimonials", "items");
     addNestedPopulate("sections.contact-block", "videoTestimonials");
 
-    const payload = await strapiFetch<{ data?: { attributes?: HomePageData } }>(
+    const payload = await strapiFetchStatic<{ data?: { attributes?: HomePageData } }>(
       "/api/home-page",
       { params }
     );

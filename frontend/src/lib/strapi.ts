@@ -1,4 +1,8 @@
-import { getStrapiPublicBaseUrl, strapiFetch } from "@/lib/strapi-client";
+import {
+  getStrapiPublicBaseUrl,
+  strapiFetchDynamic,
+  strapiFetchStatic,
+} from "@/lib/strapi-client";
 import type { PageEntry, SeoData, StrapiMedia } from "@/lib/page-types";
 
 // Helper function to submit contact forms to Strapi
@@ -141,7 +145,7 @@ export async function getServicePage() {
     params.append("populate[whyChoose][populate][0]", "separatorImage");
     params.append("populate[whyChoose][populate][1]", "rightImage");
     params.append("populate[whyChoose][populate][2]", "rightOverlay");
-    const payload = await strapiFetch<{ data?: { attributes?: unknown } }>(
+    const payload = await strapiFetchStatic<{ data?: { attributes?: unknown } }>(
       `/api/services-page`,
       { params }
     );
@@ -155,7 +159,10 @@ export async function getServicePage() {
   }
 }
 
-export async function getPageBySlug(slug: string) {
+const fetchPageBySlug = async (
+  slug: string,
+  fetcher: typeof strapiFetchStatic
+) => {
   try {
     const params = new URLSearchParams();
     params.set("filters[slug][$eq]", slug);
@@ -219,7 +226,7 @@ export async function getPageBySlug(slug: string) {
     addNestedPopulate("sections.benefit-cards", "cards");
 
     params.set("populate[template][populate]", "*");
-    const payload = await strapiFetch<{ data?: Array<PageEntry & { attributes?: PageEntry }> }>(`/api/pages`, {
+    const payload = await fetcher<{ data?: Array<PageEntry & { attributes?: PageEntry }> }>(`/api/pages`, {
       params,
     });
     if (!payload) {
@@ -231,6 +238,14 @@ export async function getPageBySlug(slug: string) {
     console.error("Failed to fetch page from Strapi:", error);
     return null;
   }
+};
+
+export async function getPageBySlug(slug: string) {
+  return fetchPageBySlug(slug, strapiFetchStatic);
+}
+
+export async function getPageBySlugDynamic(slug: string) {
+  return fetchPageBySlug(slug, strapiFetchDynamic);
 }
 
 export async function getSiteSettings(): Promise<SiteSettings | null> {
@@ -245,9 +260,9 @@ export async function getSiteSettings(): Promise<SiteSettings | null> {
     params.set("populate[footer][populate][legalLinks][populate]", "*");
     params.set("populate[brandAssets][populate]", "*");
     params.set("populate[defaultSeo][populate]", "*");
-    const payload = await strapiFetch<{ data?: { attributes?: SiteSettings } }>(
+    const payload = await strapiFetchStatic<{ data?: { attributes?: SiteSettings } }>(
       `/api/site-setting`,
-      { params }
+      { params, next: { revalidate: 300 } }
     );
     if (!payload) {
       return null;
