@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { ServiceStyleA } from "@/components/page-templates/ServiceStyleA";
-import { ServiceStyleB } from "@/components/page-templates/ServiceStyleB";
-import { ServiceStyleC } from "@/components/page-templates/ServiceStyleC";
-import { LegalStyle } from "@/components/page-templates/LegalStyle";
+import { Header } from "@/components/sections/Header";
+import { Footer } from "@/components/sections/Footer";
+import { ContentUnavailable } from "@/components/shared/ContentUnavailable";
+import { SectionsRenderer } from "@/components/sections/SectionsRenderer";
 import { getPageBySlugDynamic } from "@/lib/strapi";
 import { getMediaUrl } from "@/lib/strapi-home";
 import type { PageEntry } from "@/lib/page-types";
@@ -16,47 +16,6 @@ type DynamicPageProps = {
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
-
-const getTemplateKey = (page: PageEntry | null) =>
-  page?.template?.key ||
-  page?.template?.attributes?.key ||
-  page?.template?.data?.attributes?.key ||
-  null;
-
-const inferTemplateKeyFromSections = (page: PageEntry | null) => {
-  const sections = page?.sections || [];
-  const componentTypes = new Set(sections.map((section) => section.__component).filter(Boolean));
-
-  // Services long-form page sections (services-page-hero, pillars, etc.)
-  if (
-    componentTypes.has("sections.services-page-hero") ||
-    componentTypes.has("sections.services-page-pillars") ||
-    componentTypes.has("sections.services-page-how-we-help")
-  ) {
-    return "service-style-a";
-  }
-
-  // Home Health / Hospice style sections.
-  if (componentTypes.has("sections.benefit-cards") || componentTypes.has("sections.icon-steps")) {
-    return "service-style-b";
-  }
-
-  // Vertical service pages (creative-development, customer-support, etc.) are built from these blocks.
-  if (componentTypes.has("sections.card-grid") || componentTypes.has("sections.process-stages")) {
-    return "service-style-c";
-  }
-
-  // Simple/legal pages are usually just hero + story.
-  if (
-    componentTypes.has("sections.page-hero") &&
-    componentTypes.has("sections.story-block") &&
-    !componentTypes.has("sections.contact-block")
-  ) {
-    return "legal-style";
-  }
-
-  return null;
-};
 
 export async function generateMetadata({ params }: DynamicPageProps): Promise<Metadata> {
   const page = (await getPageBySlugDynamic(params.slug)) as PageEntry | null;
@@ -79,27 +38,31 @@ export async function generateMetadata({ params }: DynamicPageProps): Promise<Me
   };
 }
 
-export default async function DynamicServicePage({ params }: DynamicPageProps) {
+export default async function DynamicPage({ params }: DynamicPageProps) {
   const page = (await getPageBySlugDynamic(params.slug)) as PageEntry | null;
   if (!page) {
     notFound();
   }
 
-  const templateKey = getTemplateKey(page) || inferTemplateKeyFromSections(page);
-  if (!templateKey) {
-    notFound();
+  if (!page.sections?.length) {
+    return (
+      <div className="min-h-screen bg-[#f1f5ff] relative overflow-x-hidden">
+        <Header />
+        <main className="flex flex-col items-start w-full overflow-x-hidden">
+          <ContentUnavailable />
+        </main>
+        <Footer />
+      </div>
+    );
   }
 
-  switch (templateKey) {
-    case "service-style-a":
-      return <ServiceStyleA page={page} />;
-    case "service-style-b":
-      return <ServiceStyleB page={page} />;
-    case "service-style-c":
-      return <ServiceStyleC page={page} />;
-    case "legal-style":
-      return <LegalStyle page={page} />;
-    default:
-      notFound();
-  }
+  return (
+    <div className="min-h-screen bg-[#f1f5ff] relative overflow-x-hidden">
+      <Header />
+      <main className="relative z-10 overflow-x-hidden">
+        <SectionsRenderer sections={page.sections} page={{ title: page.title, slug: page.slug }} />
+      </main>
+      <Footer />
+    </div>
+  );
 }
