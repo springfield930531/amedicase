@@ -3,7 +3,9 @@ FROM node:20-alpine AS builder
 WORKDIR /app
 # Copy deps manifests and install
 COPY package.json package-lock.json ./
-RUN --mount=type=cache,target=/root/.npm npm ci
+# Avoid BuildKit-only syntax so the image can be built reliably even if BuildKit
+# is disabled/unstable on the host.
+RUN npm ci
 # Copy source and build
 COPY . .
 RUN npm run build
