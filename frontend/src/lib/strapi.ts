@@ -171,27 +171,40 @@ const fetchPageBySlug = async (
         "*"
       );
     };
+    const includeSection = (component: string) => {
+      // Strapi v5: once you use `populate[sections][on]`, the API only returns
+      // the components you whitelist under `on`. For text-only sections (no
+      // media/relations) we still need to explicitly include them.
+      params.set(`populate[sections][on][${component}][populate]`, "*");
+    };
 
     addMediaPopulate("sections.services-page-hero", "backgroundImage");
     addNestedPopulate("sections.services-page-hero", "primaryCta");
     addNestedPopulate("sections.services-page-hero", "secondaryCta");
     addNestedPopulate("sections.services-page-pillars", "cards");
+    addNestedPopulate("sections.services-page-how-we-help", "benefits");
     addMediaPopulate("sections.services-page-how-we-help", "bulletIcon");
     addMediaPopulate("sections.services-page-quality", "backgroundImage");
     addMediaPopulate("sections.services-page-quality", "desktopTopIcon");
     addMediaPopulate("sections.services-page-quality", "desktopBottomIcon");
+    addNestedPopulate("sections.services-page-how-it-works", "steps");
     addMediaPopulate("sections.services-page-how-it-works", "illustration");
     addNestedPopulate("sections.services-page-how-it-works", "cta");
+    addNestedPopulate("sections.services-page-why-choose", "benefits");
     addMediaPopulate("sections.services-page-why-choose", "separatorImage");
     addMediaPopulate("sections.services-page-why-choose", "rightImage");
     addMediaPopulate("sections.services-page-why-choose", "rightOverlay");
 
     addMediaPopulate("sections.about-hero", "backgroundImage");
     addNestedPopulate("sections.about-hero", "primaryCta");
+    addNestedPopulate("sections.mission-values", "cards");
+    includeSection("sections.story-block");
     addNestedPopulate("sections.about-team", "teamMembers");
     addMediaPopulate("sections.about-team", "mobileProfilePhoto");
     addMediaPopulate("sections.about-team", "dotImagePrimary");
     addMediaPopulate("sections.about-team", "dotImageSecondary");
+    includeSection("sections.video-embed");
+    addNestedPopulate("sections.about-why-choose", "benefits");
     addMediaPopulate("sections.about-why-choose", "image");
     addNestedPopulate("sections.about-why-choose", "cta");
     addNestedPopulate("sections.mission-values", "cta");
@@ -212,6 +225,7 @@ const fetchPageBySlug = async (
     addMediaPopulate("sections.process-stages", "arrowImage");
     addMediaPopulate("sections.process-stages", "arrowFinalImage");
     addNestedPopulate("sections.process-stages", "cta");
+    includeSection("sections.process-why");
 
     addMediaPopulate("sections.team-showcase", "supportGraphic");
     addNestedPopulate("sections.team-showcase", "members");
@@ -219,6 +233,7 @@ const fetchPageBySlug = async (
 
     addNestedPopulate("sections.testimonials", "items");
     addNestedPopulate("sections.contact-block", "videoTestimonials");
+    addNestedPopulate("sections.contact-block", "socialLinks");
     addNestedPopulate("sections.service-grid", "services");
     addNestedPopulate("sections.service-grid", "cta");
     addNestedPopulate("sections.contact-info-form", "infoCards");
@@ -226,6 +241,7 @@ const fetchPageBySlug = async (
     addNestedPopulate("sections.faq-list", "items");
     addNestedPopulate("sections.process-stages", "stages");
     addNestedPopulate("sections.benefit-cards", "cards");
+    includeSection("shared.background-pattern");
 
     params.set("populate[template][populate]", "*");
     const payload = await fetcher<{ data?: Array<PageEntry & { attributes?: PageEntry }> }>(`/api/pages`, {
