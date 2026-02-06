@@ -849,104 +849,50 @@ export default async function ServicesPage() {
             } as ExtendedCSSProperties}>
               {howWeHelp?.label || "How We Help Home Health Agencies"}
             </p>
-            <h2 className="font-sans font-semibold text-[33px] lg:text-[52px] text-[#000618] leading-[1.1] tracking-[-0.66px] lg:tracking-[-1.04px] mb-8 lg:mb-0 lg:w-[952px] whitespace-pre-wrap" style={{ fontVariationSettings: "'wdth' 100" }}>
+            <h2 className="font-sans font-semibold text-[33px] lg:text-[52px] text-[#000618] leading-[1.1] tracking-[-0.66px] lg:tracking-[-1.04px] mb-8 lg:mb-[48px] lg:w-[952px] whitespace-pre-wrap" style={{ fontVariationSettings: "'wdth' 100" }}>
               {howWeHelp?.title || "Designed to Help You Operate Efficiently and Scale with Confidence."}
             </h2>
             
             {/* Benefit Items - Refactored with flexbox structure */}
-            <div className="flex flex-col gap-0 items-start">
-              {/* Benefit 1 - Using flexbox layout */}
-              <div className="relative w-full max-w-[320px] lg:max-w-none pb-[3px]">
-                <div className="flex items-start gap-[10px]">
-                  {/* Decorative card - absolute positioning is appropriate for decorative element */}
-                  <div className="backdrop-blur-[2.667px] backdrop-filter bg-gradient-to-b from-[rgba(204,211,234,0.02)] to-[rgba(80,86,104,0.01)] rounded-[10.667px] border-[0.667px] border-[rgba(99,103,146,0.5)] border-solid w-[30px] h-full min-h-[60px] shadow-[0px_2.667px_5.333px_0px_rgba(114,116,146,0.3)] flex-shrink-0" />
-                  {/* Icon dot - absolute positioning for precise placement */}
-                  <div className="absolute left-[20px] top-[20px] w-[10px] h-[10px] z-10">
-                    <div className="absolute inset-[-40%]">
-                      <Image
-                        alt=""
-                        className="block max-w-none size-full"
-                        src={getUrl(howWeHelpBulletIcon, "/images/services/icon-dot.svg")}
-                        width={10}
-                        height={10}
-                        style={{ filter: `blur(${howWeHelp?.bulletIconBlur ?? 2}px)` }}
-                        unoptimized={isRemoteUrl(getUrl(howWeHelpBulletIcon, "/images/services/icon-dot.svg"))}
-                      />
+            <div className="flex flex-col gap-5 lg:gap-7 items-start">
+              {(howWeHelp?.benefits?.length ? howWeHelp.benefits : fallback.howWeHelp.benefits).map(
+                (benefit, index) => (
+                  <div
+                    key={`how-we-help-benefit-${index}`}
+                    className="w-full max-w-[320px] lg:max-w-none"
+                  >
+                    <div className="flex items-stretch gap-4 lg:gap-6">
+                      <div className="relative flex-shrink-0 w-[30px] self-stretch min-h-[60px] backdrop-blur-[2.667px] backdrop-filter bg-gradient-to-b from-[rgba(204,211,234,0.02)] to-[rgba(80,86,104,0.01)] rounded-[10.667px] border-[0.667px] border-[rgba(99,103,146,0.5)] border-solid shadow-[0px_2.667px_5.333px_0px_rgba(114,116,146,0.3)]">
+                        <div className="absolute left-1/2 top-[18px] w-[10px] h-[10px] -translate-x-1/2 z-10">
+                          <div className="absolute inset-[-40%]">
+                            <Image
+                              alt=""
+                              className="block max-w-none size-full"
+                              src={getUrl(howWeHelpBulletIcon, "/images/services/icon-dot.svg")}
+                              width={10}
+                              height={10}
+                              style={{ filter: `blur(${howWeHelp?.bulletIconBlur ?? 2}px)` }}
+                              unoptimized={isRemoteUrl(
+                                getUrl(howWeHelpBulletIcon, "/images/services/icon-dot.svg")
+                              )}
+                            />
+                          </div>
+                        </div>
+                      </div>
+                      <p
+                        className="font-sans font-medium leading-[1.2] pt-3 lg:pt-[18px] text-[clamp(19px,2.5vw,23px)] lg:text-[33px] text-blue-900 tracking-[-0.4px] lg:tracking-[-0.66px] flex-1"
+                        style={{
+                          fontVariationSettings: "'wdth' 100",
+                          textRendering: "optimizeLegibility",
+                          WebkitFontSmoothing: "antialiased",
+                        }}
+                      >
+                        {benefit?.label || ""}
+                      </p>
                     </div>
                   </div>
-                  {/* Text content */}
-                  <p 
-                    className="font-sans font-medium leading-[1.2] ml-[12px] mt-[41px] mb-[3px] text-[clamp(19px,2.5vw,23px)] lg:text-[33px] text-blue-900 tracking-[-0.4px] lg:tracking-[-0.66px] flex-1"
-                    style={{ 
-                      fontVariationSettings: "'wdth' 100",
-                      textRendering: 'optimizeLegibility',
-                      WebkitFontSmoothing: 'antialiased'
-                    }}
-                  >
-                    {howWeHelp?.benefits?.[0]?.label || "Reduce Costs up to 60% without compromising HIPAA compliance."}
-                  </p>
-                </div>
-              </div>
-
-              {/* Benefit 2 */}
-              <div className="relative w-full max-w-[320px] lg:max-w-none pb-[3px]">
-                <div className="flex items-start gap-[10px]">
-                  <div className="backdrop-blur-[2.667px] backdrop-filter bg-gradient-to-b from-[rgba(204,211,234,0.02)] to-[rgba(80,86,104,0.01)] rounded-[10.667px] border-[0.667px] border-[rgba(99,103,146,0.5)] border-solid w-[30px] h-full min-h-[60px] shadow-[0px_2.667px_5.333px_0px_rgba(114,116,146,0.3)] flex-shrink-0" />
-                  <div className="absolute left-[20px] top-[20px] w-[10px] h-[10px] z-10">
-                    <div className="absolute inset-[-40%]">
-                      <Image
-                        alt=""
-                        className="block max-w-none size-full"
-                        src={getUrl(howWeHelpBulletIcon, "/images/services/icon-dot.svg")}
-                        width={10}
-                        height={10}
-                        style={{ filter: `blur(${howWeHelp?.bulletIconBlur ?? 2}px)` }}
-                        unoptimized={isRemoteUrl(getUrl(howWeHelpBulletIcon, "/images/services/icon-dot.svg"))}
-                      />
-                    </div>
-                  </div>
-                  <p 
-                    className="font-sans font-medium leading-[1.2] ml-[12px] mt-[41px] mb-[3px] text-[clamp(19px,2.5vw,23px)] lg:text-[33px] text-blue-900 tracking-[-0.4px] lg:tracking-[-0.66px] flex-1"
-                    style={{ 
-                      fontVariationSettings: "'wdth' 100",
-                      textRendering: 'optimizeLegibility',
-                      WebkitFontSmoothing: 'antialiased'
-                    }}
-                  >
-                    {howWeHelp?.benefits?.[1]?.label || "Focus on Patient Care. Let us handle admin load."}
-                  </p>
-                </div>
-              </div>
-
-              {/* Benefit 3 */}
-              <div className="relative w-full max-w-[320px] lg:max-w-none pb-[3px]">
-                <div className="flex items-start gap-[10px]">
-                  <div className="backdrop-blur-[2.667px] backdrop-filter bg-gradient-to-b from-[rgba(204,211,234,0.02)] to-[rgba(80,86,104,0.01)] rounded-[10.667px] border-[0.667px] border-[rgba(99,103,146,0.5)] border-solid w-[30px] h-full min-h-[60px] shadow-[0px_2.667px_5.333px_0px_rgba(114,116,146,0.3)] flex-shrink-0" />
-                  <div className="absolute left-[20px] top-[20px] w-[10px] h-[10px] z-10">
-                    <div className="absolute inset-[-40%]">
-                      <Image
-                        alt=""
-                        className="block max-w-none size-full"
-                        src={getUrl(howWeHelpBulletIcon, "/images/services/icon-dot.svg")}
-                        width={10}
-                        height={10}
-                        style={{ filter: `blur(${howWeHelp?.bulletIconBlur ?? 2}px)` }}
-                        unoptimized={isRemoteUrl(getUrl(howWeHelpBulletIcon, "/images/services/icon-dot.svg"))}
-                      />
-                    </div>
-                  </div>
-                  <p 
-                    className="font-sans font-medium leading-[1.2] ml-[12px] mt-[41px] mb-[3px] text-[clamp(19px,2.5vw,23px)] lg:text-[33px] text-blue-900 tracking-[-0.4px] lg:tracking-[-0.66px] flex-1"
-                    style={{ 
-                      fontVariationSettings: "'wdth' 100",
-                      textRendering: 'optimizeLegibility',
-                      WebkitFontSmoothing: 'antialiased'
-                    }}
-                  >
-                    {howWeHelp?.benefits?.[2]?.label || "Scale Seamlessly. Expand your team as your caseload grows."}
-                  </p>
-                </div>
-              </div>
+                )
+              )}
             </div>
           </div>
         </section>
