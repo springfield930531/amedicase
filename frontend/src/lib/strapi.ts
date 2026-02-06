@@ -258,10 +258,15 @@ export async function getSiteSettings(): Promise<SiteSettings | null> {
   try {
     const params = new URLSearchParams();
     params.set("populate[header][populate]", "*");
-    params.set("populate[footer][populate]", "*");
-    params.set("populate[footer][populate][columns][populate]", "*");
-    params.set("populate[footer][populate][socialLinks][populate]", "*");
-    params.set("populate[footer][populate][legalLinks][populate]", "*");
+    // Important: avoid mixing `populate[footer][populate]=*` (string) with nested
+    // `populate[footer][populate][...]` (object). Strapi's query parser treats this as
+    // a type conflict and silently drops some nested fields (e.g., footer columns/navigation),
+    // which makes the UI fall back to hardcoded footer links.
+    params.set("populate[footer][populate][footerLogo]", "true");
+    params.set("populate[footer][populate][navigation]", "true");
+    params.set("populate[footer][populate][columns][populate][links]", "true");
+    params.set("populate[footer][populate][socialLinks][populate][icon]", "true");
+    params.set("populate[footer][populate][legalLinks]", "true");
     params.set("populate[brandAssets][populate]", "*");
     params.set("populate[defaultSeo][populate]", "*");
     const payload = await strapiFetchStatic<{ data?: { attributes?: SiteSettings } }>(
