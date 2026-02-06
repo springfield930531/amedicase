@@ -1,4 +1,8 @@
+"use client";
+
+import { useState } from "react";
 import type { SectionRendererPageContext } from "@/components/sections/registry";
+import { submitContactForm } from "@/lib/strapi";
 import type { ContactInfoFormSection as ContactInfoFormSectionData } from "@/lib/page-types";
 
 type Props = {
@@ -49,6 +53,74 @@ export function ContactInfoFormSection({ data, page }: Props) {
 
   const getField = (name: string) => fields.find((field) => field.name === name);
 
+  const [formData, setFormData] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    phone: "",
+    company: "",
+    message: "",
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState<{
+    type: "success" | "error" | null;
+    message: string;
+  }>({ type: null, message: "" });
+
+  const handleInputChange = (field: keyof typeof formData, value: string) => {
+    setFormData((prev) => ({ ...prev, [field]: value }));
+    if (submitStatus.type) {
+      setSubmitStatus({ type: null, message: "" });
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (
+      !formData.firstName.trim() ||
+      !formData.lastName.trim() ||
+      !formData.email.trim() ||
+      !formData.message.trim()
+    ) {
+      setSubmitStatus({ type: "error", message: "Please fill in all required fields." });
+      return;
+    }
+
+    setIsSubmitting(true);
+    setSubmitStatus({ type: null, message: "" });
+
+    try {
+      const result = await submitContactForm({
+        firstName: formData.firstName.trim(),
+        lastName: formData.lastName.trim(),
+        email: formData.email.trim(),
+        phone: formData.phone.trim() || undefined,
+        company: formData.company.trim() || undefined,
+        message: formData.message.trim(),
+        source: page?.slug ? `${page.slug}-page` : "contact-page",
+      });
+
+      if (result.success) {
+        setSubmitStatus({ type: "success", message: "Thank you! Your message has been sent successfully." });
+        setFormData({
+          firstName: "",
+          lastName: "",
+          email: "",
+          phone: "",
+          company: "",
+          message: "",
+        });
+      } else {
+        setSubmitStatus({ type: "error", message: result.error || "Failed to send message. Please try again." });
+      }
+    } catch {
+      setSubmitStatus({ type: "error", message: "An error occurred. Please try again later." });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
     <section className="relative py-8 lg:py-16 overflow-x-hidden">
       <div className="mx-auto px-5 md:px-8 xl:px-0 max-w-[1440px]">
@@ -97,18 +169,26 @@ export function ContactInfoFormSection({ data, page }: Props) {
             >
               {formTitle}
             </h2>
-            <form className="flex flex-col gap-[20px] w-full">
+            <form onSubmit={handleSubmit} className="flex flex-col gap-[20px] w-full">
               {/* First Name and Last Name Row */}
               <div className="flex flex-col md:flex-row gap-[20px] w-full">
                 <input
                   type="text"
                   placeholder={getField("firstName")?.placeholder || "First Name"}
+                  name="firstName"
+                  value={formData.firstName}
+                  onChange={(e) => handleInputChange("firstName", e.target.value)}
+                  required
                   className="border border-[#d4283c] border-solid h-[80px] rounded-[12px] px-[19px] font-sans font-normal text-[clamp(16px,2vw,20px)] text-[#e2abba] tracking-[-0.4px] w-full"
                   style={{ fontVariationSettings: "'wdth' 100" }}
                 />
                 <input
                   type="text"
                   placeholder={getField("lastName")?.placeholder || "Last Name"}
+                  name="lastName"
+                  value={formData.lastName}
+                  onChange={(e) => handleInputChange("lastName", e.target.value)}
+                  required
                   className="border border-[#d4283c] border-solid h-[80px] rounded-[12px] px-[19px] font-sans font-normal text-[clamp(16px,2vw,20px)] text-[#e2abba] tracking-[-0.4px] w-full"
                   style={{ fontVariationSettings: "'wdth' 100" }}
                 />
@@ -118,6 +198,10 @@ export function ContactInfoFormSection({ data, page }: Props) {
               <input
                 type="email"
                 placeholder={getField("email")?.placeholder || "Email"}
+                name="email"
+                value={formData.email}
+                onChange={(e) => handleInputChange("email", e.target.value)}
+                required
                 className="border border-[#d4283c] border-solid h-[80px] rounded-[12px] px-[19px] font-sans font-normal text-[clamp(16px,2vw,20px)] text-[#e2abba] tracking-[-0.4px] w-full"
                 style={{ fontVariationSettings: "'wdth' 100" }}
               />
@@ -126,6 +210,9 @@ export function ContactInfoFormSection({ data, page }: Props) {
               <input
                 type="tel"
                 placeholder={getField("phone")?.placeholder || "Phone Number"}
+                name="phone"
+                value={formData.phone}
+                onChange={(e) => handleInputChange("phone", e.target.value)}
                 className="border border-[#d4283c] border-solid h-[80px] rounded-[12px] px-[19px] font-sans font-normal text-[clamp(16px,2vw,20px)] text-[#e2abba] tracking-[-0.4px] w-full"
                 style={{ fontVariationSettings: "'wdth' 100" }}
               />
@@ -134,6 +221,9 @@ export function ContactInfoFormSection({ data, page }: Props) {
               <input
                 type="text"
                 placeholder={getField("company")?.placeholder || "Company Name"}
+                name="company"
+                value={formData.company}
+                onChange={(e) => handleInputChange("company", e.target.value)}
                 className="border border-[#d4283c] border-solid h-[80px] rounded-[12px] px-[19px] font-sans font-normal text-[clamp(16px,2vw,20px)] text-[#e2abba] tracking-[-0.4px] w-full"
                 style={{ fontVariationSettings: "'wdth' 100" }}
               />
@@ -142,6 +232,10 @@ export function ContactInfoFormSection({ data, page }: Props) {
               <textarea
                 placeholder={getField("message")?.placeholder || "Message / Service Inquiry"}
                 rows={getField("message")?.rows || 4}
+                name="message"
+                value={formData.message}
+                onChange={(e) => handleInputChange("message", e.target.value)}
+                required
                 className="border border-[#d4283c] border-solid min-h-[160px] rounded-[12px] px-[19px] py-[19px] font-sans font-normal text-[clamp(16px,2vw,20px)] text-[#e2abba] tracking-[-0.4px] w-full resize-none"
                 style={{ fontVariationSettings: "'wdth' 100" }}
               />
@@ -149,7 +243,8 @@ export function ContactInfoFormSection({ data, page }: Props) {
               {/* Submit Button */}
               <button
                 type="submit"
-                className="backdrop-blur-[7.555px] backdrop-filter bg-gradient-to-b border-2 border-[rgba(209,51,69,0.8)] border-solid from-[rgba(205,27,48,0.3)] h-[104px] rounded-[16px] shadow-[0px_2px_8px_0px_rgba(167,32,41,0.5)] to-[rgba(215,45,64,0.2)] w-full hover:opacity-90 transition-opacity"
+                disabled={isSubmitting}
+                className="backdrop-blur-[7.555px] backdrop-filter bg-gradient-to-b border-2 border-[rgba(209,51,69,0.8)] border-solid from-[rgba(205,27,48,0.3)] h-[104px] rounded-[16px] shadow-[0px_2px_8px_0px_rgba(167,32,41,0.5)] to-[rgba(215,45,64,0.2)] w-full hover:opacity-90 transition-opacity disabled:opacity-60 disabled:cursor-not-allowed"
               >
                 <p
                   className="font-sans font-semibold leading-[1.1] text-[clamp(24px,3vw,33px)] text-[#d94052] text-center tracking-[-0.66px]"
@@ -158,6 +253,19 @@ export function ContactInfoFormSection({ data, page }: Props) {
                   {submitLabel}
                 </p>
               </button>
+
+              {/* Status Message (only visible after submit) */}
+              {submitStatus.type ? (
+                <p
+                  className="font-sans font-normal text-[14px] md:text-[16px] tracking-[-0.26px]"
+                  style={{
+                    fontVariationSettings: "'wdth' 100",
+                    color: submitStatus.type === "success" ? "#1E3A8A" : "#D01127",
+                  }}
+                >
+                  {submitStatus.message}
+                </p>
+              ) : null}
             </form>
           </div>
         </div>
