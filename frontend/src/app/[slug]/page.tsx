@@ -23,6 +23,41 @@ const getTemplateKey = (page: PageEntry | null) =>
   page?.template?.data?.attributes?.key ||
   null;
 
+const inferTemplateKeyFromSections = (page: PageEntry | null) => {
+  const sections = page?.sections || [];
+  const componentTypes = new Set(sections.map((section) => section.__component).filter(Boolean));
+
+  // Services long-form page sections (services-page-hero, pillars, etc.)
+  if (
+    componentTypes.has("sections.services-page-hero") ||
+    componentTypes.has("sections.services-page-pillars") ||
+    componentTypes.has("sections.services-page-how-we-help")
+  ) {
+    return "service-style-a";
+  }
+
+  // Home Health / Hospice style sections.
+  if (componentTypes.has("sections.benefit-cards") || componentTypes.has("sections.icon-steps")) {
+    return "service-style-b";
+  }
+
+  // Vertical service pages (creative-development, customer-support, etc.) are built from these blocks.
+  if (componentTypes.has("sections.card-grid") || componentTypes.has("sections.process-stages")) {
+    return "service-style-c";
+  }
+
+  // Simple/legal pages are usually just hero + story.
+  if (
+    componentTypes.has("sections.page-hero") &&
+    componentTypes.has("sections.story-block") &&
+    !componentTypes.has("sections.contact-block")
+  ) {
+    return "legal-style";
+  }
+
+  return null;
+};
+
 export async function generateMetadata({ params }: DynamicPageProps): Promise<Metadata> {
   const page = (await getPageBySlugDynamic(params.slug)) as PageEntry | null;
   if (!page?.seo) {
@@ -50,7 +85,7 @@ export default async function DynamicServicePage({ params }: DynamicPageProps) {
     notFound();
   }
 
-  const templateKey = getTemplateKey(page);
+  const templateKey = getTemplateKey(page) || inferTemplateKeyFromSections(page);
   if (!templateKey) {
     notFound();
   }
